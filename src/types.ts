@@ -1,13 +1,26 @@
-export type Task = {
-  id: string;
-  title: string;
-  description: string;
-  order: number;
+export type KanbanTasks = {
+  [id: string]: {
+    id: string;
+    title: string;
+    description: string;
+  };
 };
 
-export type TaskCategory = {
-  id: string;
-  title: string;
-  order: number;
-  tasks: Task[];
+export type KanbanColumns = {
+  [id: string]: {
+    id: string;
+    title: string;
+    taskIds: string[];
+  };
+};
+
+export type KanbanBoardStore = {
+  tasks: KanbanTasks;
+  columns: KanbanColumns;
+  columnOrder: string[];
+};
+
+export type KanbanStore = {
+  isAddingTask: false;
+  isAddingCategory: false;
 };
