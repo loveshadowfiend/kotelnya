@@ -15,7 +15,7 @@ export function KanbanCard(props: {
     <Dialog open={props.isDialogOpen} onOpenChange={props.setIsDialogOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>TODO</DialogTitle>
+          <DialogTitle>hi</DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
       </DialogContent>
