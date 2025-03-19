@@ -5,6 +5,7 @@ import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { KanbanColumn } from "@/components/kanban/kanban-column";
 import { kanbanSample } from "@/constants";
 import { KanbanBoardStore } from "@/types";
+import { KanbanNewColumn } from "./kanban-new-column";
 
 export function KanbanBoard() {
   const [boardData, setBoardData] = useState<KanbanBoardStore>(kanbanSample);
@@ -220,6 +221,7 @@ export function KanbanBoard() {
                 );
               })}
               {provided.placeholder}
+              <KanbanNewColumn />
             </div>
           )}
         </Droppable>

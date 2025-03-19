@@ -21,6 +21,6 @@ export type KanbanBoardStore = {
 };
 
 export type KanbanStore = {
-  isAddingTask: false;
-  isAddingCategory: false;
+  isAddingTask: boolean;
+  isAddingCategory: boolean;
 };

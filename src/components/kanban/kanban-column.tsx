@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
 
-import { KanbanCard } from "@/components/kanban/kanban-card";
+import { KanbanItem } from "@/components/kanban/kanban-item";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -65,7 +65,7 @@ export function KanbanColumn({
         <div
           {...provided.draggableProps}
           ref={provided.innerRef}
-          className="min-w-[300px]"
+          className="h-fit"
         >
           <Card className="h-full">
             <CardHeader
@@ -96,10 +96,10 @@ export function KanbanColumn({
                 <CardContent
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className={`min-h-[200px] transition-colors gap-3`}
+                  className={`transition-colors gap-3`}
                 >
                   {tasks.map((task, index) => (
-                    <KanbanCard
+                    <KanbanItem
                       key={task.id}
                       task={task}
                       index={index}
