@@ -10,18 +10,15 @@ import {
 } from "@/components/ui/card";
 import { useState } from "react";
 import { KanbanCard } from "./kanban-card";
+import { KanbanColumn, KanbanTask } from "@/types";
 
 interface KanbanItemProps {
-  task: {
-    id: string;
-    title: string;
-    description: string;
-  };
+  task: KanbanTask;
+  column: KanbanColumn;
   index: number;
-  onDelete: () => void;
 }
 
-export function KanbanItem({ task, index, onDelete }: KanbanItemProps) {
+export function KanbanItem({ task, column, index }: KanbanItemProps) {
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   return (
@@ -33,7 +30,7 @@ export function KanbanItem({ task, index, onDelete }: KanbanItemProps) {
             {...provided.draggableProps}
             {...provided.dragHandleProps}
             className={`cursor-pointer mb-3 hover:bg-muted ${
-              snapshot.isDragging ? "cursor-grab shadow-lg" : ""
+              snapshot.isDragging ? "cursor-grab shadow-sm bg-muted" : ""
             }`}
             onClick={() => setIsDialogOpen(true)}
           >
@@ -47,6 +44,8 @@ export function KanbanItem({ task, index, onDelete }: KanbanItemProps) {
         )}
       </Draggable>
       <KanbanCard
+        taskId={task.id}
+        columnId={column.id}
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
       />

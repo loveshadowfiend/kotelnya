@@ -1,16 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { KanbanColumn } from "@/components/kanban/kanban-column";
-import { kanbanSample } from "@/constants";
-import { KanbanBoardStore } from "@/types";
 import { KanbanNewColumn } from "./kanban-new-column";
+import { kanbanBoardStore } from "@/proxies/kanbanBoardStore";
+import { useSnapshot } from "valtio";
 
 export function KanbanBoard() {
-  const [boardData, setBoardData] = useState<KanbanBoardStore>(kanbanSample);
-  const [newColumnTitle, setNewColumnTitle] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const boardData = useSnapshot(kanbanBoardStore);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
@@ -30,10 +27,7 @@ export function KanbanBoard() {
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
 
-      setBoardData({
-        ...boardData,
-        columnOrder: newColumnOrder,
-      });
+      kanbanBoardStore.columnOrder = newColumnOrder;
       return;
     }
 
@@ -52,13 +46,8 @@ export function KanbanBoard() {
         taskIds: newTaskIds,
       };
 
-      setBoardData({
-        ...boardData,
-        columns: {
-          ...boardData.columns,
-          [newColumn.id]: newColumn,
-        },
-      });
+      kanbanBoardStore.columns[newColumn.id] = newColumn;
+
       return;
     }
 
@@ -77,155 +66,42 @@ export function KanbanBoard() {
       taskIds: destTaskIds,
     };
 
-    setBoardData({
-      ...boardData,
-      columns: {
-        ...boardData.columns,
-        [newSourceColumn.id]: newSourceColumn,
-        [newDestColumn.id]: newDestColumn,
-      },
-    });
-  };
-
-  const addNewColumn = () => {
-    if (!newColumnTitle.trim()) return;
-
-    const newColumnId = `column-${Date.now()}`;
-    const newColumn = {
-      id: newColumnId,
-      title: newColumnTitle,
-      taskIds: [],
-    };
-
-    setBoardData({
-      ...boardData,
-      columns: {
-        ...boardData.columns,
-        [newColumnId]: newColumn,
-      },
-      columnOrder: [...boardData.columnOrder, newColumnId],
-    });
-
-    setNewColumnTitle("");
-    setIsDialogOpen(false);
-  };
-
-  const addNewTask = (columnId: string, title: string) => {
-    const newTaskId = `task-${Date.now()}`;
-    const newTask = {
-      id: newTaskId,
-      title,
-      description: "",
-    };
-
-    const column = boardData.columns[columnId];
-    const newTaskIds = Array.from(column.taskIds);
-    newTaskIds.push(newTaskId);
-
-    setBoardData({
-      ...boardData,
-      tasks: {
-        ...boardData.tasks,
-        [newTaskId]: newTask,
-      },
-      columns: {
-        ...boardData.columns,
-        [columnId]: {
-          ...column,
-          taskIds: newTaskIds,
-        },
-      },
-    });
-  };
-
-  const deleteTask = (columnId: string, taskId: string) => {
-    const column = boardData.columns[columnId];
-    const newTaskIds = column.taskIds.filter((id) => id !== taskId);
-
-    const newTasks = { ...boardData.tasks };
-    delete newTasks[taskId];
-
-    setBoardData({
-      ...boardData,
-      tasks: newTasks,
-      columns: {
-        ...boardData.columns,
-        [columnId]: {
-          ...column,
-          taskIds: newTaskIds,
-        },
-      },
-    });
-  };
-
-  const deleteColumn = (columnId: string) => {
-    // Remove all tasks in this column
-    const column = boardData.columns[columnId];
-    const newTasks = { ...boardData.tasks };
-    column.taskIds.forEach((taskId) => {
-      delete newTasks[taskId];
-    });
-
-    // Remove the column
-    const newColumns = { ...boardData.columns };
-    delete newColumns[columnId];
-
-    // Update column order
-    const newColumnOrder = boardData.columnOrder.filter(
-      (id) => id !== columnId
-    );
-
-    setBoardData({
-      tasks: newTasks,
-      columns: newColumns,
-      columnOrder: newColumnOrder,
-    });
+    kanbanBoardStore.columns[newSourceColumn.id] = newSourceColumn;
+    kanbanBoardStore.columns[newDestColumn.id] = newDestColumn;
   };
 
   return (
-    <div className="flex flex-col">
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable
-          droppableId="all-columns"
-          direction="horizontal"
-          type="column"
-        >
-          {(provided) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-              className="
-              grid grid-cols-1 gap-3 overflow-x-auto
-              md:grid-cols-2 
-              lg:grid-cols-3 
-              xl:grid-cols-4
-              xxl:grid-cols--5
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="all-columns" direction="horizontal" type="column">
+        {(provided) => (
+          <div
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+            className="
+              inline-flex gap-3
+              overflow-x-auto
               "
-            >
-              {boardData.columnOrder.map((columnId, index) => {
-                const column = boardData.columns[columnId];
-                const tasks = column.taskIds.map(
-                  (taskId) => boardData.tasks[taskId]
-                );
+          >
+            {boardData.columnOrder.map((columnId, index) => {
+              const column = boardData.columns[columnId];
+              const tasks = column.taskIds.map(
+                (taskId) => boardData.tasks[taskId]
+              );
 
-                return (
-                  <KanbanColumn
-                    key={column.id}
-                    column={column}
-                    tasks={tasks}
-                    index={index}
-                    onAddTask={addNewTask}
-                    onDeleteTask={deleteTask}
-                    onDeleteColumn={deleteColumn}
-                  />
-                );
-              })}
-              {provided.placeholder}
-              <KanbanNewColumn />
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    </div>
+              return (
+                <KanbanColumn
+                  key={column.id}
+                  column={column}
+                  tasks={tasks}
+                  index={index}
+                />
+              );
+            })}
+            {provided.placeholder}
+            <KanbanNewColumn />
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
   );
 }

@@ -1,21 +1,16 @@
-import { KanbanBoardStore } from "./types";
+import { KanbanBoardState } from "./types";
 
-export const kanbanSample: KanbanBoardStore = {
+export const kanbanSample: KanbanBoardState = {
   tasks: {
     "task-1": {
       id: "task-1",
-      title: "Создать структуру проекта",
-      description: "Определить основные папки и файлы проекта.",
+      title: "Сделать домашку",
+      description: "Математика, физика",
     },
     "task-2": {
       id: "task-2",
-      title: "Разработать UI-компоненты",
-      description: "Создать основные пользовательские интерфейсы.",
-    },
-    "task-3": {
-      id: "task-3",
-      title: "Реализовать перетаскивание",
-      description: "Добавить возможность перетаскивания задач между колонками.",
+      title: "Помыть посуду",
+      description: "",
     },
     "task-4": {
       id: "task-4",
@@ -24,22 +19,20 @@ export const kanbanSample: KanbanBoardStore = {
     },
     "task-5": {
       id: "task-5",
-      title: "Написать документацию",
-      description:
-        "Создать документацию для проекта, описывающую его функционал.",
+      title: "Сходить в магазин",
+      description: "Купить молоко, яйца и масло",
     },
     "task-6": {
       id: "task-6",
-      title: "Протестировать на разных устройствах",
-      description:
-        "Проверить корректность работы приложения на различных устройствах и браузерах.",
+      title: "Реализовать перетаскивание",
+      description: "Добавить возможность перетаскивания задач между колонками",
     },
   },
   columns: {
     "column-1": {
       id: "column-1",
-      title: "К выполнению",
-      taskIds: ["task-1", "task-2", "task-3"],
+      title: "Очередь",
+      taskIds: ["task-1", "task-2"],
     },
     "column-2": {
       id: "column-2",

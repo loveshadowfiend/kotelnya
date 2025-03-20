@@ -23,12 +23,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { addNewTask, deleteColumn } from "@/proxies/kanbanBoardStore";
 
 interface KanbanColumnProps {
   column: {
     id: string;
     title: string;
-    taskIds: string[];
+    taskIds: readonly string[];
   };
   tasks: {
     id: string;
@@ -36,25 +37,15 @@ interface KanbanColumnProps {
     description: string;
   }[];
   index: number;
-  onAddTask: (columnId: string, content: string) => void;
-  onDeleteTask: (columnId: string, taskId: string) => void;
-  onDeleteColumn: (columnId: string) => void;
 }
 
-export function KanbanColumn({
-  column,
-  tasks,
-  index,
-  onAddTask,
-  onDeleteTask,
-  onDeleteColumn,
-}: KanbanColumnProps) {
+export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
   const [newTaskContent, setNewTaskContent] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleAddTask = () => {
     if (!newTaskContent.trim()) return;
-    onAddTask(column.id, newTaskContent);
+    addNewTask(column.id, newTaskContent);
     setNewTaskContent("");
     setIsDialogOpen(false);
   };
@@ -65,7 +56,7 @@ export function KanbanColumn({
         <div
           {...provided.draggableProps}
           ref={provided.innerRef}
-          className="h-fit"
+          className="h-fit w-[80vw] lg:w-[20vw]"
         >
           <Card className="h-full">
             <CardHeader
@@ -83,7 +74,7 @@ export function KanbanColumn({
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive"
-                    onClick={() => onDeleteColumn(column.id)}
+                    onClick={() => deleteColumn(column.id)}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
                     Удалить
@@ -92,7 +83,7 @@ export function KanbanColumn({
               </DropdownMenu>
             </CardHeader>
             <Droppable droppableId={column.id} type="task">
-              {(provided, snapshot) => (
+              {(provided) => (
                 <CardContent
                   {...provided.droppableProps}
                   ref={provided.innerRef}
@@ -102,8 +93,8 @@ export function KanbanColumn({
                     <KanbanItem
                       key={task.id}
                       task={task}
+                      column={column}
                       index={index}
-                      onDelete={() => onDeleteTask(column.id, task.id)}
                     />
                   ))}
                   {provided.placeholder}
