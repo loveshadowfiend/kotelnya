@@ -24,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addNewTask, deleteColumn } from "@/proxies/kanbanBoardStore";
+import { KanbanNewTask } from "./kanban-new-task";
 
 interface KanbanColumnProps {
   column: {
@@ -98,38 +99,11 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                     />
                   ))}
                   {provided.placeholder}
-                  <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                    <DialogTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        className="w-full justify-center h-10 text-sm"
-                      >
-                        <Plus className="mr-2 h-4 w-4" />
-                        Добавить задачу
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent>
-                      <DialogHeader>
-                        <DialogTitle>Новая задача</DialogTitle>
-                      </DialogHeader>
-                      <div className="grid gap-4 py-4">
-                        <div className="grid grid-cols-4 items-center gap-4">
-                          <Label htmlFor="task-content" className="text-right">
-                            Название
-                          </Label>
-                          <Input
-                            id="task-content"
-                            value={newTaskContent}
-                            onChange={(e) => setNewTaskContent(e.target.value)}
-                            className="col-span-3"
-                          />
-                        </div>
-                      </div>
-                      <DialogFooter>
-                        <Button onClick={handleAddTask}>Добавить</Button>
-                      </DialogFooter>
-                    </DialogContent>
-                  </Dialog>
+                  <KanbanNewTask
+                    column={column}
+                    isDialogOpen={isDialogOpen}
+                    setIsDialogOpen={setIsDialogOpen}
+                  />
                 </CardContent>
               )}
             </Droppable>
