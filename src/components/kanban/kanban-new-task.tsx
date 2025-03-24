@@ -53,6 +53,7 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
 
   useClickOutside(ref as React.RefObject<HTMLElement>, () => {
     kanbanComponentsStore.addNewTaskActiveColumn = "";
+    form.handleSubmit(onSubmit)();
     form.reset();
   });
 
