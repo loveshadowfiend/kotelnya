@@ -8,21 +8,11 @@ import { KanbanItem } from "@/components/kanban/kanban-item";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { addNewTask, deleteColumn } from "@/proxies/kanbanBoardStore";
 import { KanbanNewTask } from "./kanban-new-task";
 
@@ -41,16 +31,6 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
-  const [newTaskContent, setNewTaskContent] = useState("");
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-  const handleAddTask = () => {
-    if (!newTaskContent.trim()) return;
-    addNewTask(column.id, newTaskContent);
-    setNewTaskContent("");
-    setIsDialogOpen(false);
-  };
-
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided) => (
@@ -99,11 +79,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                     />
                   ))}
                   {provided.placeholder}
-                  <KanbanNewTask
-                    column={column}
-                    isDialogOpen={isDialogOpen}
-                    setIsDialogOpen={setIsDialogOpen}
-                  />
+                  <KanbanNewTask column={column} />
                 </CardContent>
               )}
             </Droppable>

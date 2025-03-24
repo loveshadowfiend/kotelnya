@@ -1,26 +1,13 @@
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "../ui/input";
 import { addNewTask } from "@/proxies/kanbanBoardStore";
 import { KanbanColumn } from "@/types";
 import { z } from "zod";
@@ -28,6 +15,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSnapshot } from "valtio";
 import { kanbanComponentsStore } from "@/proxies/kanbanComponentsStore";
+import { useClickOutside } from "@/hooks/useOutsideClick";
+import { useEffect, useRef } from "react";
 
 const formSchema = z.object({
   title: z
@@ -43,17 +32,11 @@ const formSchema = z.object({
 
 interface KanbanNewTaskProps {
   column: KanbanColumn;
-  isDialogOpen: boolean;
-  setIsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export function KanbanNewTask({
-  column,
-  isDialogOpen,
-  setIsDialogOpen,
-}: KanbanNewTaskProps) {
+export function KanbanNewTask({ column }: KanbanNewTaskProps) {
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
-
+  const ref = useRef<HTMLFormElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -62,17 +45,39 @@ export function KanbanNewTask({
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
     addNewTask(column.id, values.title);
     form.reset();
     form.setFocus("title");
-    setIsDialogOpen(false);
-  }
+  };
+
+  useClickOutside(ref as React.RefObject<HTMLElement>, () => {
+    kanbanComponentsStore.addNewTaskActiveColumn = "";
+    form.reset();
+  });
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        kanbanComponentsStore.addNewTaskActiveColumn = "";
+        form.reset();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   if (kanbanComponentsSnapshop.addNewTaskActiveColumn == column.id) {
     return (
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-3"
+          ref={ref}
+        >
           <FormField
             control={form.control}
             name="title"
@@ -129,67 +134,4 @@ export function KanbanNewTask({
       Добавить задачу
     </Button>
   );
-
-  // return (
-  //   <Form {...form}>
-  //     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-  //       <FormField
-  //         control={form.control}
-  //         name="title"
-  //         render={({ field }) => (
-  //           <FormItem>
-  //             <FormControl>
-  //               <Input placeholder="Название задачи" {...field} />
-  //             </FormControl>
-  //             <FormMessage />
-  //           </FormItem>
-  //         )}
-  //       />
-  //       <Button type="submit">Сохранить</Button>
-  //     </form>
-  //   </Form>
-
-  // <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-  //   <DialogTrigger asChild>
-  //     <Button variant="ghost" className="w-full justify-center h-10 text-sm">
-  //       <Plus className="mr-2 h-4 w-4" />
-  //       Добавить задачу
-  //     </Button>
-  //   </DialogTrigger>
-  //   <DialogContent>
-  //     <DialogHeader>
-  //       <DialogTitle>Новая задача</DialogTitle>
-  //     </DialogHeader>
-  //     <Form {...form}>
-  //       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
-  //         <FormField
-  //           control={form.control}
-  //           name="title"
-  //           render={({ field }) => (
-  //             <FormItem>
-  //               <FormControl>
-  //                 <Input placeholder="Название задачи" {...field} />
-  //               </FormControl>
-  //               <FormMessage />
-  //             </FormItem>
-  //           )}
-  //         />
-  //         <FormField
-  //           control={form.control}
-  //           name="description"
-  //           render={({ field }) => (
-  //             <FormItem>
-  //               <FormControl>
-  //                 <Input placeholder="Описание" {...field} />
-  //               </FormControl>
-  //               <FormMessage />
-  //             </FormItem>
-  //           )}
-  //         />
-  //         <Button type="submit">Сохранить</Button>
-  //       </form>
-  //     </Form>
-  //   </DialogContent>
-  // </Dialog>
-  // );
 }
