@@ -80,7 +80,7 @@ export function KanbanNewColumn() {
               <FormItem>
                 <FormControl>
                   <Textarea
-                    className="rounded-xl resize-none w-[80vw] ring-inset px-6 py-6 field-sizing-content font-semibold text-lg"
+                    className="rounded-xl resize-none w-[80vw] ring-inset px-6 py-6 field-sizing-content font-semibold text-lg lg:w-[20vw]"
                     placeholder="Название списка"
                     {...field}
                     onKeyDown={(e) => {
