@@ -2,12 +2,7 @@
 
 import { Draggable } from "@hello-pangea/dnd";
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { useState } from "react";
 import { KanbanCard } from "./kanban-card";
 import { KanbanColumn, KanbanTask } from "@/types";
@@ -38,7 +33,6 @@ export function KanbanItem({ task, column, index }: KanbanItemProps) {
               <CardTitle className="text-sm font-normal">
                 {task.title}
               </CardTitle>
-              <CardDescription>{task.description}</CardDescription>
             </CardHeader>
           </Card>
         )}

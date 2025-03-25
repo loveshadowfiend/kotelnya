@@ -25,9 +25,6 @@ const formSchema = z.object({
       message: "Название не может быть пустым",
     })
     .max(32, { message: "Название не может быть длиннее 32 символов" }),
-  description: z.string().min(0).max(256, {
-    message: "Описание не может быть длиннее 256 символов",
-  }),
 });
 
 interface KanbanNewTaskProps {
@@ -41,7 +38,6 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
-      description: "",
     },
   });
 
@@ -53,6 +49,9 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
 
   useClickOutside(ref as React.RefObject<HTMLElement>, () => {
     kanbanComponentsStore.addNewTaskActiveColumn = "";
+
+    if (!form.getValues().title.length) return;
+
     form.handleSubmit(onSubmit)();
     form.reset();
   });

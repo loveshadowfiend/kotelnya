@@ -7,7 +7,8 @@ import {
 } from "@/components/ui/dialog";
 import { Trash2 } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
-import { deleteTask } from "@/proxies/kanbanBoardStore";
+import { deleteTask, kanbanBoardStore } from "@/proxies/kanbanBoardStore";
+import { useSnapshot } from "valtio";
 
 interface KanbanCardProps {
   taskId: string;
@@ -22,21 +23,18 @@ export function KanbanCard({
   isDialogOpen,
   setIsDialogOpen,
 }: KanbanCardProps) {
+  const kanbanBoardSnapshot = useSnapshot(kanbanBoardStore);
+
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            hi
-            <Trash2
-              className="hover:text-red-500 cursor-pointer"
-              width={16}
-              height={16}
-              onClick={() => deleteTask(columnId, taskId)}
-            />
+            {kanbanBoardSnapshot.tasks[taskId].title}
           </DialogTitle>
           <DialogDescription></DialogDescription>
         </DialogHeader>
+        <div>{kanbanBoardSnapshot.tasks[taskId].description}</div>
       </DialogContent>
     </Dialog>
   );
