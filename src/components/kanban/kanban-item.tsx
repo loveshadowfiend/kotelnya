@@ -2,10 +2,16 @@
 
 import { Draggable } from "@hello-pangea/dnd";
 
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useState } from "react";
 import { KanbanCard } from "./kanban-card";
 import { KanbanColumn, KanbanTask } from "@/types";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface KanbanItemProps {
   task: KanbanTask;
@@ -33,6 +39,15 @@ export function KanbanItem({ task, column, index }: KanbanItemProps) {
               <CardTitle className="text-sm font-normal">
                 {task.title}
               </CardTitle>
+              {task.assignee && (
+                <CardDescription className="flex items-center gap-2 mt-2">
+                  <Avatar className="w-6 h-6 flex items-center">
+                    <AvatarImage />
+                    <AvatarFallback className="text-xs">NN</AvatarFallback>
+                  </Avatar>
+                  <span>{task.assignee}</span>
+                </CardDescription>
+              )}
             </CardHeader>
           </Card>
         )}

@@ -13,8 +13,9 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { addNewTask, deleteColumn } from "@/proxies/kanbanBoardStore";
+import { deleteColumn } from "@/proxies/kanbanBoardStore";
 import { KanbanNewTask } from "./kanban-new-task";
+import { KanbanTask } from "@/types";
 
 interface KanbanColumnProps {
   column: {
@@ -22,11 +23,7 @@ interface KanbanColumnProps {
     title: string;
     taskIds: readonly string[];
   };
-  tasks: {
-    id: string;
-    title: string;
-    description: string;
-  }[];
+  tasks: KanbanTask[];
   index: number;
 }
 

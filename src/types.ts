@@ -2,6 +2,8 @@ export type KanbanTask = {
   id: string;
   title: string;
   description: string;
+  assignee: string;
+  dueDate: string;
 };
 
 export type KanbanTasks = {
