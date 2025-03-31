@@ -5,14 +5,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 import {
   getAllColumnTitlesAndIds,
   kanbanBoardStore,
 } from "@/proxies/kanbanBoardStore";
 import { useSnapshot } from "valtio";
 import { Label } from "../ui/label";
-import { Badge } from "../ui/badge";
 import { Textarea } from "../ui/textarea";
 import {
   Select,
@@ -23,6 +22,8 @@ import {
 } from "../ui/select";
 import { BadgeDropdown } from "../badge-dropdown";
 import { mockUsers } from "@/constants";
+import { AssigneeSelect } from "./assignee-select";
+import { DatePicker } from "./date-picker";
 
 interface KanbanCardProps {
   taskId: string;
@@ -57,23 +58,7 @@ export function KanbanCard({
           </DialogDescription>
           <div className="grid gap-3">
             <Label htmlFor="assignee">Исполнитель</Label>
-            <Select
-              value={kanbanBoardSnapshot.tasks[taskId].assignee}
-              onValueChange={(value) => {
-                kanbanBoardStore.tasks[taskId].assignee = value;
-              }}
-            >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="" />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.values(mockUsers).map((user) => (
-                  <SelectItem key={user.id} value={user.name}>
-                    {user.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <AssigneeSelect taskId={taskId} />
             <Label htmlFor="description">Описание</Label>
             <Textarea
               className="resize-none mb-3 field-sizing-content"
@@ -84,6 +69,8 @@ export function KanbanCard({
                 kanbanBoardStore.tasks[taskId].description = e.target.value;
               }}
             />
+            <Label htmlFor="deadline">Дедлайн</Label>
+            <DatePicker className="w-full" taskId={taskId} />
           </div>
         </DialogHeader>
       </DialogContent>

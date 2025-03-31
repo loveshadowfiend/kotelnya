@@ -16,6 +16,7 @@ import {
 import { deleteColumn } from "@/proxies/kanbanBoardStore";
 import { KanbanNewTask } from "./kanban-new-task";
 import { KanbanTask } from "@/types";
+import { Badge } from "../ui/badge";
 
 interface KanbanColumnProps {
   column: {
@@ -41,7 +42,9 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
               {...provided.dragHandleProps}
               className="flex flex-row items-center justify-between cursor-grab"
             >
-              <CardTitle className="text-lg">{column.title}</CardTitle>
+              <CardTitle className="text-lg">
+                <Badge className="text-sm rounded-full">{column.title}</Badge>
+              </CardTitle>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8">

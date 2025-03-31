@@ -44,7 +44,8 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     addNewTask(column.id, values.title);
     form.reset();
-    form.setFocus("title");
+    // form.setFocus("title");
+    kanbanComponentsStore.addNewTaskActiveColumn = "";
   };
 
   useClickOutside(ref as React.RefObject<HTMLElement>, () => {

@@ -39,7 +39,8 @@ export function KanbanNewColumn() {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     addNewColumn(values.title);
     form.reset();
-    form.setFocus("title");
+    // form.setFocus("title");
+    kanbanComponentsStore.isAddingCategory = false;
   };
 
   useClickOutside(ref as React.RefObject<HTMLElement>, () => {
@@ -81,7 +82,7 @@ export function KanbanNewColumn() {
                 <FormControl>
                   <Textarea
                     className="
-                    rounded-xl resize-none w-[80vw] ring-inset px-6 py-6 field-sizing-content font-semibold text-lg mr-[20px]
+                    rounded-xl resize-none w-[80vw] ring-inset px-6 py-6 field-sizing-content font-semibold text-sm mr-[20px]
                     lg:w-[20vw]
                     "
                     placeholder="Название списка"
