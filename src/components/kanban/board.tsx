@@ -1,8 +1,8 @@
 "use client";
 
 import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
-import { KanbanColumn } from "@/components/kanban/kanban-column";
-import { KanbanNewColumn } from "./kanban-new-column";
+import { KanbanColumn } from "@/components/kanban/column";
+import { KanbanNewColumn } from "./new-column";
 import { kanbanBoardStore } from "@/proxies/kanbanBoardStore";
 import { useSnapshot } from "valtio";
 

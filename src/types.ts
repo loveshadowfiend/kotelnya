@@ -30,4 +30,5 @@ export type KanbanComponentsState = {
   isAddingTask: boolean;
   isAddingCategory: boolean;
   addNewTaskActiveColumn: string;
+  renamingColumn: string;
 };

@@ -1,5 +1,5 @@
-import { KanbanBoard } from "@/components/kanban/kanban-board";
-import { KanbanBreadcrumb } from "@/components/kanban/kanban-breadcrumb";
+import { KanbanBoard } from "@/components/kanban/board";
+import { KanbanBreadcrumb } from "@/components/kanban/breadcrumb";
 
 export default function KanbanBoardPage() {
   return (

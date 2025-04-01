@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
 
-import { KanbanItem } from "@/components/kanban/kanban-item";
+import { KanbanItem } from "@/components/kanban/item";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -14,9 +14,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteColumn } from "@/proxies/kanbanBoardStore";
-import { KanbanNewTask } from "./kanban-new-task";
+import { KanbanNewTask } from "./new-task";
 import { KanbanTask } from "@/types";
 import { Badge } from "../ui/badge";
+import { kanbanComponentsStore } from "@/proxies/kanbanComponentsStore";
+import { useSnapshot } from "valtio";
+import { ka } from "date-fns/locale";
+import { Input } from "../ui/input";
 
 interface KanbanColumnProps {
   column: {
@@ -29,6 +33,8 @@ interface KanbanColumnProps {
 }
 
 export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
+  const kanbanComponentsSnapshot = useSnapshot(kanbanComponentsStore);
+
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided) => (
@@ -46,7 +52,26 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
               className="flex flex-row items-center justify-between cursor-grab"
             >
               <CardTitle className="text-lg">
-                <Badge className="text-sm rounded-full">{column.title}</Badge>
+                {kanbanComponentsSnapshot.renamingColumn !== column.id && (
+                  <Badge
+                    className="text-sm rounded-full"
+                    onClick={() => {
+                      kanbanComponentsStore.renamingColumn = column.id;
+                    }}
+                  >
+                    {column.title}
+                  </Badge>
+                )}
+                {kanbanComponentsSnapshot.renamingColumn === column.id && (
+                  <Input
+                    className="rounded-full"
+                    type="text"
+                    value={column.title}
+                    onChange={(e) => {
+                      column.title = e.target.value;
+                    }}
+                  />
+                )}
               </CardTitle>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>

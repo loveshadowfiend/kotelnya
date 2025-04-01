@@ -74,6 +74,8 @@ export const moveTask = (
   taskId: string,
   destinationIndex: number
 ) => {
+  if (sourceColumnId === destinationColumnId) return;
+
   const sourceColumn = kanbanBoardStore.columns[sourceColumnId];
   const destinationColumn = kanbanBoardStore.columns[destinationColumnId];
 

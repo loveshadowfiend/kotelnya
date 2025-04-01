@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useState } from "react";
-import { KanbanCard } from "./kanban-card";
+import { KanbanCard } from "./card";
 import { KanbanColumn, KanbanTask } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
