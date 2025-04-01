@@ -35,7 +35,10 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
         <div
           {...provided.draggableProps}
           ref={provided.innerRef}
-          className="h-fit w-[80vw] lg:w-[20vw]"
+          className="
+          h-fit w-[var(--kanban-column-w)]
+          lg:w-[var(--kanban-column-w-lg)]
+          "
         >
           <Card className="h-full">
             <CardHeader
