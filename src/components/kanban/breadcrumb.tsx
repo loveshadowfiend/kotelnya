@@ -7,6 +7,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { cn } from "@/lib/utils";
+import { SidebarTrigger } from "../ui/sidebar";
+import { Separator } from "../ui/separator";
 
 interface KanbanBreadcrumbProps {
   className?: string;
@@ -14,21 +16,25 @@ interface KanbanBreadcrumbProps {
 
 export function KanbanBreadcrumb({ className }: KanbanBreadcrumbProps) {
   return (
-    <Breadcrumb
+    <div
       className={cn(
-        "px-[var(--global-px)] pt-6 w-full lg:px-[var(--global-px-lg)] lg:pt-8",
+        "flex items-center h-12 gap-3 px-[var(--global-px)] pt-6 lg:px-[var(--global-px-lg)] lg:pt-8",
         className
       )}
     >
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Главная</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Канбан-доска</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
+      <SidebarTrigger />
+      <Separator orientation="vertical" />
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink href="/">Главная</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>Канбан-доска</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    </div>
   );
 }

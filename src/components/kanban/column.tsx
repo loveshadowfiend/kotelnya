@@ -21,6 +21,7 @@ import { kanbanComponentsStore } from "@/proxies/kanbanComponentsStore";
 import { useSnapshot } from "valtio";
 import { ka } from "date-fns/locale";
 import { Input } from "../ui/input";
+import { KanbanRenameColumn } from "./rename-column";
 
 interface KanbanColumnProps {
   column: {
@@ -51,7 +52,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
               {...provided.dragHandleProps}
               className="flex flex-row items-center justify-between cursor-grab"
             >
-              <CardTitle className="text-lg">
+              <CardTitle className="text-lg w-full">
                 {kanbanComponentsSnapshot.renamingColumn !== column.id && (
                   <Badge
                     className="text-sm rounded-full"
@@ -63,17 +64,10 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                   </Badge>
                 )}
                 {kanbanComponentsSnapshot.renamingColumn === column.id && (
-                  <Input
-                    className="rounded-full"
-                    type="text"
-                    value={column.title}
-                    onChange={(e) => {
-                      column.title = e.target.value;
-                    }}
-                  />
+                  <KanbanRenameColumn columnId={column.id} />
                 )}
               </CardTitle>
-              <DropdownMenu>
+              {/* <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="h-8 w-8">
                     <MoreHorizontal className="h-4 w-4" />
@@ -89,7 +83,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                     Удалить
                   </DropdownMenuItem>
                 </DropdownMenuContent>
-              </DropdownMenu>
+              </DropdownMenu> */}
             </CardHeader>
             <Droppable droppableId={column.id} type="task">
               {(provided) => (
