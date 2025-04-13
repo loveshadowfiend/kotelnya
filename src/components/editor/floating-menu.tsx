@@ -3,17 +3,12 @@
 import { forwardRef, useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getSelection, $isRangeSelection, FORMAT_TEXT_COMMAND } from "lexical";
-import { Button } from "../ui/button";
+import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 
-type FloatingMenuState = {
-  isBold: boolean;
-  isCode: boolean;
-  isItalic: boolean;
-  isStrikethrough: boolean;
-  isUnderline: boolean;
-};
+type FloatingMenuState = string[];
 
 type FloatingMenuProps = {
   editor: ReturnType<typeof useLexicalComposerContext>[0];
@@ -25,13 +20,7 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
     const { editor, coords } = props;
     const shouldShow = coords !== undefined;
 
-    const [state, setState] = useState<FloatingMenuState>({
-      isBold: false,
-      isCode: false,
-      isItalic: false,
-      isStrikethrough: false,
-      isUnderline: false,
-    });
+    const [state, setState] = useState<FloatingMenuState>([]);
 
     useEffect(() => {
       const unregisterListener = editor.registerUpdateListener(
@@ -40,25 +29,26 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
             const selection = $getSelection();
             if (!$isRangeSelection(selection)) return;
 
-            setState({
-              isBold: selection.hasFormat("bold"),
-              isCode: selection.hasFormat("code"),
-              isItalic: selection.hasFormat("italic"),
-              isStrikethrough: selection.hasFormat("strikethrough"),
-              isUnderline: selection.hasFormat("underline"),
-            });
+            const formats: FloatingMenuState = [];
+            if (selection.hasFormat("bold")) formats.push("bold");
+            if (selection.hasFormat("italic")) formats.push("italic");
+            if (selection.hasFormat("underline")) formats.push("underline");
+            if (selection.hasFormat("strikethrough"))
+              formats.push("strikethrough");
+
+            setState(formats);
           });
         }
       );
       return unregisterListener;
     }, [editor]);
 
-    console.log(coords);
-
     return (
-      <div
+      <ToggleGroup
+        type="multiple"
+        value={state}
         ref={ref}
-        className="flex items-center justify-between bg-slate-100 border-[1px] border-slate-300 rounded-md p-1 gap-1"
+        className="flex items-center justify-between bg-background border rounded-lg"
         aria-hidden={!shouldShow}
         style={{
           position: "absolute",
@@ -68,32 +58,43 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
           opacity: shouldShow ? 1 : 0,
         }}
       >
-        asdasdas
-        <Button
-          aria-label="Format text as bold"
+        <ToggleGroupItem
+          value="bold"
+          aria-label="Toggle bold"
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, "bold");
           }}
-        />
-        <Button
-          aria-label="Format text as italics"
+        >
+          <Bold />
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="italic"
+          aria-label="Toggle italic"
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
           }}
-        />
-        <Button
-          aria-label="Format text to underlined"
+        >
+          <Italic />
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="underline"
+          aria-label="Toggle underline"
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, "underline");
           }}
-        />
-        <Button
-          aria-label="Format text with a strikethrough"
+        >
+          <Underline />
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="strikethrough"
+          aria-label="Toggle strikethrough"
           onClick={() => {
             editor.dispatchCommand(FORMAT_TEXT_COMMAND, "strikethrough");
           }}
-        />
-      </div>
+        >
+          <Strikethrough />
+        </ToggleGroupItem>
+      </ToggleGroup>
     );
   }
 );

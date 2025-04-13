@@ -1,22 +1,26 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { computePosition } from "@floating-ui/dom";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $getSelection, $isRangeSelection } from "lexical";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   FloatingMenu,
   FloatingMenuCoords,
 } from "@/components/editor/floating-menu";
 import { usePointerInteractions } from "@/hooks/use-pointer-interactions";
 
-const DOM_ELEMENT = document.body;
-
 export function FloatingMenuPlugin() {
   const ref = useRef<HTMLDivElement>(null);
   const [coords, setCoords] = useState<FloatingMenuCoords>(undefined);
   const [editor] = useLexicalComposerContext();
-
   const { isPointerDown, isPointerReleased } = usePointerInteractions();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const calculatePosition = useCallback(() => {
     const domSelection = getSelection();
@@ -67,13 +71,12 @@ export function FloatingMenuPlugin() {
     if (!show && isPointerReleased) {
       editor.getEditorState().read(() => $handleSelectionChange());
     }
-    // Adding show to the dependency array causes an issue if
-    // a range selection is dismissed by navigating via arrow keys.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPointerReleased, $handleSelectionChange, editor]);
+
+  if (!isClient) return null;
 
   return createPortal(
     <FloatingMenu ref={ref} editor={editor} coords={coords} />,
-    DOM_ELEMENT
+    document.body
   );
 }

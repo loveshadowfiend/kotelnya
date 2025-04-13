@@ -11,8 +11,15 @@ export const theme = {
     nested: {
       listitem: "editor-nested-listitem",
     },
-    ol: "editor-list-ol",
-    ul: "editor-list-ul",
+    ol: "list-decimal",
+    ul: "list-disc",
     listitem: "editor-listitem",
+  },
+  text: {
+    bold: "font-semibold",
+    underline: "underline",
+    italic: "italic",
+    strikethrough: "line-through",
+    underlineStrikethrough: "underlined-line-through",
   },
 };
