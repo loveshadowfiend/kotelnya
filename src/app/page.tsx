@@ -15,7 +15,7 @@ const features = [
     Icon: Notebook,
     name: "Заметки",
     description: "Создавайте и управляйте заметками",
-    href: "/notes",
+    href: "/note",
     cta: "Открыть",
     background: <img className="absolute -right-20 -top-20 opacity-60" />,
     className: "lg:col-start-1 lg:col-end-2 lg:row-start-1 lg:row-end-3",
@@ -33,7 +33,8 @@ const features = [
 
 export default function HomePage() {
   return (
-    <div className="flex h-screen items-center justify-center mx-12">
+    <div className="flex flex-col gap-10 h-screen items-center justify-center mx-auto">
+      <span className="font-bold text-4xl">zaloopa</span>
       <BentoGrid className="lg:grid-rows-3 lg:grid-cols-2">
         {features.map((feature) => (
           <BentoCard key={feature.name} {...feature} />

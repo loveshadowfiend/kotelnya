@@ -8,14 +8,14 @@ import {
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { addNewTask } from "@/proxies/kanbanBoardStore";
+import { addNewTask } from "@/proxies/kanban-board-store";
 import { KanbanColumn } from "@/types";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSnapshot } from "valtio";
-import { kanbanComponentsStore } from "@/proxies/kanbanComponentsStore";
-import { useClickOutside } from "@/hooks/useOutsideClick";
+import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { useClickOutside } from "@/hooks/use-outside-click";
 import { useEffect, useRef } from "react";
 
 const formSchema = z.object({

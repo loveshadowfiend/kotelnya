@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { kanbanBoardStore } from "@/proxies/kanbanBoardStore";
+import { kanbanBoardStore } from "@/proxies/kanban-board-store";
 import { useSnapshot } from "valtio";
 import { useEffect, useState } from "react";
 

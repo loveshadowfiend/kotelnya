@@ -6,9 +6,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { useClickOutside } from "@/hooks/useOutsideClick";
-import { addNewColumn } from "@/proxies/kanbanBoardStore";
-import { kanbanComponentsStore } from "@/proxies/kanbanComponentsStore";
+import { useClickOutside } from "@/hooks/use-outside-click";
+import { addNewColumn } from "@/proxies/kanban-board-store";
+import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Plus, X } from "lucide-react";
 import { useEffect, useRef } from "react";

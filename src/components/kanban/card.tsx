@@ -9,7 +9,7 @@ import { Dispatch, SetStateAction } from "react";
 import {
   getAllColumnTitlesAndIds,
   kanbanBoardStore,
-} from "@/proxies/kanbanBoardStore";
+} from "@/proxies/kanban-board-store";
 import { useSnapshot } from "valtio";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";

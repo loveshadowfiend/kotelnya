@@ -13,11 +13,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { deleteColumn } from "@/proxies/kanbanBoardStore";
+import { deleteColumn } from "@/proxies/kanban-board-store";
 import { KanbanNewTask } from "./new-task";
 import { KanbanTask } from "@/types";
 import { Badge } from "../ui/badge";
-import { kanbanComponentsStore } from "@/proxies/kanbanComponentsStore";
+import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { useSnapshot } from "valtio";
 import { ka } from "date-fns/locale";
 import { Input } from "../ui/input";

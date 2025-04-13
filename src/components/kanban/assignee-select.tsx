@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { kanbanBoardStore } from "@/proxies/kanbanBoardStore";
+import { kanbanBoardStore } from "@/proxies/kanban-board-store";
 import { useSnapshot } from "valtio";
 import { mockUsers } from "@/constants";
 import { cn } from "@/lib/utils";

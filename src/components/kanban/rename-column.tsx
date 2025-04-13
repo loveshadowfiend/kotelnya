@@ -1,8 +1,8 @@
 import { Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { kanbanBoardStore } from "@/proxies/kanbanBoardStore";
-import { kanbanComponentsStore } from "@/proxies/kanbanComponentsStore";
+import { kanbanBoardStore } from "@/proxies/kanban-board-store";
+import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 
 interface KanbanRenameColumnProps {
   columnId: string;

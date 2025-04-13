@@ -3,7 +3,7 @@
 import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { KanbanColumn } from "@/components/kanban/column";
 import { KanbanNewColumn } from "./new-column";
-import { kanbanBoardStore } from "@/proxies/kanbanBoardStore";
+import { kanbanBoardStore } from "@/proxies/kanban-board-store";
 import { useSnapshot } from "valtio";
 
 export function KanbanBoard() {
