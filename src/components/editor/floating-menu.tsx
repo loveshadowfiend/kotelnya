@@ -2,9 +2,18 @@
 
 import { forwardRef, useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $getSelection, $isRangeSelection, FORMAT_TEXT_COMMAND } from "lexical";
-import { Bold, Italic, Strikethrough, Underline } from "lucide-react";
+import { $setBlocksType, $wrapNodes } from "@lexical/selection";
+import {
+  $createParagraphNode,
+  $getSelection,
+  $isRangeSelection,
+  FORMAT_TEXT_COMMAND,
+} from "lexical";
+import { Bold, Heading1, Italic, Strikethrough, Underline } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { INSERT_H1_COMMAND } from "./commands";
+import { $createHeadingNode, $isHeadingNode } from "@lexical/rich-text";
+import { Separator } from "../ui/separator";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 
@@ -28,20 +37,39 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
           editorState.read(() => {
             const selection = $getSelection();
             if (!$isRangeSelection(selection)) return;
+            const anchorNode = selection.anchor.getNode();
+            const block = anchorNode.getTopLevelElementOrThrow();
+            const toggles: FloatingMenuState = [];
 
-            const formats: FloatingMenuState = [];
-            if (selection.hasFormat("bold")) formats.push("bold");
-            if (selection.hasFormat("italic")) formats.push("italic");
-            if (selection.hasFormat("underline")) formats.push("underline");
+            if (selection.hasFormat("bold")) toggles.push("bold");
+            if (selection.hasFormat("italic")) toggles.push("italic");
+            if (selection.hasFormat("underline")) toggles.push("underline");
             if (selection.hasFormat("strikethrough"))
-              formats.push("strikethrough");
+              toggles.push("strikethrough");
+            if ($isHeadingNode(block) && block.getTag() === "h1")
+              toggles.push("h1");
 
-            setState(formats);
+            setState(toggles);
           });
         }
       );
       return unregisterListener;
     }, [editor]);
+
+    const formatHeadingOne = () => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          const anchorNode = selection.anchor.getNode();
+          const block = anchorNode.getTopLevelElementOrThrow();
+          if ($isHeadingNode(block) && block.getTag() === "h1") {
+            $setBlocksType(selection, () => $createParagraphNode());
+          } else {
+            $setBlocksType(selection, () => $createHeadingNode("h1"));
+          }
+        }
+      });
+    };
 
     return (
       <ToggleGroup
@@ -93,6 +121,15 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
           }}
         >
           <Strikethrough />
+        </ToggleGroupItem>
+        <ToggleGroupItem
+          value="h1"
+          aria-label="Toggle heading one"
+          onClick={() => {
+            formatHeadingOne();
+          }}
+        >
+          <Heading1 />
         </ToggleGroupItem>
       </ToggleGroup>
     );

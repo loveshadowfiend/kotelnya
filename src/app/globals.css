@@ -9,6 +9,16 @@
   --font-mono: var(--font-geist-mono);
 }
 
+@layer components {
+  .hide-scrollbar {
+    scrollbar-width: 0px;
+    scrollbar-color: transparent;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);

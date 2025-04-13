@@ -9,7 +9,7 @@ export const theme = {
   },
   list: {
     nested: {
-      listitem: "editor-nested-listitem",
+      listitem: "",
     },
     ol: "list-decimal",
     ul: "list-disc",
