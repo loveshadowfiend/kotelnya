@@ -11,9 +11,7 @@ import {
 } from "lexical";
 import { Bold, Heading1, Italic, Strikethrough, Underline } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { INSERT_H1_COMMAND } from "./commands";
 import { $createHeadingNode, $isHeadingNode } from "@lexical/rich-text";
-import { Separator } from "../ui/separator";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 
