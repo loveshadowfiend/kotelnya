@@ -4,8 +4,8 @@ export const theme = {
   paragraph: "relative mb-4",
   heading: {
     h1: "text-5xl font-bold tracking-[-0.02em] leading-[1.2] mb-4",
-    h2: "text-4xl font-bold tracking-[-0.015em] leading-[1.2] mb-4",
-    h3: "text-2xl font-bold tracking-[-0.01em] leading-[1.2] mb-4",
+    h2: "text-4xl font-bold tracking-[-0.015em] leading-[1.2] mb-2",
+    h3: "text-2xl font-bold tracking-[-0.01em] leading-[1.2]",
   },
   list: {
     nested: {
@@ -21,5 +21,9 @@ export const theme = {
     italic: "italic",
     strikethrough: "line-through",
     underlineStrikethrough: "underlined-line-through",
+  },
+  code: "",
+  codeHighlight: {
+    class: "text-black",
   },
 };
