@@ -34,7 +34,6 @@ const features = [
 export default function HomePage() {
   return (
     <div className="flex flex-col gap-10 h-screen items-center justify-center mx-auto">
-      <span className="font-bold text-4xl">zaloopa</span>
       <BentoGrid className="lg:grid-rows-3 lg:grid-cols-2">
         {features.map((feature) => (
           <BentoCard key={feature.name} {...feature} />
