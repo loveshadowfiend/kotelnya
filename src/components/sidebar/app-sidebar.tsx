@@ -1,8 +1,17 @@
-import { Cat, Kanban, BookHeart, Book, Settings, Archive } from "lucide-react";
+import {
+  Cat,
+  Kanban,
+  BookHeart,
+  Book,
+  Settings,
+  Archive,
+  PawPrint,
+} from "lucide-react";
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -13,32 +22,20 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { ProjectSwitcher } from "./project-switcher";
+import { SidebarProjectSwitcher } from "./project-switcher";
 import Link from "next/link";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "./ui/collapsible";
-
-const items = [
-  {
-    title: "Канбан-доска",
-    url: "/kanban-board",
-    icon: Kanban,
-  },
-  {
-    title: "Заметки",
-    url: "/note",
-    icon: BookHeart,
-  },
-];
+} from "../ui/collapsible";
+import { SidebarUser } from "./user";
 
 export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b">
-        <ProjectSwitcher />
+        <SidebarProjectSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -74,18 +71,6 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Рабочее пространство</SidebarGroupLabel>
           <SidebarGroupContent>
-            {/* <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <Link href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu> */}
             <SidebarMenu>
               <Collapsible defaultOpen className="group/collapsible">
                 <SidebarMenuItem>
@@ -100,7 +85,7 @@ export function AppSidebar() {
                       <SidebarMenuSubItem className="text-muted-foreground">
                         <SidebarMenuButton asChild>
                           <Link href="/kanban-board">
-                            <span>хуй</span>
+                            <span>Моя доска</span>
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuSubItem>
@@ -121,7 +106,7 @@ export function AppSidebar() {
                       <SidebarMenuSubItem className="text-muted-foreground">
                         <SidebarMenuButton asChild>
                           <Link href="/note">
-                            <span>пизда</span>
+                            <span>Моя заметка</span>
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuSubItem>
@@ -133,6 +118,9 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+      <SidebarFooter>
+        <SidebarUser />
+      </SidebarFooter>
     </Sidebar>
   );
 }

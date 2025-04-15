@@ -1,26 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { MoreHorizontal, Plus, Trash2 } from "lucide-react";
-
 import { KanbanItem } from "@/components/kanban/item";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { deleteColumn } from "@/proxies/kanban-board-store";
 import { KanbanNewTask } from "./new-task";
 import { KanbanTask } from "@/types";
 import { Badge } from "../ui/badge";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { useSnapshot } from "valtio";
-import { ka } from "date-fns/locale";
-import { Input } from "../ui/input";
 import { KanbanRenameColumn } from "./rename-column";
 
 interface KanbanColumnProps {
@@ -67,30 +54,13 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                   <KanbanRenameColumn columnId={column.id} />
                 )}
               </CardTitle>
-              {/* <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4" />
-                    <span className="sr-only">Действие над столбцом</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={() => deleteColumn(column.id)}
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Удалить
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu> */}
             </CardHeader>
             <Droppable droppableId={column.id} type="task">
               {(provided) => (
                 <CardContent
                   {...provided.droppableProps}
                   ref={provided.innerRef}
-                  className={`transition-colors gap-3`}
+                  className={`transition-colors gap-3 px-3`}
                 >
                   {tasks.map((task, index) => (
                     <KanbanItem

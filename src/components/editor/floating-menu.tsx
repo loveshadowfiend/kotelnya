@@ -21,7 +21,6 @@ import {
 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { $createHeadingNode, $isHeadingNode } from "@lexical/rich-text";
-import { Separator } from "../ui/separator";
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
@@ -39,36 +38,6 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
     const shouldShow = coords !== undefined;
 
     const [state, setState] = useState<FloatingMenuState>([]);
-
-    useEffect(() => {
-      const unregisterListener = editor.registerUpdateListener(
-        ({ editorState }) => {
-          editorState.read(() => {
-            const selection = $getSelection();
-            if (!$isRangeSelection(selection)) return;
-            const anchorNode = selection.anchor.getNode();
-            const block = anchorNode.getTopLevelElementOrThrow();
-            const toggles: FloatingMenuState = [];
-
-            if (selection.hasFormat("bold")) toggles.push("bold");
-            if (selection.hasFormat("italic")) toggles.push("italic");
-            if (selection.hasFormat("underline")) toggles.push("underline");
-            if (selection.hasFormat("strikethrough"))
-              toggles.push("strikethrough");
-            if ($isHeadingNode(block) && block.getTag() === "h1")
-              toggles.push("h1");
-            if ($isHeadingNode(block) && block.getTag() === "h2")
-              toggles.push("h2");
-            if ($isHeadingNode(block) && block.getTag() === "h3")
-              toggles.push("h3");
-            if ($isCodeNode(block)) toggles.push("code");
-
-            setState(toggles);
-          });
-        }
-      );
-      return unregisterListener;
-    }, [editor]);
 
     const formatHeading = (heading: "h1" | "h2" | "h3") => {
       editor.update(() => {
@@ -99,6 +68,36 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         }
       });
     };
+
+    useEffect(() => {
+      const unregisterListener = editor.registerUpdateListener(
+        ({ editorState }) => {
+          editorState.read(() => {
+            const selection = $getSelection();
+            if (!$isRangeSelection(selection)) return;
+            const anchorNode = selection.anchor.getNode();
+            const block = anchorNode.getTopLevelElementOrThrow();
+            const toggles: FloatingMenuState = [];
+
+            if (selection.hasFormat("bold")) toggles.push("bold");
+            if (selection.hasFormat("italic")) toggles.push("italic");
+            if (selection.hasFormat("underline")) toggles.push("underline");
+            if (selection.hasFormat("strikethrough"))
+              toggles.push("strikethrough");
+            if ($isHeadingNode(block) && block.getTag() === "h1")
+              toggles.push("h1");
+            if ($isHeadingNode(block) && block.getTag() === "h2")
+              toggles.push("h2");
+            if ($isHeadingNode(block) && block.getTag() === "h3")
+              toggles.push("h3");
+            if ($isCodeNode(block)) toggles.push("code");
+
+            setState(toggles);
+          });
+        }
+      );
+      return unregisterListener;
+    }, [editor]);
 
     return (
       <ToggleGroup
