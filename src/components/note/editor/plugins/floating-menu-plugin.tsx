@@ -8,7 +8,7 @@ import { $getSelection, $isRangeSelection } from "lexical";
 import {
   FloatingMenu,
   FloatingMenuCoords,
-} from "@/components/editor/floating-menu";
+} from "@/components/note/editor/floating-menu";
 import { usePointerInteractions } from "@/hooks/use-pointer-interactions";
 
 export function FloatingMenuPlugin() {

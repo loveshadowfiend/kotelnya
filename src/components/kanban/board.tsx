@@ -78,8 +78,8 @@ export function KanbanBoard() {
             {...provided.droppableProps}
             ref={provided.innerRef}
             className="
-              inline-flex gap-3 overflow-hidden px-[var(--global-px)] pt-4
-              lg:px-[var(--global-px-lg)] lg:pt-8
+              inline-flex gap-3 overflow-hidden px-[var(--global-px)]
+              lg:px-[var(--global-px-lg)]
               "
           >
             {boardData.columnOrder.map((columnId, index) => {

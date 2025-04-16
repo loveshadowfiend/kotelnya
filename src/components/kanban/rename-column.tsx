@@ -1,35 +1,101 @@
-import { Save } from "lucide-react";
+import { Check, Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { kanbanBoardStore } from "@/proxies/kanban-board-store";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { useRef, useEffect } from "react";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
+import { useClickOutside } from "@/hooks/use-outside-click";
+
+const formSchema = z.object({
+  title: z
+    .string()
+    .min(1, {
+      message: "Название не может быть пустым",
+    })
+    .max(32, { message: "Название не может быть длиннее 16 символов" }),
+});
 
 interface KanbanRenameColumnProps {
   columnId: string;
 }
 
 export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
+  const ref = useRef<HTMLInputElement>(null);
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: kanbanBoardStore.columns[columnId].title,
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    kanbanBoardStore.columns[columnId].title = values.title;
+    kanbanComponentsStore.renamingColumn = "";
+  };
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        kanbanComponentsStore.addNewTaskActiveColumn = "";
+        form.reset();
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
+  useClickOutside(ref as React.RefObject<HTMLElement>, () => {
+    kanbanComponentsStore.renamingColumn = "";
+    if (!form.getValues().title.length) return;
+
+    form.handleSubmit(onSubmit)();
+    form.reset();
+  });
+
   return (
-    <div className="flex justify-between w-full">
-      <Input
-        className="rounded-full"
-        type="text"
-        defaultValue={kanbanBoardStore.columns[columnId].title}
-        onChange={(e) => {
-          kanbanBoardStore.columns[columnId].title = e.target.value;
-        }}
-      />
-      <Button
-        type="submit"
-        variant="ghost"
-        onClick={() => {
-          kanbanBoardStore.columns[columnId].title =
-            kanbanBoardStore.columns[columnId].title;
-          kanbanComponentsStore.renamingColumn = "";
-        }}
-      >
-        <Save />
-      </Button>
-    </div>
+    <Form {...form}>
+      <form className="flex justify-between w-full">
+        <FormField
+          control={form.control}
+          name="title"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  className="rounded-full"
+                  {...field}
+                  type="text"
+                  ref={ref}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          variant="ghost"
+          onClick={(e) => {
+            e.preventDefault();
+            form.handleSubmit(onSubmit)();
+          }}
+        >
+          <Check />
+        </Button>
+      </form>
+    </Form>
   );
 }

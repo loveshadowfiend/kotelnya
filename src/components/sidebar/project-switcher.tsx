@@ -2,6 +2,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -31,7 +32,7 @@ export function SidebarProjectSwitcher() {
                 <div className="flex flex-col">
                   <p className="font-medium">slime momonga</p>
                   <p className="text-muted-foreground overflow-hidden truncate">
-                    haiiii ^-^
+                    В процессе
                   </p>
                 </div>
               </div>
@@ -48,7 +49,7 @@ export function SidebarProjectSwitcher() {
               <div className="flex flex-col">
                 <p className="text-sm">slime momonga</p>
                 <p className="text-sm text-muted-foreground overflow-hidden truncate">
-                  haiiii ^-^
+                  В процессе
                 </p>
               </div>
             </div>

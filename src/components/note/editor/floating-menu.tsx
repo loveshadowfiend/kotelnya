@@ -19,7 +19,7 @@ import {
   Strikethrough,
   Underline,
 } from "lucide-react";
-import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { $createHeadingNode, $isHeadingNode } from "@lexical/rich-text";
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
 
@@ -104,7 +104,7 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         type="multiple"
         value={state}
         ref={ref}
-        className="flex items-center justify-between bg-background border rounded-lg"
+        className="flex items-center justify-between bg-background border rounded-lg z-50"
         aria-hidden={!shouldShow}
         style={{
           position: "absolute",

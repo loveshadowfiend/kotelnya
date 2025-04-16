@@ -1,13 +1,4 @@
-import {
-  Cat,
-  Kanban,
-  BookHeart,
-  Book,
-  Settings,
-  Archive,
-  PawPrint,
-} from "lucide-react";
-
+import { Cat, Kanban, BookHeart, Settings, Archive } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -21,6 +12,7 @@ import {
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubItem,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 import { SidebarProjectSwitcher } from "./project-switcher";
 import Link from "next/link";
@@ -121,6 +113,7 @@ export function AppSidebar() {
       <SidebarFooter>
         <SidebarUser />
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
 }

@@ -9,6 +9,7 @@ import { Badge } from "../ui/badge";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { useSnapshot } from "valtio";
 import { KanbanRenameColumn } from "./rename-column";
+import { GripVertical } from "lucide-react";
 
 interface KanbanColumnProps {
   column: {
@@ -39,7 +40,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
               {...provided.dragHandleProps}
               className="flex flex-row items-center justify-between cursor-grab"
             >
-              <CardTitle className="text-lg w-full">
+              <CardTitle className="text-lg w-full cursor-pointer">
                 {kanbanComponentsSnapshot.renamingColumn !== column.id && (
                   <Badge
                     className="text-sm rounded-full"
@@ -54,6 +55,9 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                   <KanbanRenameColumn columnId={column.id} />
                 )}
               </CardTitle>
+              {kanbanComponentsSnapshot.renamingColumn !== column.id && (
+                <GripVertical className="text-muted-foreground" />
+              )}
             </CardHeader>
             <Droppable droppableId={column.id} type="task">
               {(provided) => (
