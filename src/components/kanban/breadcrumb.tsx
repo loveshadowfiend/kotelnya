@@ -11,8 +11,8 @@ import { Separator } from "../ui/separator";
 
 export function KanbanBreadcrumb() {
   return (
-    <div className="flex justify-between w-full">
-      <Breadcrumb className="flex items-center h-[65px] pl-8 w-full border-b">
+    <div className="fixed flex justify-between w-full border-b z-50 bg-background h-[65px]">
+      <Breadcrumb className="flex items-center pl-8 w-full">
         <BreadcrumbList>
           <div className="flex h-4 items-center gap-3 mr-3">
             <SidebarTrigger />

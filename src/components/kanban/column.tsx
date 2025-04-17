@@ -35,12 +35,12 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
           lg:w-[var(--kanban-column-w-lg)]
           "
         >
-          <Card className="h-full">
+          <Card className="h-full py-0 pb-6">
             <CardHeader
               {...provided.dragHandleProps}
-              className="flex flex-row items-center justify-between cursor-grab"
+              className="flex flex-row items-center justify-between cursor-grab pt-6"
             >
-              <CardTitle className="text-lg w-full cursor-pointer">
+              <CardTitle className="text-lg cursor-pointer">
                 {kanbanComponentsSnapshot.renamingColumn !== column.id && (
                   <Badge
                     className="text-sm rounded-full"

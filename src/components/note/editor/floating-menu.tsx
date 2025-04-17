@@ -1,11 +1,13 @@
 "use client";
 
+import "./theme.css";
 import { forwardRef, useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $setBlocksType, $wrapNodes } from "@lexical/selection";
 import {
   $createParagraphNode,
   $getSelection,
+  $isParagraphNode,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
 } from "lexical";
@@ -17,15 +19,25 @@ import {
   Heading3,
   Italic,
   Strikethrough,
+  Type,
   Underline,
 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { $createHeadingNode, $isHeadingNode } from "@lexical/rich-text";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+} from "@lexical/rich-text";
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
-
-type FloatingMenuState = string[];
 
 type FloatingMenuProps = {
   editor: ReturnType<typeof useLexicalComposerContext>[0];
@@ -37,7 +49,8 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
     const { editor, coords } = props;
     const shouldShow = coords !== undefined;
 
-    const [state, setState] = useState<FloatingMenuState>([]);
+    const [state, setState] = useState<string[]>([]);
+    const [special, setSpecial] = useState<string>("");
 
     const formatHeading = (heading: "h1" | "h2" | "h3") => {
       editor.update(() => {
@@ -69,6 +82,30 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
       });
     };
 
+    const formatQuote = () => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          const anchorNode = selection.anchor.getNode();
+          const block = anchorNode.getTopLevelElementOrThrow();
+          if ($isCodeNode(block)) {
+            $setBlocksType(selection, () => $createParagraphNode());
+          } else {
+            $setBlocksType(selection, () => $createQuoteNode());
+          }
+        }
+      });
+    };
+
+    const formatParagraph = () => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createParagraphNode());
+        }
+      });
+    };
+
     useEffect(() => {
       const unregisterListener = editor.registerUpdateListener(
         ({ editorState }) => {
@@ -77,20 +114,22 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
             if (!$isRangeSelection(selection)) return;
             const anchorNode = selection.anchor.getNode();
             const block = anchorNode.getTopLevelElementOrThrow();
-            const toggles: FloatingMenuState = [];
+            const toggles: string[] = [];
 
             if (selection.hasFormat("bold")) toggles.push("bold");
             if (selection.hasFormat("italic")) toggles.push("italic");
             if (selection.hasFormat("underline")) toggles.push("underline");
             if (selection.hasFormat("strikethrough"))
               toggles.push("strikethrough");
+
+            if ($isParagraphNode(block)) setSpecial("paragraph");
             if ($isHeadingNode(block) && block.getTag() === "h1")
-              toggles.push("h1");
+              setSpecial("h1");
             if ($isHeadingNode(block) && block.getTag() === "h2")
-              toggles.push("h2");
+              setSpecial("h2");
             if ($isHeadingNode(block) && block.getTag() === "h3")
-              toggles.push("h3");
-            if ($isCodeNode(block)) toggles.push("code");
+              setSpecial("h3");
+            if ($isCodeNode(block)) setSpecial("code");
 
             setState(toggles);
           });
@@ -150,42 +189,44 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         >
           <Strikethrough />
         </ToggleGroupItem>
-        <ToggleGroupItem
-          value="h1"
-          aria-label="Toggle heading one"
-          onClick={() => {
-            formatHeading("h1");
+        <Select
+          value={special}
+          onValueChange={(value) => {
+            if (value === "paragraph") {
+              formatParagraph();
+            } else if (value === "h1" || value === "h2" || value === "h3") {
+              formatHeading(value);
+            } else if (value === "code") {
+              formatCode();
+            }
           }}
         >
-          <Heading1 />
-        </ToggleGroupItem>
-        <ToggleGroupItem
-          value="h2"
-          aria-label="Toggle heading two"
-          onClick={() => {
-            formatHeading("h2");
-          }}
-        >
-          <Heading2 />
-        </ToggleGroupItem>
-        <ToggleGroupItem
-          value="h3"
-          aria-label="Toggle heading three"
-          onClick={() => {
-            formatHeading("h3");
-          }}
-        >
-          <Heading3 />
-        </ToggleGroupItem>
-        <ToggleGroupItem
-          value="code"
-          aria-label="Toggle code"
-          onClick={() => {
-            formatCode();
-          }}
-        >
-          <Code />
-        </ToggleGroupItem>
+          <SelectTrigger className="w-fit border-0 bg-background rounded-none rounded-r-lg focus:outline-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="text-muted-foreground">
+            <SelectItem value="paragraph">
+              <Type />
+              <span>Текст</span>
+            </SelectItem>
+            <SelectItem value="h1">
+              <Heading1 />
+              <span>Заголовок 1</span>
+            </SelectItem>
+            <SelectItem value="h2">
+              <Heading2 />
+              <span>Заголовок 2</span>
+            </SelectItem>
+            <SelectItem value="h3">
+              <Heading3 />
+              <span>Заголовок 3</span>
+            </SelectItem>
+            <SelectItem value="code">
+              <Code />
+              <span>Код</span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
       </ToggleGroup>
     );
   }

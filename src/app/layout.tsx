@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} antialiased hide-scrollbar`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <div className="absolute w-full border-b top-[64px]" />
+          {/* <div className="fixed w-full border-b top-[64px]" /> */}
           <SidebarProvider>
             <AppSidebar />
             {children}
