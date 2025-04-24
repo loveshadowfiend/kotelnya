@@ -11,7 +11,11 @@ import type { JSX } from "react";
 
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { DraggableBlockPlugin_EXPERIMENTAL } from "@lexical/react/LexicalDraggableBlockPlugin";
-import { $createParagraphNode, $getNearestNodeFromDOMNode } from "lexical";
+import {
+  $createParagraphNode,
+  $createTextNode,
+  $getNearestNodeFromDOMNode,
+} from "lexical";
 import { useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { GripVertical, Plus } from "lucide-react";
@@ -51,12 +55,15 @@ export default function DraggableBlockPlugin({
       }
 
       const pNode = $createParagraphNode();
+      const tNode = $createTextNode("/");
       if (e.altKey || e.ctrlKey) {
         node.insertBefore(pNode);
       } else {
         node.insertAfter(pNode);
       }
       pNode.select();
+      pNode.append(tNode);
+      tNode.select();
     });
   }
 
