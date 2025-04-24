@@ -18,6 +18,9 @@ import { FloatingMenuPlugin } from "./plugins/floating-menu-plugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import CodeHighlightPlugin from "./plugins/code-highlight-plugin";
+import DraggableBlockPlugin from "./plugins/draggable-block-plugin";
+import { useState } from "react";
+import ComponentPickerMenuPlugin from "./plugins/component-picker-plugin";
 
 const initialConfig = {
   namespace: "kotelnya-editor",
@@ -41,18 +44,28 @@ function onError(error: any) {
 }
 
 export function Editor() {
+  const [floatingAnchorElem, setFloatingAnchorElem] =
+    useState<HTMLDivElement | null>(null);
+
+  const onRef = (_floatingAnchorElem: HTMLDivElement) => {
+    if (_floatingAnchorElem !== null) {
+      setFloatingAnchorElem(_floatingAnchorElem);
+    }
+  };
+
   return (
     <LexicalComposer initialConfig={initialConfig}>
       <RichTextPlugin
         contentEditable={
           <ContentEditable
-            className="focus:outline-none mx-auto w-full min-h-screen lg:pt-32 lg:px-40"
+            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:pt-32 lg:px-40 relative"
             aria-placeholder={"Введите текст..."}
             placeholder={
               <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
-                Введите текст...
+                Введите текст или '/' для комманд
               </div>
             }
+            ref={onRef}
           />
         }
         ErrorBoundary={LexicalErrorBoundary}
@@ -64,6 +77,10 @@ export function Editor() {
       <CodeHighlightPlugin />
       <ListPlugin />
       <LinkPlugin />
+      {floatingAnchorElem && (
+        <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
+      )}
+      <ComponentPickerMenuPlugin />
     </LexicalComposer>
   );
 }

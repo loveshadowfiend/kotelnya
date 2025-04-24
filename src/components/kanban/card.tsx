@@ -5,6 +5,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 import { Dispatch, SetStateAction } from "react";
 import {
   getAllColumnTitlesAndIds,
@@ -13,17 +23,10 @@ import {
 import { useSnapshot } from "valtio";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
 import { BadgeDropdown } from "../badge-dropdown";
-import { mockUsers } from "@/constants";
 import { AssigneeSelect } from "./assignee-select";
 import { DatePicker } from "./date-picker";
+import { useMediaQuery } from "react-responsive";
 
 interface KanbanCardProps {
   taskId: string;

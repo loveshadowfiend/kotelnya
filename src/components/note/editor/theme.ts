@@ -24,6 +24,7 @@ export const theme = {
   },
   code: "code",
   codeHighlight: {
-    class: "code-highlight",
+    class: "",
   },
+  quote: "quote",
 };

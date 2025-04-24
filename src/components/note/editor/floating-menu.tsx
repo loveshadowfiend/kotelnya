@@ -3,12 +3,13 @@
 import "./theme.css";
 import { forwardRef, useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
-import { $setBlocksType, $wrapNodes } from "@lexical/selection";
+import { $setBlocksType } from "@lexical/selection";
 import {
   $createParagraphNode,
   $getSelection,
   $isParagraphNode,
   $isRangeSelection,
+  FORMAT_ELEMENT_COMMAND,
   FORMAT_TEXT_COMMAND,
 } from "lexical";
 import {
@@ -21,6 +22,13 @@ import {
   Strikethrough,
   Type,
   Underline,
+  TextQuote,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
+  AlignJustify,
+  ListOrdered,
+  List,
 } from "lucide-react";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
@@ -34,8 +42,10 @@ import {
   $createHeadingNode,
   $createQuoteNode,
   $isHeadingNode,
+  $isQuoteNode,
 } from "@lexical/rich-text";
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
+import { $createListNode } from "@lexical/list";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 
@@ -51,6 +61,7 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
 
     const [state, setState] = useState<string[]>([]);
     const [special, setSpecial] = useState<string>("");
+    const [alignment, setAlignment] = useState<string>("");
 
     const formatHeading = (heading: "h1" | "h2" | "h3") => {
       editor.update(() => {
@@ -106,6 +117,15 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
       });
     };
 
+    const formatOrderedList = () => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createListNode("number"));
+        }
+      });
+    };
+
     useEffect(() => {
       const unregisterListener = editor.registerUpdateListener(
         ({ editorState }) => {
@@ -114,6 +134,7 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
             if (!$isRangeSelection(selection)) return;
             const anchorNode = selection.anchor.getNode();
             const block = anchorNode.getTopLevelElementOrThrow();
+            const blockFormat = block.getFormatType();
             const toggles: string[] = [];
 
             if (selection.hasFormat("bold")) toggles.push("bold");
@@ -130,7 +151,9 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
             if ($isHeadingNode(block) && block.getTag() === "h3")
               setSpecial("h3");
             if ($isCodeNode(block)) setSpecial("code");
+            if ($isQuoteNode(block)) setSpecial("quote");
 
+            setAlignment(blockFormat);
             setState(toggles);
           });
         }
@@ -153,6 +176,42 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
           opacity: shouldShow ? 1 : 0,
         }}
       >
+        <Select
+          value={alignment === "" ? "left" : alignment}
+          onValueChange={(value) => {
+            if (value === "left") {
+              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
+            } else if (value === "center") {
+              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
+            } else if (value === "right") {
+              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
+            } else if (value === "justify") {
+              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+            }
+          }}
+        >
+          <SelectTrigger className="w-fit border-0 bg-background rounded-none rounded-l-lg focus:outline-0">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent className="text-muted-foreground">
+            <SelectItem value="left">
+              <AlignLeft className="w-4 h-4" />
+              <span>Слева</span>
+            </SelectItem>
+            <SelectItem value="center">
+              <AlignCenter />
+              <span>Центр</span>
+            </SelectItem>
+            <SelectItem value="right">
+              <AlignRight />
+              <span>Справа</span>
+            </SelectItem>
+            <SelectItem value="justify">
+              <AlignJustify />
+              <span>По ширине</span>
+            </SelectItem>
+          </SelectContent>
+        </Select>
         <ToggleGroupItem
           value="bold"
           aria-label="Toggle bold"
@@ -198,6 +257,8 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
               formatHeading(value);
             } else if (value === "code") {
               formatCode();
+            } else if (value === "quote") {
+              formatQuote();
             }
           }}
         >
@@ -221,9 +282,21 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
               <Heading3 />
               <span>Заголовок 3</span>
             </SelectItem>
+            <SelectItem value="ol">
+              <ListOrdered />
+              <span>Нумерованный список</span>
+            </SelectItem>
+            <SelectItem value="ul">
+              <List />
+              <span>Маркированный список</span>
+            </SelectItem>
             <SelectItem value="code">
               <Code />
               <span>Код</span>
+            </SelectItem>
+            <SelectItem value="quote">
+              <TextQuote />
+              <span>Цитата</span>
             </SelectItem>
           </SelectContent>
         </Select>

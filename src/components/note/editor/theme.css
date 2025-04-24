@@ -8,7 +8,7 @@
 
 .paragraph {
   position: relative;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .heading-h1 {
@@ -16,7 +16,7 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .heading-h2 {
@@ -32,16 +32,19 @@
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.2;
+  margin-bottom: 0.5rem;
 }
 
 .list-ol {
   list-style-type: decimal;
   padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .list-ul {
   list-style-type: disc;
   padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
 }
 
 .text-bold {
@@ -83,24 +86,20 @@
 .code:before {
   content: attr(data-gutter);
   position: absolute;
-  background-color: #151515;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
   left: 0;
   top: 0;
-  padding: 8px;
-  color: var(--muted-foreground);
+  padding-top: 8px;
   white-space: pre-wrap;
   text-align: right;
   min-width: 25px;
 }
-.code:after {
-  content: attr(data-highlight-language);
-  top: 0;
-  right: 3px;
-  padding: 3px;
-  font-size: 10px;
-  text-transform: uppercase;
-  position: absolute;
-  color: rgba(0, 0, 0, 0.5);
+
+.quote {
+  margin: 0;
+  margin-bottom: 0.5rem;
+  margin-left: 20px;
+  border-left-color: var(--color-border);
+  border-left-width: 4px;
+  border-left-style: solid;
+  padding-left: 16px;
 }
