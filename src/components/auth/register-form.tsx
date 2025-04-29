@@ -48,7 +48,7 @@ export function RegisterForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const response = await fetch(
-      "http://103.249.132.70:9001/api/auth/register",
+      "https://103.249.132.70:8443/api/auth/register",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

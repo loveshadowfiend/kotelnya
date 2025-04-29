@@ -3,7 +3,7 @@
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 
-const secretKey = "secret";
+const secretKey = process.env.SECRET_KEY;
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function setAuthCookie(token: string) {

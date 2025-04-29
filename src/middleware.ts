@@ -26,7 +26,7 @@ export async function middleware(request: NextRequest) {
   }
 
   try {
-    const secretKey = "secret";
+    const secretKey = process.env.SECRET_KEY;
     const encodedKey = new TextEncoder().encode(secretKey);
 
     await jwtVerify(token, encodedKey, {

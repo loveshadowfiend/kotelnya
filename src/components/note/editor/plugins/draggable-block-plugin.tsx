@@ -67,8 +67,6 @@ export default function DraggableBlockPlugin({
     });
   }
 
-  console.log(anchorElem.getBoundingClientRect());
-
   if (!isDesktop) {
     return <></>;
   }

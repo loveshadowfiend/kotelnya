@@ -42,8 +42,6 @@ export async function SidebarUser() {
     return data;
   }
 
-  console.log(user);
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>

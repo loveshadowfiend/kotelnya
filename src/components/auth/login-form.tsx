@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { setAuthCookie } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   email: z
@@ -31,6 +32,7 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,7 +43,9 @@ export function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const response = await fetch("http://103.249.132.70:9001/api/auth/login", {
+    setIsLoading(true);
+
+    const response = await fetch("https://103.249.132.70:8443/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
@@ -53,9 +57,13 @@ export function LoginForm() {
       await setAuthCookie(data.token);
 
       router.push("/");
+
+      return;
     } else {
       form.setError("password", { message: data.message ?? "Ошибка входа" });
     }
+
+    setIsLoading(false);
   }
 
   return (
@@ -86,7 +94,8 @@ export function LoginForm() {
           )}
         />
         <Button className="w-full" type="submit">
-          войти
+          {!isLoading && <span>войти</span>}
+          {isLoading && <Loader2 className="animate-spin" />}
         </Button>
       </form>
     </Form>

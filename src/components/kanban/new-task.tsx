@@ -128,7 +128,6 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
       variant="ghost"
       onClick={() => {
         kanbanComponentsStore.addNewTaskActiveColumn = column.id;
-        console.log(column.id);
       }}
     >
       <Plus />
