@@ -58,7 +58,7 @@ export function Editor() {
       <RichTextPlugin
         contentEditable={
           <ContentEditable
-            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:pt-32 lg:px-40 relative"
+            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
             aria-placeholder={"Введите текст..."}
             placeholder={
               <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">

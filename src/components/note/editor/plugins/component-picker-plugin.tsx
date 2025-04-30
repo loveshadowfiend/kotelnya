@@ -264,7 +264,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
         ) =>
           anchorElementRef.current && options.length
             ? ReactDOM.createPortal(
-                <div className="absolute text-sm z-1000 text-muted-foreground rounded-lg border p-1">
+                <div className="absolute text-sm z-1000 text-muted-foreground rounded-lg border p-1 bg-background">
                   <ul>
                     {options.map((option, i: number) => (
                       <ComponentPickerMenuItem

@@ -68,7 +68,10 @@ export function LoginForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-3 w-[250px]"
+      >
         <FormField
           control={form.control}
           name="email"
@@ -93,7 +96,7 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit">
+        <Button className="w-full" type="submit" disabled={isLoading}>
           {!isLoading && <span>войти</span>}
           {isLoading && <Loader2 className="animate-spin" />}
         </Button>

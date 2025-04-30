@@ -14,6 +14,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { setAuthCookie } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   username: z
@@ -36,6 +38,9 @@ const formSchema = z.object({
 });
 
 export function RegisterForm() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -47,6 +52,8 @@ export function RegisterForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+
     const response = await fetch(
       "https://103.249.132.70:8443/api/auth/register",
       {
@@ -56,18 +63,25 @@ export function RegisterForm() {
       }
     );
 
-    if (response.ok) {
-      const data = await response.json();
+    const data = await response.json();
 
+    if (response.ok) {
       await setAuthCookie(data.token);
 
       router.push("/");
+    } else {
+      setErrorMessage(data.message ?? "Ошибка регистрации");
     }
+
+    setIsLoading(false);
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-3 w-[250px]"
+      >
         <FormField
           control={form.control}
           name="username"
@@ -104,9 +118,11 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <Button className="w-full" type="submit">
-          зарегистрироваться
+        <Button className="w-full" type="submit" disabled={isLoading}>
+          {!isLoading && <span>зарегистрироваться</span>}
+          {isLoading && <Loader2 className="animate-spin" />}
         </Button>
+        {errorMessage && <FormMessage>{errorMessage}</FormMessage>}
       </form>
     </Form>
   );
