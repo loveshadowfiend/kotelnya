@@ -1,8 +1,9 @@
+"use client";
+
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 import {
   DropdownMenu,
@@ -11,10 +12,59 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AddProject } from "./add-project";
+import { getAuthToken, verifyAuth } from "@/lib/auth";
+import { Project } from "@/types";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function SidebarProjectSwitcher() {
+  const [data, setData] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      setLoading(true);
+      const payload = await verifyAuth();
+      const token = await getAuthToken();
+
+      if (payload === null) {
+        return;
+      }
+
+      const userId = payload.id;
+      const response = await fetch(
+        `https://103.249.132.70:8443/api/users/${userId}/projects`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const json = await response.json();
+
+      if (response.ok) {
+        setData(json);
+      } else {
+        setError(json.message ?? "Ошибка при получении проектов");
+      }
+
+      setLoading(false);
+    };
+
+    fetchProjects();
+  }, []);
+
+  if (loading) {
+    return <Skeleton className="w-[239px] h-[48px]" />;
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -27,7 +77,9 @@ export function SidebarProjectSwitcher() {
               <div className="flex items-center gap-2">
                 <Avatar className="rounded-lg">
                   <AvatarImage src="https://i.pinimg.com/474x/8e/71/23/8e7123bec0b1105340b311d51a3ef03d.jpg" />
-                  <AvatarFallback className="rounded-lg">PR</AvatarFallback>
+                  <AvatarFallback className="rounded-lg text-sm">
+                    PR
+                  </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <p className="font-medium">slime momonga</p>
@@ -41,7 +93,8 @@ export function SidebarProjectSwitcher() {
           </DropdownMenuTrigger>
           <DropdownMenuContent className="relative w-60" align="center">
             <DropdownMenuLabel>Проекты</DropdownMenuLabel>
-            <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
+            <DropdownMenuSeparator />
+            {/* <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
               <Avatar className="rounded-lg">
                 <AvatarImage src="https://i.pinimg.com/474x/8e/71/23/8e7123bec0b1105340b311d51a3ef03d.jpg" />
                 <AvatarFallback />
@@ -52,16 +105,38 @@ export function SidebarProjectSwitcher() {
                   В процессе
                 </p>
               </div>
-            </div>
-            <DropdownMenuSeparator />
-            <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
-              <Avatar className="rounded-lg">
-                <AvatarFallback className="rounded-lg">+</AvatarFallback>
-              </Avatar>
-              <span className="text-sm text-muted-foreground font-medium">
-                Добавить проект
-              </span>
-            </div>
+            </div> */}
+            {data.map((project: Project) => {
+              return (
+                <div
+                  key={project._id}
+                  className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
+                >
+                  <Avatar className="rounded-lg">
+                    <AvatarImage src="" />
+                    <AvatarFallback className="rounded-lg">
+                      {project.title.substring(0, 2)}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <p className="text-sm">{project.title}</p>
+                    <p className="text-sm text-muted-foreground overflow-hidden truncate">
+                      {project.status}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+            <AddProject>
+              <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
+                <Avatar className="rounded-lg">
+                  <AvatarFallback className="rounded-lg">+</AvatarFallback>
+                </Avatar>
+                <span className="text-sm text-muted-foreground font-medium">
+                  Добавить проект
+                </span>
+              </div>
+            </AddProject>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

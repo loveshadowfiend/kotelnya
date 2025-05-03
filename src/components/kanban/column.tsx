@@ -9,7 +9,7 @@ import { Badge } from "../ui/badge";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { useSnapshot } from "valtio";
 import { KanbanRenameColumn } from "./rename-column";
-import { GripVertical } from "lucide-react";
+import { Ellipsis, GripVertical } from "lucide-react";
 
 interface KanbanColumnProps {
   column: {
@@ -40,7 +40,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
               {...provided.dragHandleProps}
               className="flex flex-row items-center justify-between cursor-grab pt-6"
             >
-              <CardTitle className="text-lg cursor-pointer">
+              <CardTitle className="text-lg cursor-pointer flex items-center gap-2">
                 {kanbanComponentsSnapshot.renamingColumn !== column.id && (
                   <Badge
                     className="text-sm rounded-full"
@@ -54,9 +54,12 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                 {kanbanComponentsSnapshot.renamingColumn === column.id && (
                   <KanbanRenameColumn columnId={column.id} />
                 )}
+                {/* {kanbanComponentsSnapshot.renamingColumn !== column.id && (
+                  <GripVertical className="h-5 w-5" />
+                )} */}
               </CardTitle>
               {kanbanComponentsSnapshot.renamingColumn !== column.id && (
-                <GripVertical className="text-muted-foreground" />
+                <Ellipsis className="w-5 h-5 cursor-pointer" />
               )}
             </CardHeader>
             <Droppable droppableId={column.id} type="task">

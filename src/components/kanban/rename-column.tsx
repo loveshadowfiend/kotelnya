@@ -67,7 +67,7 @@ export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
 
   return (
     <Form {...form}>
-      <form className="flex justify-between w-full">
+      <form className="flex justify-between w-full gap-2">
         <FormField
           control={form.control}
           name="title"
@@ -75,7 +75,7 @@ export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
             <FormItem>
               <FormControl>
                 <Input
-                  className="rounded-full"
+                  className="rounded-full w-full font-normal h-[26px] mb-0"
                   {...field}
                   type="text"
                   ref={ref}
@@ -86,6 +86,7 @@ export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
           )}
         />
         <Button
+          className="h-[26px] w-[26px]"
           type="submit"
           variant="ghost"
           onClick={(e) => {

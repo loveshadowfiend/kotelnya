@@ -33,6 +33,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -60,7 +61,7 @@ export function LoginForm() {
 
       return;
     } else {
-      form.setError("password", { message: data.message ?? "Ошибка входа" });
+      setError(data.message ?? "Ошибка при входе");
     }
 
     setIsLoading(false);
@@ -78,7 +79,7 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="email" {...field} />
+                <Input placeholder="email / имя пользователя" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -100,6 +101,7 @@ export function LoginForm() {
           {!isLoading && <span>войти</span>}
           {isLoading && <Loader2 className="animate-spin" />}
         </Button>
+        {error && <FormMessage className="text-center">{error}</FormMessage>}
       </form>
     </Form>
   );

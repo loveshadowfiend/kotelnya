@@ -42,3 +42,13 @@ export type User = {
   updatedAt: string;
   __v: number;
 };
+
+export type Project = {
+  _id: string;
+  title: string;
+  status: string;
+  users: User[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
