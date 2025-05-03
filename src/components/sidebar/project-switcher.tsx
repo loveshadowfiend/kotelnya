@@ -18,7 +18,7 @@ import { AddProject } from "./add-project";
 import { getAuthToken, verifyAuth } from "@/lib/auth";
 import { Project } from "@/types";
 import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { CurrentProject } from "./current-project";
 
 export function SidebarProjectSwitcher() {
   const [data, setData] = useState<Project[]>([]);
@@ -61,10 +61,6 @@ export function SidebarProjectSwitcher() {
     fetchProjects();
   }, []);
 
-  if (loading) {
-    return <Skeleton className="w-[239px] h-[48px]" />;
-  }
-
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -74,69 +70,52 @@ export function SidebarProjectSwitcher() {
               className="flex justify-between max-w-full"
               size="lg"
             >
-              <div className="flex items-center gap-2">
-                <Avatar className="rounded-lg">
-                  <AvatarImage src="https://i.pinimg.com/474x/8e/71/23/8e7123bec0b1105340b311d51a3ef03d.jpg" />
-                  <AvatarFallback className="rounded-lg text-sm">
-                    PR
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <p className="font-medium">slime momonga</p>
-                  <p className="text-muted-foreground overflow-hidden truncate">
-                    В процессе
-                  </p>
-                </div>
-              </div>
+              <CurrentProject />
               <ChevronsUpDown />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="relative w-60" align="center">
             <DropdownMenuLabel>Проекты</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
-              <Avatar className="rounded-lg">
-                <AvatarImage src="https://i.pinimg.com/474x/8e/71/23/8e7123bec0b1105340b311d51a3ef03d.jpg" />
-                <AvatarFallback />
-              </Avatar>
-              <div className="flex flex-col">
-                <p className="text-sm">slime momonga</p>
-                <p className="text-sm text-muted-foreground overflow-hidden truncate">
-                  В процессе
-                </p>
+            {loading && (
+              <div className="flex items-center justify-center overflow-hidden py-3">
+                <Loader2 className="animate-spin" />
               </div>
-            </div> */}
-            {data.map((project: Project) => {
-              return (
-                <div
-                  key={project._id}
-                  className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
-                >
-                  <Avatar className="rounded-lg">
-                    <AvatarImage src="" />
-                    <AvatarFallback className="rounded-lg">
-                      {project.title.substring(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <p className="text-sm">{project.title}</p>
-                    <p className="text-sm text-muted-foreground overflow-hidden truncate">
-                      {project.status}
-                    </p>
+            )}
+            {!loading &&
+              data.map((project: Project) => {
+                return (
+                  <div
+                    key={project._id}
+                    className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
+                  >
+                    <Avatar className="rounded-lg">
+                      <AvatarImage src="" />
+                      <AvatarFallback className="rounded-lg">
+                        {project.title.substring(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col">
+                      <p className="text-sm">{project.title}</p>
+                      <p className="text-sm text-muted-foreground overflow-hidden truncate">
+                        {project.status}
+                      </p>
+                    </div>
                   </div>
+                );
+              })}
+            {!loading && (
+              <AddProject>
+                <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
+                  <Avatar className="rounded-lg">
+                    <AvatarFallback className="rounded-lg">+</AvatarFallback>
+                  </Avatar>
+                  <span className="text-sm text-muted-foreground font-medium">
+                    Добавить проект
+                  </span>
                 </div>
-              );
-            })}
-            <AddProject>
-              <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
-                <Avatar className="rounded-lg">
-                  <AvatarFallback className="rounded-lg">+</AvatarFallback>
-                </Avatar>
-                <span className="text-sm text-muted-foreground font-medium">
-                  Добавить проект
-                </span>
-              </div>
-            </AddProject>
+              </AddProject>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

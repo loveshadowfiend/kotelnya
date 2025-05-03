@@ -52,3 +52,15 @@ export type Project = {
   updatedAt: string;
   __v: number;
 };
+
+export type Board = {
+  _id: string;
+};
+
+export type Column = {
+  _id: string;
+};
+
+export type Task = {
+  _id: string;
+};

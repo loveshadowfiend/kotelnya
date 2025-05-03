@@ -1,4 +1,4 @@
-import { Cat, Kanban, BookHeart, Settings, Archive } from "lucide-react";
+import { Cat, Kanban, BookHeart, Settings, Archive, Plus } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +22,8 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import { SidebarUser } from "./user";
+import { AddBoard } from "./add-board";
+import { SidebarBoards } from "./boards";
 
 export function AppSidebar() {
   return (
@@ -77,9 +79,11 @@ export function AppSidebar() {
                       <SidebarMenuSubItem className="text-muted-foreground">
                         <SidebarMenuButton asChild>
                           <Link href="/kanban-board">
-                            <span>Моя доска</span>
+                            <span>test board</span>
                           </Link>
                         </SidebarMenuButton>
+                        <SidebarBoards />
+                        <AddBoard />
                       </SidebarMenuSubItem>
                     </SidebarMenuSub>
                   </CollapsibleContent>
@@ -98,7 +102,7 @@ export function AppSidebar() {
                       <SidebarMenuSubItem className="text-muted-foreground">
                         <SidebarMenuButton asChild>
                           <Link href="/note">
-                            <span>Моя заметка</span>
+                            <span>test note</span>
                           </Link>
                         </SidebarMenuButton>
                       </SidebarMenuSubItem>

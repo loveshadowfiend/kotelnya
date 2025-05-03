@@ -62,7 +62,6 @@ export function RegisterForm() {
         body: JSON.stringify(values),
       }
     );
-
     const data = await response.json();
 
     if (response.ok) {
