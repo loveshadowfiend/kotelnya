@@ -16,6 +16,8 @@ import { setAuthCookie } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { registerUser } from "@/api/auth/route";
+import Link from "next/link";
 
 const formSchema = z.object({
   username: z
@@ -54,22 +56,14 @@ export function RegisterForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const response = await fetch(
-      "http://103.249.132.70:9001/api/auth/register",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(values),
-      }
-    );
-    const data = await response.json();
+    const userResponse = await registerUser(JSON.stringify(values));
+    const userData = await userResponse.json();
 
-    if (response.ok) {
-      await setAuthCookie(data.token);
-
+    if (userResponse.ok) {
+      await setAuthCookie(userData.token);
       router.push("/");
     } else {
-      setErrorMessage(data.message ?? "Ошибка регистрации");
+      setErrorMessage(userData.message ?? "Ошибка регистрации");
     }
 
     setIsLoading(false);

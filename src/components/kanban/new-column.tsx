@@ -10,12 +10,13 @@ import { useClickOutside } from "@/hooks/use-outside-click";
 import { addNewColumn } from "@/proxies/kanban-board-store";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Loader2, Plus, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useSnapshot } from "valtio";
 import { z } from "zod";
 import { Textarea } from "../ui/textarea";
+import { createColumn } from "@/api/columns/route";
 
 const formSchema = z.object({
   title: z
@@ -27,6 +28,7 @@ const formSchema = z.object({
 });
 
 export function KanbanNewColumn() {
+  const [isLoading, setIsLoading] = useState(false);
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
   const ref = useRef<HTMLFormElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -36,14 +38,29 @@ export function KanbanNewColumn() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    addNewColumn(values.title);
-    form.reset();
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+
+    const responseColumn = await createColumn(
+      kanbanComponentsSnapshop.boardId,
+      values.title
+    );
+
+    if (responseColumn.ok) {
+      addNewColumn(values.title);
+      form.reset();
+      kanbanComponentsStore.isAddingCategory = false;
+    } else {
+      console.log("анлаки");
+    }
+
     // form.setFocus("title");
-    kanbanComponentsStore.isAddingCategory = false;
-  };
+    setIsLoading(false);
+  }
 
   useClickOutside(ref as React.RefObject<HTMLElement>, () => {
+    if (isLoading) return;
+
     kanbanComponentsStore.isAddingCategory = false;
 
     if (!form.getValues().title.length) return;
@@ -104,13 +121,17 @@ export function KanbanNewColumn() {
             )}
           />
           <div className="flex gap-1">
-            <Button type="submit">Сохранить</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin" />}
+              {!isLoading && "Добавить"}
+            </Button>
             <Button
               variant="destructive"
               onClick={() => {
                 kanbanComponentsStore.isAddingCategory = false;
                 form.reset();
               }}
+              disabled={isLoading}
             >
               <X />
             </Button>

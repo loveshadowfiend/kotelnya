@@ -5,16 +5,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
 import { Dispatch, SetStateAction } from "react";
 import {
   getAllColumnTitlesAndIds,
@@ -26,7 +16,6 @@ import { Textarea } from "../ui/textarea";
 import { BadgeDropdown } from "../badge-dropdown";
 import { AssigneeSelect } from "./assignee-select";
 import { DatePicker } from "./date-picker";
-import { useMediaQuery } from "react-responsive";
 
 interface KanbanCardProps {
   taskId: string;

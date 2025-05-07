@@ -27,6 +27,7 @@ export type KanbanBoardState = {
 };
 
 export type KanbanComponentsState = {
+  boardId: string;
   isAddingTask: boolean;
   isAddingCategory: boolean;
   addNewTaskActiveColumn: string;

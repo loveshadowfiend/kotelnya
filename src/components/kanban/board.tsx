@@ -5,10 +5,11 @@ import { KanbanColumn } from "@/components/kanban/column";
 import { KanbanNewColumn } from "./new-column";
 import { kanbanBoardStore } from "@/proxies/kanban-board-store";
 import { useSnapshot } from "valtio";
-import { getAuthToken } from "@/lib/auth";
-import { Board, BoardModified } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
+import { getBoard } from "@/api/boards/route";
+import { modifyBoardObject } from "@/lib/utils";
+import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 
 interface KanbanBoardProps {
   boardId: string;
@@ -16,55 +17,6 @@ interface KanbanBoardProps {
 
 export function KanbanBoard({ boardId }: KanbanBoardProps) {
   const boardData = useSnapshot(kanbanBoardStore);
-
-  const fetchBoard = async () => {
-    const token = await getAuthToken();
-    const response = await fetch(
-      `http://103.249.132.70:9001/api/boards/${boardId}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    const boardData: Board = await response.json();
-
-    if (response.ok) {
-      const board: BoardModified = {
-        ...boardData,
-        tasks: Object.fromEntries(
-          boardData.tasks.map((task) => [
-            task._id,
-            {
-              _id: task._id,
-              title: task.title,
-              assignee: task.assignee,
-              createdAt: task.createdAt,
-              updatedAt: task.updatedAt,
-              __v: task.__v,
-            },
-          ])
-        ),
-        columns: Object.fromEntries(
-          boardData.columns.map((column) => [
-            column._id,
-            {
-              _id: column._id,
-              title: column.title,
-              tasks: column.tasks,
-              createdAt: column.createdAt,
-              updatedAt: column.updatedAt,
-              __v: column.__v,
-            },
-          ])
-        ),
-      };
-      return board;
-    } else {
-      return null;
-    }
-  };
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
@@ -128,10 +80,14 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
   };
 
   useEffect(() => {
+    kanbanComponentsStore.boardId = boardId;
+
     const fetchAndSetBoard = async () => {
-      const board = await fetchBoard();
-      if (board) {
-        Object.assign(kanbanBoardStore, board);
+      const boardResponse = await getBoard(boardId);
+      if (boardResponse.ok) {
+        const boardData = await boardResponse.json();
+
+        Object.assign(kanbanBoardStore, modifyBoardObject(boardData));
       }
     };
     fetchAndSetBoard();
@@ -175,8 +131,8 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
             {...provided.droppableProps}
             ref={provided.innerRef}
             className="
-              inline-flex gap-3 overflow-hidden px-[var(--global-px)] pt-20
-              lg:px-[var(--global-px-lg)] lg:pt-24
+                inline-flex gap-3 overflow-hidden px-[var(--global-px)] pt-20
+                lg:px-[var(--global-px-lg)] lg:pt-24
               "
           >
             {boardData.columnOrder.map((columnId, index) => {
