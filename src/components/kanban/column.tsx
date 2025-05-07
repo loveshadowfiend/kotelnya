@@ -4,20 +4,16 @@ import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { KanbanItem } from "@/components/kanban/item";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KanbanNewTask } from "./new-task";
-import { KanbanTask } from "@/types";
+import { Column, Task } from "@/types";
 import { Badge } from "../ui/badge";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { useSnapshot } from "valtio";
 import { KanbanRenameColumn } from "./rename-column";
-import { Ellipsis, GripVertical } from "lucide-react";
+import { Ellipsis } from "lucide-react";
 
 interface KanbanColumnProps {
-  column: {
-    id: string;
-    title: string;
-    taskIds: readonly string[];
-  };
-  tasks: KanbanTask[];
+  column: Column;
+  tasks: Task[];
   index: number;
 }
 
@@ -25,7 +21,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
   const kanbanComponentsSnapshot = useSnapshot(kanbanComponentsStore);
 
   return (
-    <Draggable draggableId={column.id} index={index}>
+    <Draggable draggableId={column._id} index={index}>
       {(provided) => (
         <div
           {...provided.draggableProps}
@@ -41,28 +37,28 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
               className="flex flex-row items-center justify-between cursor-grab pt-6"
             >
               <CardTitle className="text-lg cursor-pointer flex items-center gap-2">
-                {kanbanComponentsSnapshot.renamingColumn !== column.id && (
+                {kanbanComponentsSnapshot.renamingColumn !== column._id && (
                   <Badge
                     className="text-sm rounded-full"
                     onClick={() => {
-                      kanbanComponentsStore.renamingColumn = column.id;
+                      kanbanComponentsStore.renamingColumn = column._id;
                     }}
                   >
                     {column.title}
                   </Badge>
                 )}
-                {kanbanComponentsSnapshot.renamingColumn === column.id && (
-                  <KanbanRenameColumn columnId={column.id} />
+                {kanbanComponentsSnapshot.renamingColumn === column._id && (
+                  <KanbanRenameColumn columnId={column._id} />
                 )}
                 {/* {kanbanComponentsSnapshot.renamingColumn !== column.id && (
                   <GripVertical className="h-5 w-5" />
                 )} */}
               </CardTitle>
-              {kanbanComponentsSnapshot.renamingColumn !== column.id && (
+              {kanbanComponentsSnapshot.renamingColumn !== column._id && (
                 <Ellipsis className="w-5 h-5 cursor-pointer" />
               )}
             </CardHeader>
-            <Droppable droppableId={column.id} type="task">
+            <Droppable droppableId={column._id} type="task">
               {(provided) => (
                 <CardContent
                   {...provided.droppableProps}
@@ -71,7 +67,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                 >
                   {tasks.map((task, index) => (
                     <KanbanItem
-                      key={task.id}
+                      key={task._id}
                       task={task}
                       column={column}
                       index={index}

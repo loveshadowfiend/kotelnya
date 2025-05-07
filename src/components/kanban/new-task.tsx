@@ -9,7 +9,7 @@ import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { addNewTask } from "@/proxies/kanban-board-store";
-import { KanbanColumn } from "@/types";
+import { Column } from "@/types";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,7 +28,7 @@ const formSchema = z.object({
 });
 
 interface KanbanNewTaskProps {
-  column: KanbanColumn;
+  column: Column;
 }
 
 export function KanbanNewTask({ column }: KanbanNewTaskProps) {
@@ -42,7 +42,7 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    addNewTask(column.id, values.title);
+    addNewTask(column._id, values.title);
     form.reset();
     // form.setFocus("title");
     kanbanComponentsStore.addNewTaskActiveColumn = "";
@@ -71,7 +71,7 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
     };
   }, []);
 
-  if (kanbanComponentsSnapshop.addNewTaskActiveColumn == column.id) {
+  if (kanbanComponentsSnapshop.addNewTaskActiveColumn == column._id) {
     return (
       <Form {...form}>
         <form
@@ -127,7 +127,7 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
       className="w-full"
       variant="ghost"
       onClick={() => {
-        kanbanComponentsStore.addNewTaskActiveColumn = column.id;
+        kanbanComponentsStore.addNewTaskActiveColumn = column._id;
       }}
     >
       <Plus />

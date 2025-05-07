@@ -10,12 +10,12 @@ import {
 } from "@/components/ui/card";
 import { useState } from "react";
 import { KanbanCard } from "./card";
-import { KanbanColumn, KanbanTask } from "@/types";
+import { Column, Task } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface KanbanItemProps {
-  task: KanbanTask;
-  column: KanbanColumn;
+  task: Task;
+  column: Column;
   index: number;
 }
 
@@ -24,7 +24,7 @@ export function KanbanItem({ task, column, index }: KanbanItemProps) {
 
   return (
     <>
-      <Draggable draggableId={task.id} index={index}>
+      <Draggable draggableId={task._id} index={index}>
         {(provided, snapshot) => (
           <Card
             ref={provided.innerRef}
@@ -53,8 +53,8 @@ export function KanbanItem({ task, column, index }: KanbanItemProps) {
         )}
       </Draggable>
       <KanbanCard
-        taskId={task.id}
-        columnId={column.id}
+        taskId={task._id}
+        columnId={column._id}
         isDialogOpen={isDialogOpen}
         setIsDialogOpen={setIsDialogOpen}
       />

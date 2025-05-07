@@ -1,26 +1,27 @@
 import { kanbanSample } from "@/constants";
-import { KanbanBoardState } from "@/types";
+import { BoardModified, Column, KanbanBoardState, Task } from "@/types";
 import { proxy } from "valtio";
 import { nanoid } from "nanoid";
 
 export const addNewTask = (columnId: string, title: string) => {
   const newTaskId = nanoid();
-  const newTask = {
-    id: newTaskId,
+  const newTask: Task = {
+    _id: newTaskId,
     title,
-    description: "",
     assignee: "",
-    dueDate: "",
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    __v: 0,
   };
 
   const column = kanbanBoardStore.columns[columnId];
-  const newTaskIds = Array.from(column.taskIds);
+  const newTaskIds = Array.from(column.tasks);
   newTaskIds.push(newTaskId);
 
   kanbanBoardStore.tasks[newTaskId] = newTask;
   kanbanBoardStore.columns[columnId] = {
     ...column,
-    taskIds: newTaskIds,
+    tasks: newTaskIds,
   };
 };
 
@@ -28,10 +29,13 @@ export const addNewColumn = (newColumnTitle: string) => {
   if (!newColumnTitle.trim()) return;
 
   const newColumnId = nanoid();
-  const newColumn = {
-    id: newColumnId,
+  const newColumn: Column = {
+    _id: newColumnId,
     title: newColumnTitle,
-    taskIds: [],
+    tasks: [],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    __v: 0,
   };
 
   kanbanBoardStore.columns[newColumnId] = newColumn;
@@ -40,20 +44,20 @@ export const addNewColumn = (newColumnTitle: string) => {
 
 export const deleteTask = (columnId: string, taskId: string) => {
   const column = kanbanBoardStore.columns[columnId];
-  const newTaskIds = column.taskIds.filter((id) => id !== taskId);
+  const newTaskIds = column.tasks.filter((id) => id !== taskId);
 
   const newTasks = { ...kanbanBoardStore.tasks };
   delete newTasks[taskId];
 
   kanbanBoardStore.tasks = newTasks;
-  kanbanBoardStore.columns[columnId].taskIds = newTaskIds;
+  kanbanBoardStore.columns[columnId].tasks = newTaskIds;
 };
 
 export const deleteColumn = (columnId: string) => {
   const column = kanbanBoardStore.columns[columnId];
   const newTasks = { ...kanbanBoardStore.tasks };
-  column.taskIds.forEach((taskId) => {
-    delete newTasks[taskId];
+  column.tasks.forEach((tasks) => {
+    delete newTasks[tasks];
   });
 
   const newColumns = { ...kanbanBoardStore.columns };
@@ -79,19 +83,19 @@ export const moveTask = (
   const sourceColumn = kanbanBoardStore.columns[sourceColumnId];
   const destinationColumn = kanbanBoardStore.columns[destinationColumnId];
 
-  const newSourceTaskIds = sourceColumn.taskIds.filter((id) => id !== taskId);
+  const newSourceTaskIds = sourceColumn.tasks.filter((id) => id !== taskId);
 
-  const newDestinationTaskIds = Array.from(destinationColumn.taskIds);
+  const newDestinationTaskIds = Array.from(destinationColumn.tasks);
   newDestinationTaskIds.splice(destinationIndex, 0, taskId);
 
   kanbanBoardStore.columns[sourceColumnId] = {
     ...sourceColumn,
-    taskIds: newSourceTaskIds,
+    tasks: newSourceTaskIds,
   };
 
   kanbanBoardStore.columns[destinationColumnId] = {
     ...destinationColumn,
-    taskIds: newDestinationTaskIds,
+    tasks: newDestinationTaskIds,
   };
 };
 
@@ -102,4 +106,4 @@ export const getAllColumnTitlesAndIds = () => {
   }));
 };
 
-export const kanbanBoardStore = proxy<KanbanBoardState>(kanbanSample);
+export const kanbanBoardStore = proxy<BoardModified>();

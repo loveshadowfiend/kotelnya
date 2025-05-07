@@ -37,7 +37,7 @@ export function SidebarProjectSwitcher() {
 
       const userId = payload.id;
       const response = await fetch(
-        `https://103.249.132.70:8443/api/users/${userId}/projects`,
+        `http://103.249.132.70:9001/api/users/${userId}/projects`,
         {
           method: "GET",
           headers: {

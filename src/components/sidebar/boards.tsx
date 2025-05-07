@@ -7,7 +7,7 @@ export async function SidebarBoards() {
   const fetchBoards = async () => {
     const token = await getAuthToken();
     const response = await fetch(
-      "https://103.249.132.70:8443/api/projects/6814eb6af3982bf9826388aa/boards",
+      "http://103.249.132.70:9001/api/projects/6814eb6af3982bf9826388aa/boards",
       {
         method: "GET",
         headers: {

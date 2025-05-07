@@ -46,7 +46,7 @@ export function LoginForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const response = await fetch("https://103.249.132.70:8443/api/auth/login", {
+    const response = await fetch("http://103.249.132.70:9001/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),

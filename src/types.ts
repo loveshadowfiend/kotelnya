@@ -13,7 +13,7 @@ export type KanbanTasks = {
 export type KanbanColumn = {
   id: string;
   title: string;
-  taskIds: readonly string[];
+  tasks: readonly string[];
 };
 
 export type KanbanColumns = {
@@ -55,12 +55,42 @@ export type Project = {
 
 export type Board = {
   _id: string;
+  tasks: Task[];
+  columns: Column[];
+  columnOrder: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+export type BoardModified = {
+  _id: string;
+  tasks: {
+    [key: string]: Task;
+  };
+  columns: {
+    [key: string]: Column;
+  };
+  columnOrder: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 };
 
 export type Column = {
   _id: string;
+  title: string;
+  tasks: string[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 };
 
 export type Task = {
   _id: string;
+  title: string;
+  assignee: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
 };

@@ -36,7 +36,7 @@ export function AddProject({ children }: { children: React.ReactNode }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     const token = await getAuthToken();
-    const response = await fetch("https://103.249.132.70:8443/api/projects", {
+    const response = await fetch("http://103.249.132.70:9001/api/projects", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -47,10 +47,10 @@ export function AddProject({ children }: { children: React.ReactNode }) {
 
     const data = await response.json();
 
-    console.log(await getAuthToken());
+    await getAuthToken();
 
     if (response.ok) {
-      console.log("Проект успешно добавлен", data);
+      "Проект успешно добавлен", data;
     } else {
       console.error("Ошибка при добавлении проекта", data);
     }

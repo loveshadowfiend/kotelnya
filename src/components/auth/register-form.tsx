@@ -55,7 +55,7 @@ export function RegisterForm() {
     setIsLoading(true);
 
     const response = await fetch(
-      "https://103.249.132.70:8443/api/auth/register",
+      "http://103.249.132.70:9001/api/auth/register",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
