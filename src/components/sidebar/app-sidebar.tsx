@@ -14,22 +14,22 @@ import {
   SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { SidebarProjectSwitcher } from "./project-switcher";
+import { NavProjectSwitcher } from "./nav-project-switcher";
 import Link from "next/link";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
-import { SidebarUser } from "./user";
+import { NavUser } from "./nav-user";
 import { AddBoard } from "./add-board";
-import { SidebarBoards } from "./boards";
+import { NavBoards } from "./nav-boards";
 
 export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b">
-        <SidebarProjectSwitcher />
+        <NavProjectSwitcher />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -76,15 +76,8 @@ export function AppSidebar() {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      <SidebarMenuSubItem className="text-muted-foreground">
-                        <SidebarMenuButton asChild>
-                          <Link href="/kanban-board">
-                            <span>test board</span>
-                          </Link>
-                        </SidebarMenuButton>
-                        <SidebarBoards />
-                        <AddBoard />
-                      </SidebarMenuSubItem>
+                      <NavBoards />
+                      <AddBoard />
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
@@ -115,7 +108,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarUser />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

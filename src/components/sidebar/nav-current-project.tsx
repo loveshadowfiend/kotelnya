@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
-export function CurrentProject() {
+export function NavCurrentProject() {
   return (
     <div className="flex items-center gap-2">
       <Avatar className="rounded-lg">

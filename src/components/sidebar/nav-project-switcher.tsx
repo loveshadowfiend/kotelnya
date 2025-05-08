@@ -18,9 +18,9 @@ import { AddProject } from "./add-project";
 import { getAuthToken, verifyAuth } from "@/lib/auth";
 import { Project } from "@/types";
 import { useEffect, useState } from "react";
-import { CurrentProject } from "./current-project";
+import { NavCurrentProject } from "./nav-current-project";
 
-export function SidebarProjectSwitcher() {
+export function NavProjectSwitcher() {
   const [data, setData] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +70,7 @@ export function SidebarProjectSwitcher() {
               className="flex justify-between max-w-full"
               size="lg"
             >
-              <CurrentProject />
+              <NavCurrentProject />
               <ChevronsUpDown />
             </SidebarMenuButton>
           </DropdownMenuTrigger>

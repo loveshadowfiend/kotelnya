@@ -44,16 +44,6 @@ export function AddProject({ children }: { children: React.ReactNode }) {
       },
       body: JSON.stringify(values),
     });
-
-    const data = await response.json();
-
-    await getAuthToken();
-
-    if (response.ok) {
-      "Проект успешно добавлен", data;
-    } else {
-      console.error("Ошибка при добавлении проекта", data);
-    }
   }
 
   return (

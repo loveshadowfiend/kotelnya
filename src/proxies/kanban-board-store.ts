@@ -1,5 +1,4 @@
-import { kanbanSample } from "@/constants";
-import { BoardModified, Column, KanbanBoardState, Task } from "@/types";
+import { BoardModified, Column, Task } from "@/types";
 import { proxy } from "valtio";
 import { nanoid } from "nanoid";
 

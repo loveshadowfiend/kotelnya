@@ -10,6 +10,8 @@ import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { useSnapshot } from "valtio";
 import { KanbanRenameColumn } from "./rename-column";
 import { Ellipsis } from "lucide-react";
+import { ColumnDropdown } from "./column-dropdown";
+import { Button } from "../ui/button";
 
 interface KanbanColumnProps {
   column: Column;
@@ -55,7 +57,14 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                 )} */}
               </CardTitle>
               {kanbanComponentsSnapshot.renamingColumn !== column._id && (
-                <Ellipsis className="w-5 h-5 cursor-pointer" />
+                <ColumnDropdown
+                  columnTitle={column.title}
+                  columnId={column._id}
+                >
+                  <Button variant="ghost">
+                    <Ellipsis className="w-5 h-5 cursor-pointer" />
+                  </Button>
+                </ColumnDropdown>
               )}
             </CardHeader>
             <Droppable droppableId={column._id} type="task">

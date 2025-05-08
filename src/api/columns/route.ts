@@ -16,3 +16,15 @@ export async function createColumn(boardId: string, title: string) {
 
   return response;
 }
+
+export async function deleteColumn(columnId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/columns/${columnId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response;
+}

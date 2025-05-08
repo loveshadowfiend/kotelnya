@@ -2,29 +2,27 @@
 
 import { Loader2, Plus } from "lucide-react";
 import { SidebarMenuButton } from "../ui/sidebar";
-import { getAuthToken } from "@/lib/auth";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { addBoard } from "@/api/boards/route";
+import { useSnapshot } from "valtio";
+import { boardsStore } from "@/proxies/boards-store";
 
 export function AddBoard() {
+  const boardSnapshot = useSnapshot(boardsStore);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   async function onClick() {
     setLoading(true);
 
-    const token = await getAuthToken();
-    const response = await fetch(
-      "http://103.249.132.70:9001/api/projects/6814eb6af3982bf9826388aa/boards",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const data = await response.json();
+    const response = await addBoard("6814eb6af3982bf9826388aa");
 
-    data;
+    if (response.ok) {
+      const data = await response.json();
+      boardsStore.boards.push(data);
+      router.push(`/board/${data._id}`);
+    }
 
     setLoading(false);
   }
@@ -39,7 +37,10 @@ export function AddBoard() {
   }
 
   return (
-    <SidebarMenuButton className="cursor-pointer" onClick={onClick}>
+    <SidebarMenuButton
+      className="text-muted-foreground cursor-pointer"
+      onClick={onClick}
+    >
       <Plus />
       Добавить доску
     </SidebarMenuButton>

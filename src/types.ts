@@ -1,31 +1,3 @@
-export type KanbanTask = {
-  id: string;
-  title: string;
-  description: string;
-  assignee: string;
-  dueDate: string;
-};
-
-export type KanbanTasks = {
-  [id: string]: KanbanTask;
-};
-
-export type KanbanColumn = {
-  id: string;
-  title: string;
-  tasks: readonly string[];
-};
-
-export type KanbanColumns = {
-  [id: string]: KanbanColumn;
-};
-
-export type KanbanBoardState = {
-  tasks: KanbanTasks;
-  columns: KanbanColumns;
-  columnOrder: string[];
-};
-
 export type KanbanComponentsState = {
   boardId: string;
   isAddingTask: boolean;
@@ -39,16 +11,6 @@ export type User = {
   username: string;
   email: string;
   avatarUrl: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
-
-export type Project = {
-  _id: string;
-  title: string;
-  status: string;
-  users: User[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -94,4 +56,38 @@ export type Task = {
   createdAt: string;
   updatedAt: string;
   __v: number;
+};
+
+export type Note = {
+  _id: string;
+  title: string;
+  markdownContent: string;
+  author: User;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+export type Project = {
+  _id: string;
+  title: string;
+  status: string;
+  users: User[];
+  boards: Board[];
+  notes: Note[];
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+export type ProjectsState = {
+  projects: Project[];
+  loading: boolean;
+  error: string | null;
+};
+
+export type BoardsState = {
+  boards: Board[];
+  loading: boolean;
+  error: string | null;
 };

@@ -6,17 +6,9 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { verifyAuth } from "@/lib/auth";
 import { User } from "@/types";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { UserDropdown } from "./user-dropdown";
 
-export async function SidebarUser() {
+export async function NavUser() {
   const user: User = await getUser();
 
   async function getUser() {

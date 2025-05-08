@@ -16,7 +16,7 @@ interface KanbanBoardProps {
 }
 
 export function KanbanBoard({ boardId }: KanbanBoardProps) {
-  const boardData = useSnapshot(kanbanBoardStore);
+  const boardSnapshot = useSnapshot(kanbanBoardStore);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
@@ -32,7 +32,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
 
     // If we're dragging columns
     if (type === "column") {
-      const newColumnOrder = Array.from(boardData.columnOrder);
+      const newColumnOrder = Array.from(boardSnapshot.columnOrder);
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
 
@@ -41,8 +41,8 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
     }
 
     // Source and destination columns
-    const sourceColumn = boardData.columns[source.droppableId];
-    const destColumn = boardData.columns[destination.droppableId];
+    const sourceColumn = boardSnapshot.columns[source.droppableId];
+    const destColumn = boardSnapshot.columns[destination.droppableId];
 
     // If moving within the same column
     if (sourceColumn === destColumn) {
@@ -85,15 +85,18 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
     const fetchAndSetBoard = async () => {
       const boardResponse = await getBoard(boardId);
       if (boardResponse.ok) {
-        const boardData = await boardResponse.json();
+        const boardSnapshot = await boardResponse.json();
 
-        Object.assign(kanbanBoardStore, modifyBoardObject(boardData));
+        Object.assign(kanbanBoardStore, modifyBoardObject(boardSnapshot));
       }
     };
     fetchAndSetBoard();
   }, [boardId]);
 
-  if (Object.keys(boardData).length === 0 && boardData.constructor === Object) {
+  if (
+    Object.keys(boardSnapshot).length === 0 &&
+    boardSnapshot.constructor === Object
+  ) {
     return (
       <div
         className="
@@ -135,10 +138,10 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
                 lg:px-[var(--global-px-lg)] lg:pt-24
               "
           >
-            {boardData.columnOrder.map((columnId, index) => {
-              const column = boardData.columns[columnId];
+            {boardSnapshot.columnOrder.map((columnId, index) => {
+              const column = boardSnapshot.columns[columnId];
               const tasks = column.tasks.map(
-                (taskId) => boardData.tasks[taskId]
+                (taskId) => boardSnapshot.tasks[taskId]
               );
 
               return (
