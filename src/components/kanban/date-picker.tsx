@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { kanbanBoardStore } from "@/proxies/kanban-board-store";
+import { boardStore } from "@/proxies/board-store";
 import { useSnapshot } from "valtio";
 import { useEffect, useState } from "react";
 
@@ -22,7 +22,7 @@ interface DatePicker {
 }
 
 export function DatePicker({ taskId, className }: DatePicker) {
-  const kanbanBoardSnapshot = useSnapshot(kanbanBoardStore);
+  const kanbanBoardSnapshot = useSnapshot(boardStore);
   const [date, setDate] = useState<Date>();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
@@ -35,7 +35,7 @@ export function DatePicker({ taskId, className }: DatePicker) {
   useEffect(() => {
     if (date == undefined) return;
 
-    kanbanBoardStore.tasks[taskId].dueDate = date.toDateString();
+    boardStore.tasks[taskId].dueDate = date.toDateString();
   }, [date]);
 
   return (

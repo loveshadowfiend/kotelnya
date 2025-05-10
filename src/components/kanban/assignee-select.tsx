@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { kanbanBoardStore } from "@/proxies/kanban-board-store";
+import { boardStore } from "@/proxies/board-store";
 import { useSnapshot } from "valtio";
 import { mockUsers } from "@/constants";
 import { cn } from "@/lib/utils";
@@ -16,13 +16,13 @@ interface AssigneeSelectProps {
 }
 
 export function AssigneeSelect({ taskId, className }: AssigneeSelectProps) {
-  const kanbanBoardSnapshot = useSnapshot(kanbanBoardStore);
+  const kanbanBoardSnapshot = useSnapshot(boardStore);
 
   return (
     <Select
       value={kanbanBoardSnapshot.tasks[taskId].assignee}
       onValueChange={(value) => {
-        kanbanBoardStore.tasks[taskId].assignee = value;
+        boardStore.tasks[taskId].assignee = value;
       }}
     >
       <SelectTrigger className={cn("w-full", className)}>

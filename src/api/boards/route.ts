@@ -1,5 +1,6 @@
 import { getAuthToken } from "@/lib/auth";
 import { API_URL } from "@/lib/config";
+import { Board } from "@/types";
 
 export async function getBoard(boardId: string) {
   const token = await getAuthToken();
@@ -25,7 +26,7 @@ export async function deleteBoard(boardId: string) {
   return response;
 }
 
-export async function addBoard(projectId: string) {
+export async function addBoard(projectId: string, title: string) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/projects/${projectId}/boards`, {
     method: "POST",
@@ -33,6 +34,21 @@ export async function addBoard(projectId: string) {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ title }),
+  });
+
+  return response;
+}
+
+export async function updateBoard(boardId: string, data: any) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/boards/${boardId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
   });
 
   return response;

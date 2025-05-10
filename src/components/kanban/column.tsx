@@ -3,7 +3,7 @@
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { KanbanItem } from "@/components/kanban/item";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { KanbanNewTask } from "./new-task";
+import { KanbanAddTask } from "./add-task";
 import { Column, Task } from "@/types";
 import { Badge } from "../ui/badge";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
@@ -33,11 +33,8 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
           lg:w-[var(--kanban-column-w-lg)]
           "
         >
-          <Card className="h-full py-0 pb-6">
-            <CardHeader
-              {...provided.dragHandleProps}
-              className="flex flex-row items-center justify-between cursor-grab pt-6"
-            >
+          <Card className="h-full py-0 pb-6" {...provided.dragHandleProps}>
+            <CardHeader className="flex flex-row items-center justify-between cursor-grab pt-6">
               <CardTitle className="text-lg cursor-pointer flex items-center gap-2">
                 {kanbanComponentsSnapshot.renamingColumn !== column._id && (
                   <Badge
@@ -52,9 +49,6 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                 {kanbanComponentsSnapshot.renamingColumn === column._id && (
                   <KanbanRenameColumn columnId={column._id} />
                 )}
-                {/* {kanbanComponentsSnapshot.renamingColumn !== column.id && (
-                  <GripVertical className="h-5 w-5" />
-                )} */}
               </CardTitle>
               {kanbanComponentsSnapshot.renamingColumn !== column._id && (
                 <ColumnDropdown
@@ -83,7 +77,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                     />
                   ))}
                   {provided.placeholder}
-                  <KanbanNewTask column={column} />
+                  <KanbanAddTask column={column} />
                 </CardContent>
               )}
             </Droppable>

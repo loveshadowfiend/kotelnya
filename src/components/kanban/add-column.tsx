@@ -5,18 +5,18 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { Button } from "../ui/button";
-import { Plus, X } from "lucide-react";
-import { Textarea } from "@/components/ui/textarea";
-import { addNewTask } from "@/proxies/kanban-board-store";
-import { Column } from "@/types";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useSnapshot } from "valtio";
-import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { Button } from "@/components/ui/button";
 import { useClickOutside } from "@/hooks/use-outside-click";
-import { useEffect, useRef } from "react";
+import { addNewColumn } from "@/proxies/board-store";
+import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2, Plus, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useSnapshot } from "valtio";
+import { z } from "zod";
+import { Textarea } from "../ui/textarea";
+import { createColumn } from "@/api/columns/route";
 
 const formSchema = z.object({
   title: z
@@ -27,11 +27,8 @@ const formSchema = z.object({
     .max(32, { message: "Название не может быть длиннее 32 символов" }),
 });
 
-interface KanbanNewTaskProps {
-  column: Column;
-}
-
-export function KanbanNewTask({ column }: KanbanNewTaskProps) {
+export function KanbanAddColumn() {
+  const [isLoading, setIsLoading] = useState(false);
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
   const ref = useRef<HTMLFormElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -41,15 +38,30 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    addNewTask(column._id, values.title);
-    form.reset();
-    // form.setFocus("title");
-    kanbanComponentsStore.addNewTaskActiveColumn = "";
-  };
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+
+    const response = await createColumn(
+      kanbanComponentsSnapshop.boardId,
+      values.title
+    );
+
+    if (response.ok) {
+      addNewColumn(values.title);
+      form.reset();
+      // form.setFocus("title");
+      kanbanComponentsStore.isAddingCategory = false;
+    } else {
+      console.log("анлаки");
+    }
+
+    setIsLoading(false);
+  }
 
   useClickOutside(ref as React.RefObject<HTMLElement>, () => {
-    kanbanComponentsStore.addNewTaskActiveColumn = "";
+    if (isLoading) return;
+
+    kanbanComponentsStore.isAddingCategory = false;
 
     if (!form.getValues().title.length) return;
 
@@ -60,7 +72,7 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        kanbanComponentsStore.addNewTaskActiveColumn = "";
+        kanbanComponentsStore.isAddingCategory = false;
         form.reset();
       }
     };
@@ -71,12 +83,12 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
     };
   }, []);
 
-  if (kanbanComponentsSnapshop.addNewTaskActiveColumn == column._id) {
+  if (kanbanComponentsSnapshop.isAddingCategory) {
     return (
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-3"
+          className="space-y-3 h-fit "
           ref={ref}
         >
           <FormField
@@ -86,8 +98,11 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
               <FormItem>
                 <FormControl>
                   <Textarea
-                    className="rounded-xl px-6 py-6 resize-none field-sizing-content"
-                    placeholder="Название задачи"
+                    className="
+                    rounded-xl resize-none w-[80vw] ring-inset px-6 py-6 field-sizing-content font-semibold text-sm mr-[20px]
+                    lg:w-[20vw]
+                    "
+                    placeholder="Название списка"
                     {...field}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
@@ -106,13 +121,17 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
             )}
           />
           <div className="flex gap-1">
-            <Button type="submit">Сохранить</Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading && <Loader2 className="animate-spin" />}
+              {!isLoading && "Добавить"}
+            </Button>
             <Button
               variant="destructive"
               onClick={() => {
-                kanbanComponentsStore.addNewTaskActiveColumn = "";
+                kanbanComponentsStore.isAddingCategory = false;
                 form.reset();
               }}
+              disabled={isLoading}
             >
               <X />
             </Button>
@@ -124,14 +143,14 @@ export function KanbanNewTask({ column }: KanbanNewTaskProps) {
 
   return (
     <Button
-      className="w-full"
-      variant="ghost"
+      className="bg-muted/60 w-[80vw] h-10 lg:w-[20vw]"
+      variant={"ghost"}
       onClick={() => {
-        kanbanComponentsStore.addNewTaskActiveColumn = column._id;
+        kanbanComponentsStore.isAddingCategory = true;
       }}
     >
       <Plus />
-      Добавить задачу
+      <span>Добавить список</span>
     </Button>
   );
 }

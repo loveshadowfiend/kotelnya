@@ -54,4 +54,6 @@ export function unmodifyBoardObject(board: BoardModified) {
       _id: column._id,
     })),
   };
+
+  return newBoard;
 }

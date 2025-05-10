@@ -7,18 +7,18 @@ export const addNewTask = (columnId: string, title: string) => {
   const newTask: Task = {
     _id: newTaskId,
     title,
-    assignee: "",
+    assignee: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     __v: 0,
   };
 
-  const column = kanbanBoardStore.columns[columnId];
+  const column = boardStore.columns[columnId];
   const newTaskIds = Array.from(column.tasks);
   newTaskIds.push(newTaskId);
 
-  kanbanBoardStore.tasks[newTaskId] = newTask;
-  kanbanBoardStore.columns[columnId] = {
+  boardStore.tasks[newTaskId] = newTask;
+  boardStore.columns[columnId] = {
     ...column,
     tasks: newTaskIds,
   };
@@ -37,38 +37,36 @@ export const addNewColumn = (newColumnTitle: string) => {
     __v: 0,
   };
 
-  kanbanBoardStore.columns[newColumnId] = newColumn;
-  kanbanBoardStore.columnOrder = [...kanbanBoardStore.columnOrder, newColumnId];
+  boardStore.columns[newColumnId] = newColumn;
+  boardStore.columnOrder = [...boardStore.columnOrder, newColumnId];
 };
 
 export const deleteTask = (columnId: string, taskId: string) => {
-  const column = kanbanBoardStore.columns[columnId];
+  const column = boardStore.columns[columnId];
   const newTaskIds = column.tasks.filter((id) => id !== taskId);
 
-  const newTasks = { ...kanbanBoardStore.tasks };
+  const newTasks = { ...boardStore.tasks };
   delete newTasks[taskId];
 
-  kanbanBoardStore.tasks = newTasks;
-  kanbanBoardStore.columns[columnId].tasks = newTaskIds;
+  boardStore.tasks = newTasks;
+  boardStore.columns[columnId].tasks = newTaskIds;
 };
 
 export const deleteColumn = (columnId: string) => {
-  const column = kanbanBoardStore.columns[columnId];
-  const newTasks = { ...kanbanBoardStore.tasks };
+  const column = boardStore.columns[columnId];
+  const newTasks = { ...boardStore.tasks };
   column.tasks.forEach((tasks) => {
     delete newTasks[tasks];
   });
 
-  const newColumns = { ...kanbanBoardStore.columns };
+  const newColumns = { ...boardStore.columns };
   delete newColumns[columnId];
 
-  const newColumnOrder = kanbanBoardStore.columnOrder.filter(
-    (id) => id !== columnId
-  );
+  const newColumnOrder = boardStore.columnOrder.filter((id) => id !== columnId);
 
-  kanbanBoardStore.tasks = newTasks;
-  kanbanBoardStore.columns = newColumns;
-  kanbanBoardStore.columnOrder = newColumnOrder;
+  boardStore.tasks = newTasks;
+  boardStore.columns = newColumns;
+  boardStore.columnOrder = newColumnOrder;
 };
 
 export const moveTask = (
@@ -79,30 +77,30 @@ export const moveTask = (
 ) => {
   if (sourceColumnId === destinationColumnId) return;
 
-  const sourceColumn = kanbanBoardStore.columns[sourceColumnId];
-  const destinationColumn = kanbanBoardStore.columns[destinationColumnId];
+  const sourceColumn = boardStore.columns[sourceColumnId];
+  const destinationColumn = boardStore.columns[destinationColumnId];
 
   const newSourceTaskIds = sourceColumn.tasks.filter((id) => id !== taskId);
 
   const newDestinationTaskIds = Array.from(destinationColumn.tasks);
   newDestinationTaskIds.splice(destinationIndex, 0, taskId);
 
-  kanbanBoardStore.columns[sourceColumnId] = {
+  boardStore.columns[sourceColumnId] = {
     ...sourceColumn,
     tasks: newSourceTaskIds,
   };
 
-  kanbanBoardStore.columns[destinationColumnId] = {
+  boardStore.columns[destinationColumnId] = {
     ...destinationColumn,
     tasks: newDestinationTaskIds,
   };
 };
 
 export const getAllColumnTitlesAndIds = () => {
-  return Object.entries(kanbanBoardStore.columns).map(([id, column]) => ({
+  return Object.entries(boardStore.columns).map(([id, column]) => ({
     id: id,
     title: column.title,
   }));
 };
 
-export const kanbanBoardStore = proxy<BoardModified>();
+export const boardStore = proxy<BoardModified>();

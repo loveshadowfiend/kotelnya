@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSnapshot } from "valtio";
+import { Edit, Trash2 } from "lucide-react";
 
 interface BoardDropdownProps {
   children: React.ReactNode;
@@ -36,7 +37,12 @@ export function BoardDropdown({
           {boardTitle}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem>
+          <Edit />
+          Переименовать
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={handleDeleteBoard}>
+          <Trash2 />
           <span>Удалить</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

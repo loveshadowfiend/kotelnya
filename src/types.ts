@@ -18,6 +18,7 @@ export type User = {
 
 export type Board = {
   _id: string;
+  title: string;
   tasks: Task[];
   columns: Column[];
   columnOrder: string[];
@@ -28,6 +29,7 @@ export type Board = {
 
 export type BoardModified = {
   _id: string;
+  title: string;
   tasks: {
     [key: string]: Task;
   };
@@ -52,7 +54,7 @@ export type Column = {
 export type Task = {
   _id: string;
   title: string;
-  assignee: string;
+  assignee: string[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -80,14 +82,22 @@ export type Project = {
   __v: number;
 };
 
+export type ProjectState = {
+  project: Project | null;
+};
+
 export type ProjectsState = {
   projects: Project[];
   loading: boolean;
   error: string | null;
 };
 
+export type BoardState = {
+  board: BoardModified;
+};
+
 export type BoardsState = {
-  boards: Board[];
+  boards: Board[] | null;
   loading: boolean;
   error: string | null;
 };

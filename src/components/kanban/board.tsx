@@ -2,13 +2,13 @@
 
 import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { KanbanColumn } from "@/components/kanban/column";
-import { KanbanNewColumn } from "./new-column";
-import { kanbanBoardStore } from "@/proxies/kanban-board-store";
+import { KanbanAddColumn } from "./add-column";
+import { boardStore } from "@/proxies/board-store";
 import { useSnapshot } from "valtio";
 import { useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
-import { getBoard } from "@/api/boards/route";
-import { modifyBoardObject } from "@/lib/utils";
+import { getBoard, updateBoard } from "@/api/boards/route";
+import { modifyBoardObject, unmodifyBoardObject } from "@/lib/utils";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 
 interface KanbanBoardProps {
@@ -16,7 +16,7 @@ interface KanbanBoardProps {
 }
 
 export function KanbanBoard({ boardId }: KanbanBoardProps) {
-  const boardSnapshot = useSnapshot(kanbanBoardStore);
+  const boardSnapshot = useSnapshot(boardStore);
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
@@ -36,7 +36,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
       newColumnOrder.splice(source.index, 1);
       newColumnOrder.splice(destination.index, 0, draggableId);
 
-      kanbanBoardStore.columnOrder = newColumnOrder;
+      boardStore.columnOrder = newColumnOrder;
       return;
     }
 
@@ -55,7 +55,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
         tasks: newTaskIds,
       };
 
-      kanbanBoardStore.columns[newColumn._id] = newColumn;
+      boardStore.columns[newColumn._id] = newColumn;
 
       return;
     }
@@ -75,8 +75,8 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
       tasks: destTaskIds,
     };
 
-    kanbanBoardStore.columns[newSourceColumn._id] = newSourceColumn;
-    kanbanBoardStore.columns[newDestColumn._id] = newDestColumn;
+    boardStore.columns[newSourceColumn._id] = newSourceColumn;
+    boardStore.columns[newDestColumn._id] = newDestColumn;
   };
 
   useEffect(() => {
@@ -85,13 +85,29 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
     const fetchAndSetBoard = async () => {
       const boardResponse = await getBoard(boardId);
       if (boardResponse.ok) {
-        const boardSnapshot = await boardResponse.json();
+        const boardData = await boardResponse.json();
 
-        Object.assign(kanbanBoardStore, modifyBoardObject(boardSnapshot));
+        Object.assign(boardStore, modifyBoardObject(boardData));
       }
     };
     fetchAndSetBoard();
   }, [boardId]);
+
+  useEffect(() => {
+    if (
+      Object.keys(boardSnapshot).length === 0 &&
+      boardSnapshot.constructor === Object
+    )
+      return;
+
+    const mongoBoard = unmodifyBoardObject(boardStore);
+
+    updateBoard(boardId, {
+      tasks: mongoBoard.tasks,
+      columns: mongoBoard.columns,
+      columnOrder: mongoBoard.columnOrder,
+    });
+  }, [boardSnapshot, boardStore]);
 
   if (
     Object.keys(boardSnapshot).length === 0 &&
@@ -140,9 +156,16 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
           >
             {boardSnapshot.columnOrder.map((columnId, index) => {
               const column = boardSnapshot.columns[columnId];
-              const tasks = column.tasks.map(
-                (taskId) => boardSnapshot.tasks[taskId]
-              );
+              const tasks = column.tasks.map((taskId) => {
+                const task = boardSnapshot.tasks[taskId];
+                // Convert readonly assignee to mutable array
+                return {
+                  ...task,
+                  assignee: Array.isArray(task.assignee)
+                    ? [...task.assignee]
+                    : [],
+                };
+              });
 
               return (
                 <KanbanColumn
@@ -154,7 +177,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
               );
             })}
             {provided.placeholder}
-            <KanbanNewColumn />
+            <KanbanAddColumn />
           </div>
         )}
       </Droppable>

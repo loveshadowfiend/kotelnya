@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { moveTask } from "@/proxies/kanban-board-store";
+import { moveTask } from "@/proxies/board-store";
 
 interface BadgeDropdownProps {
   className?: string;

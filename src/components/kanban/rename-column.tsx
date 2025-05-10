@@ -1,7 +1,7 @@
 import { Check, Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { kanbanBoardStore } from "@/proxies/kanban-board-store";
+import { boardStore } from "@/proxies/board-store";
 import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
 import { useRef, useEffect } from "react";
 import { z } from "zod";
@@ -34,12 +34,12 @@ export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: kanbanBoardStore.columns[columnId].title,
+      title: boardStore.columns[columnId].title,
     },
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    kanbanBoardStore.columns[columnId].title = values.title;
+    boardStore.columns[columnId].title = values.title;
     kanbanComponentsStore.renamingColumn = "";
   };
 

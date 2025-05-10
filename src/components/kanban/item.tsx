@@ -39,7 +39,7 @@ export function KanbanItem({ task, column, index }: KanbanItemProps) {
               <CardTitle className="text-sm font-normal">
                 {task.title}
               </CardTitle>
-              {task.assignee && (
+              {task.assignee.length > 0 && (
                 <CardDescription className="flex items-center gap-2 mt-2">
                   <Avatar className="w-6 h-6 flex items-center">
                     <AvatarImage />

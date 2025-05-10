@@ -12,6 +12,7 @@ import { BoardDropdown } from "./board-dropdown";
 import { useEffect } from "react";
 import { boardsStore } from "@/proxies/boards-store";
 import { useSnapshot } from "valtio";
+import { Skeleton } from "../ui/skeleton";
 
 export function NavBoards() {
   const boardsSnapshot = useSnapshot(boardsStore);
@@ -44,11 +45,15 @@ export function NavBoards() {
 
   if (boardsSnapshot.loading) {
     return (
-      <SidebarMenuSubItem className="text-muted-foreground">
-        <SidebarMenuButton>
-          <Loader2 className="animate-spin" />
-        </SidebarMenuButton>
-      </SidebarMenuSubItem>
+      <>
+        {[...Array(2)].map((_, idx) => (
+          <SidebarMenuSubItem className="text-muted-foreground" key={idx}>
+            <SidebarMenuButton>
+              <Skeleton className="w-60 h-6" />
+            </SidebarMenuButton>
+          </SidebarMenuSubItem>
+        ))}
+      </>
     );
   }
 
@@ -61,10 +66,10 @@ export function NavBoards() {
               key={board._id}
               className="text-muted-foreground"
             >
-              <SidebarMenuButton className="w-40 truncate" asChild>
-                <Link href={`/board/${board._id}`}>{board._id}</Link>
+              <SidebarMenuButton className="w-41 truncate" asChild>
+                <Link href={`/board/${board._id}`}>{board.title}</Link>
               </SidebarMenuButton>
-              <BoardDropdown boardId={board._id} boardTitle={board._id}>
+              <BoardDropdown boardId={board._id} boardTitle={board.title}>
                 <SidebarMenuAction className="text-muted-foreground">
                   <Ellipsis /> <span className="sr-only">Еще</span>
                 </SidebarMenuAction>

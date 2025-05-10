@@ -6,10 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Dispatch, SetStateAction } from "react";
-import {
-  getAllColumnTitlesAndIds,
-  kanbanBoardStore,
-} from "@/proxies/kanban-board-store";
+import { getAllColumnTitlesAndIds, boardStore } from "@/proxies/board-store";
 import { useSnapshot } from "valtio";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
@@ -30,7 +27,7 @@ export function KanbanCard({
   isDialogOpen,
   setIsDialogOpen,
 }: KanbanCardProps) {
-  const kanbanBoardSnapshot = useSnapshot(kanbanBoardStore);
+  const kanbanBoardSnapshot = useSnapshot(boardStore);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -58,7 +55,7 @@ export function KanbanCard({
               placeholder="Описание задачи"
               value={kanbanBoardSnapshot.tasks[taskId].description}
               onChange={(e) => {
-                kanbanBoardStore.tasks[taskId].description = e.target.value;
+                boardStore.tasks[taskId].description = e.target.value;
               }}
             />
             <Label htmlFor="deadline">Дедлайн</Label>

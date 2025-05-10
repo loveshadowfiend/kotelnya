@@ -1,5 +1,24 @@
 "use client";
 
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
 import { SidebarMenuButton } from "../ui/sidebar";
 import { useState } from "react";
@@ -7,25 +26,38 @@ import { useRouter } from "next/navigation";
 import { addBoard } from "@/api/boards/route";
 import { useSnapshot } from "valtio";
 import { boardsStore } from "@/proxies/boards-store";
+import { Input } from "../ui/input";
+
+const formSchema = z.object({
+  title: z.string().min(1, { message: "Введите имя задачи" }),
+});
 
 export function AddBoard() {
   const boardSnapshot = useSnapshot(boardsStore);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      title: "",
+    },
+  });
 
-  async function onClick() {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
 
-    const response = await addBoard("6814eb6af3982bf9826388aa");
+    const response = await addBoard("6814eb6af3982bf9826388aa", values.title);
 
     if (response.ok) {
       const data = await response.json();
-      boardsStore.boards.push(data);
+      boardsStore.boards?.push(data);
       router.push(`/board/${data._id}`);
     }
 
     setLoading(false);
   }
+
+  if (boardsStore.loading) return;
 
   if (loading) {
     return (
@@ -37,12 +69,41 @@ export function AddBoard() {
   }
 
   return (
-    <SidebarMenuButton
-      className="text-muted-foreground cursor-pointer"
-      onClick={onClick}
-    >
-      <Plus />
-      Добавить доску
-    </SidebarMenuButton>
+    <Dialog>
+      <DialogTrigger asChild>
+        <SidebarMenuButton className="text-muted-foreground cursor-pointer">
+          <Plus />
+          Добавить доску
+        </SidebarMenuButton>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Добавить доску</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-3 mt-3"
+          >
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Название</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Доска" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit">
+              <Plus /> Добавить
+            </Button>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
   );
 }
