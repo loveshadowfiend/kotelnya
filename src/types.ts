@@ -64,7 +64,7 @@ export type Note = {
   _id: string;
   title: string;
   markdownContent: string;
-  author: User;
+  author: string;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -98,6 +98,12 @@ export type BoardState = {
 
 export type BoardsState = {
   boards: Board[] | null;
+  loading: boolean;
+  error: string | null;
+};
+
+export type NotesState = {
+  notes: Note[];
   loading: boolean;
   error: string | null;
 };

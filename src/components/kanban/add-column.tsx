@@ -7,8 +7,8 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useClickOutside } from "@/hooks/use-outside-click";
-import { addNewColumn } from "@/proxies/board-store";
-import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { addNewColumn } from "@/stores/board-store";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -47,7 +47,8 @@ export function KanbanAddColumn() {
     );
 
     if (response.ok) {
-      addNewColumn(values.title);
+      const newColumn = await response.json();
+      addNewColumn(newColumn._id, values.title);
       form.reset();
       // form.setFocus("title");
       kanbanComponentsStore.isAddingCategory = false;

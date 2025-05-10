@@ -5,7 +5,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { boardStore } from "@/proxies/board-store";
+import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { mockUsers } from "@/constants";
 import { cn } from "@/lib/utils";

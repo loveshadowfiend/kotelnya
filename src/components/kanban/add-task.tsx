@@ -8,13 +8,13 @@ import {
 import { Button } from "../ui/button";
 import { Plus, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { addNewTask } from "@/proxies/board-store";
+import { addNewTask } from "@/stores/board-store";
 import { Column } from "@/types";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSnapshot } from "valtio";
-import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 import { useClickOutside } from "@/hooks/use-outside-click";
 import { useEffect, useRef, useState } from "react";
 import { addTask } from "@/api/tasks/route";
@@ -53,7 +53,8 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
     );
 
     if (response.ok) {
-      addNewTask(column._id, values.title);
+      const newTask = await response.json();
+      addNewTask(newTask._id, column._id, values.title);
       form.reset();
       // form.setFocus("title");
       kanbanComponentsStore.addNewTaskActiveColumn = "";

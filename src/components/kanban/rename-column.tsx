@@ -1,8 +1,8 @@
 import { Check, Save } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { boardStore } from "@/proxies/board-store";
-import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { boardStore } from "@/stores/board-store";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 import { useRef, useEffect } from "react";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";

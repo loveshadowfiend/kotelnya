@@ -1,6 +1,6 @@
 "use client";
 
-import { boardsStore, deleteBoard } from "@/proxies/boards-store";
+import { boardsStore, deleteBoard } from "@/stores/boards-store";
 import {
   DropdownMenu,
   DropdownMenuContent,

@@ -9,9 +9,9 @@ export default async function BoardPage({
   const { boardId } = await params;
 
   return (
-    <div className="min-h-screen space-y-6 gap-6">
+    <main className="min-h-screen space-y-6 gap-6">
       <KanbanBreadcrumb />
       <KanbanBoard boardId={boardId} />
-    </div>
+    </main>
   );
 }

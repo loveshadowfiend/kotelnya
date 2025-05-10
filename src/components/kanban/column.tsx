@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KanbanAddTask } from "./add-task";
 import { Column, Task } from "@/types";
 import { Badge } from "../ui/badge";
-import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 import { useSnapshot } from "valtio";
 import { KanbanRenameColumn } from "./rename-column";
 import { Ellipsis } from "lucide-react";

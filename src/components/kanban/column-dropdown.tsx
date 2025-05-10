@@ -1,6 +1,6 @@
 import { deleteColumn as deleteColumnApi } from "@/api/columns/route";
-import { deleteColumn as deleteColumnStore } from "@/proxies/board-store";
-import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { deleteColumn as deleteColumnStore } from "@/stores/board-store";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 import { useSnapshot } from "valtio/react";
 import {
   DropdownMenu,

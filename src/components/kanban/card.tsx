@@ -6,7 +6,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Dispatch, SetStateAction } from "react";
-import { getAllColumnTitlesAndIds, boardStore } from "@/proxies/board-store";
+import { getAllColumnTitlesAndIds, boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";

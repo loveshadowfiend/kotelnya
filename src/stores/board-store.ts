@@ -1,9 +1,11 @@
 import { BoardModified, Column, Task } from "@/types";
 import { proxy } from "valtio";
-import { nanoid } from "nanoid";
 
-export const addNewTask = (columnId: string, title: string) => {
-  const newTaskId = nanoid();
+export const addNewTask = (
+  newTaskId: string,
+  columnId: string,
+  title: string
+) => {
   const newTask: Task = {
     _id: newTaskId,
     title,
@@ -24,10 +26,9 @@ export const addNewTask = (columnId: string, title: string) => {
   };
 };
 
-export const addNewColumn = (newColumnTitle: string) => {
+export const addNewColumn = (newColumnId: string, newColumnTitle: string) => {
   if (!newColumnTitle.trim()) return;
 
-  const newColumnId = nanoid();
   const newColumn: Column = {
     _id: newColumnId,
     title: newColumnTitle,

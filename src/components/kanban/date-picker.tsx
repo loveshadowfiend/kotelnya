@@ -12,7 +12,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { boardStore } from "@/proxies/board-store";
+import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { useEffect, useState } from "react";
 

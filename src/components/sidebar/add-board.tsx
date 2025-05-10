@@ -20,19 +20,19 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Loader2, Plus } from "lucide-react";
-import { SidebarMenuButton } from "../ui/sidebar";
+import { SidebarMenuButton, SidebarMenuSub } from "../ui/sidebar";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { addBoard } from "@/api/boards/route";
 import { useSnapshot } from "valtio";
-import { boardsStore } from "@/proxies/boards-store";
+import { boardsStore } from "@/stores/boards-store";
 import { Input } from "../ui/input";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Введите имя задачи" }),
 });
 
-export function AddBoard() {
+export function AddBoard({ children }: { children: React.ReactNode }) {
   const boardSnapshot = useSnapshot(boardsStore);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -44,7 +44,7 @@ export function AddBoard() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setLoading(true);
+    boardsStore.loading = true;
 
     const response = await addBoard("6814eb6af3982bf9826388aa", values.title);
 
@@ -54,28 +54,25 @@ export function AddBoard() {
       router.push(`/board/${data._id}`);
     }
 
-    setLoading(false);
+    boardsStore.loading = false;
   }
 
   if (boardsStore.loading) return;
 
-  if (loading) {
-    return (
-      <SidebarMenuButton className="cursor-pointer">
-        <Loader2 className="animate-spin" />
-        Создание доски...
-      </SidebarMenuButton>
-    );
-  }
+  // if (loading) {
+  //   return (
+  //     <SidebarMenuSub>
+  //       <SidebarMenuButton className="cursor-pointer text-muted-foreground">
+  //         <Loader2 className="animate-spin" />
+  //         Создание доски...
+  //       </SidebarMenuButton>
+  //     </SidebarMenuSub>
+  //   );
+  // }
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <SidebarMenuButton className="text-muted-foreground cursor-pointer">
-          <Plus />
-          Добавить доску
-        </SidebarMenuButton>
-      </DialogTrigger>
+      <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Добавить доску</DialogTitle>

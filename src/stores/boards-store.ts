@@ -3,12 +3,6 @@ import { BoardsState } from "@/types";
 import { deleteBoard as deleteBoardApi } from "@/api/boards/route";
 import { addBoard as addBoardApi } from "@/api/boards/route";
 
-export const boardsStore = proxy<BoardsState>({
-  boards: null,
-  loading: true,
-  error: null,
-});
-
 export const deleteBoard = async (boardId: string) => {
   boardsStore.loading = true;
 
@@ -35,3 +29,9 @@ export const addBoard = async (projectId: string, title: string) => {
 
   boardsStore.loading = false;
 };
+
+export const boardsStore = proxy<BoardsState>({
+  boards: null,
+  loading: true,
+  error: null,
+});

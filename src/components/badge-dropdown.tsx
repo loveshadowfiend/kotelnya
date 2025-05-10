@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { moveTask } from "@/proxies/board-store";
+import { moveTask } from "@/stores/board-store";
 
 interface BadgeDropdownProps {
   className?: string;

@@ -4,15 +4,23 @@ import Link from "next/link";
 import {
   SidebarMenuAction,
   SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarMenuSub,
   SidebarMenuSubItem,
 } from "../ui/sidebar";
 import { getAuthToken } from "@/lib/auth";
-import { Ellipsis, Loader2 } from "lucide-react";
+import { Ellipsis, Kanban, Loader2, Plus } from "lucide-react";
 import { BoardDropdown } from "./board-dropdown";
 import { useEffect } from "react";
-import { boardsStore } from "@/proxies/boards-store";
+import { boardsStore } from "@/stores/boards-store";
 import { useSnapshot } from "valtio";
 import { Skeleton } from "../ui/skeleton";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../ui/collapsible";
+import { AddBoard } from "./add-board";
 
 export function NavBoards() {
   const boardsSnapshot = useSnapshot(boardsStore);
@@ -46,12 +54,18 @@ export function NavBoards() {
   if (boardsSnapshot.loading) {
     return (
       <>
+        <SidebarMenuButton>
+          <Skeleton className="w-60 h-6" />
+        </SidebarMenuButton>
         {[...Array(2)].map((_, idx) => (
-          <SidebarMenuSubItem className="text-muted-foreground" key={idx}>
+          <SidebarMenuSub
+            className="text-muted-foreground pointer-events-none"
+            key={idx}
+          >
             <SidebarMenuButton>
-              <Skeleton className="w-60 h-6" />
+              <Skeleton className="w-full h-6" />
             </SidebarMenuButton>
-          </SidebarMenuSubItem>
+          </SidebarMenuSub>
         ))}
       </>
     );
@@ -59,24 +73,46 @@ export function NavBoards() {
 
   return (
     <>
-      {boardsSnapshot.boards &&
-        boardsSnapshot.boards.map((board) => {
-          return (
-            <SidebarMenuSubItem
-              key={board._id}
-              className="text-muted-foreground"
-            >
-              <SidebarMenuButton className="w-41 truncate" asChild>
-                <Link href={`/board/${board._id}`}>{board.title}</Link>
-              </SidebarMenuButton>
-              <BoardDropdown boardId={board._id} boardTitle={board.title}>
-                <SidebarMenuAction className="text-muted-foreground">
-                  <Ellipsis /> <span className="sr-only">Еще</span>
-                </SidebarMenuAction>
-              </BoardDropdown>
-            </SidebarMenuSubItem>
-          );
-        })}
+      <Collapsible defaultOpen className="group/collapsible">
+        <SidebarMenuItem>
+          <CollapsibleTrigger asChild>
+            <SidebarMenuButton>
+              <Kanban />
+              <span>Канбан-доска</span>
+            </SidebarMenuButton>
+          </CollapsibleTrigger>
+          <AddBoard>
+            <SidebarMenuAction>
+              <Plus />
+            </SidebarMenuAction>
+          </AddBoard>
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              {boardsSnapshot.boards &&
+                boardsSnapshot.boards.map((board) => {
+                  return (
+                    <SidebarMenuSubItem
+                      key={board._id}
+                      className="text-muted-foreground"
+                    >
+                      <SidebarMenuButton className="w-41 truncate" asChild>
+                        <Link href={`/board/${board._id}`}>{board.title}</Link>
+                      </SidebarMenuButton>
+                      <BoardDropdown
+                        boardId={board._id}
+                        boardTitle={board.title}
+                      >
+                        <SidebarMenuAction className="text-muted-foreground">
+                          <Ellipsis /> <span className="sr-only">Еще</span>
+                        </SidebarMenuAction>
+                      </BoardDropdown>
+                    </SidebarMenuSubItem>
+                  );
+                })}
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        </SidebarMenuItem>
+      </Collapsible>
     </>
   );
 }

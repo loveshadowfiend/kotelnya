@@ -3,13 +3,13 @@
 import { DragDropContext, Droppable, type DropResult } from "@hello-pangea/dnd";
 import { KanbanColumn } from "@/components/kanban/column";
 import { KanbanAddColumn } from "./add-column";
-import { boardStore } from "@/proxies/board-store";
+import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { getBoard, updateBoard } from "@/api/boards/route";
 import { modifyBoardObject, unmodifyBoardObject } from "@/lib/utils";
-import { kanbanComponentsStore } from "@/proxies/kanban-components-store";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 
 interface KanbanBoardProps {
   boardId: string;
@@ -102,11 +102,11 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
 
     const mongoBoard = unmodifyBoardObject(boardStore);
 
-    updateBoard(boardId, {
-      tasks: mongoBoard.tasks,
-      columns: mongoBoard.columns,
-      columnOrder: mongoBoard.columnOrder,
-    });
+    // updateBoard(boardId, {
+    //   tasks: mongoBoard.tasks,
+    //   columns: mongoBoard.columns,
+    //   columnOrder: mongoBoard.columnOrder,
+    // });
   }, [boardSnapshot, boardStore]);
 
   if (
@@ -141,6 +141,8 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
       </div>
     );
   }
+
+  console.log(JSON.stringify(boardSnapshot));
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

@@ -24,6 +24,7 @@ import {
 import { NavUser } from "./nav-user";
 import { AddBoard } from "./add-board";
 import { NavBoards } from "./nav-boards";
+import { NavNotes } from "./nav-notes";
 
 export function AppSidebar() {
   return (
@@ -66,7 +67,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Рабочее пространство</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              <Collapsible defaultOpen className="group/collapsible">
+              {/* <Collapsible defaultOpen className="group/collapsible">
                 <SidebarMenuItem>
                   <CollapsibleTrigger asChild>
                     <SidebarMenuButton>
@@ -81,28 +82,9 @@ export function AppSidebar() {
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
-              </Collapsible>
-              <Collapsible defaultOpen className="group/collapsible">
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton>
-                      <BookHeart />
-                      <span>Заметки</span>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      <SidebarMenuSubItem className="text-muted-foreground">
-                        <SidebarMenuButton asChild>
-                          <Link href="/note">
-                            <span>test note</span>
-                          </Link>
-                        </SidebarMenuButton>
-                      </SidebarMenuSubItem>
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible>
+              </Collapsible> */}
+              <NavBoards />
+              <NavNotes />
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
