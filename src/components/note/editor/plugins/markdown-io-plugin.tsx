@@ -9,7 +9,7 @@ import {
 } from "@lexical/markdown";
 import { useSnapshot } from "valtio";
 import { noteStore } from "@/stores/note-store";
-import { updateNote } from "@/api/auth/notes/routes";
+import { updateNote } from "@/api/notes/routes";
 
 export default function MarkdownIoPlugin() {
   const noteSnapshot = useSnapshot(noteStore);

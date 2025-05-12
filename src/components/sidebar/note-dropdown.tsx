@@ -1,6 +1,5 @@
 "use client";
 
-import { boardsStore, deleteBoard } from "@/stores/boards-store";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,22 +10,23 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSnapshot } from "valtio";
 import { Edit, Trash2 } from "lucide-react";
+import { notesStore, deleteNote } from "@/stores/notes-store";
 
-interface BoardDropdownProps {
+interface NoteDropdownProps {
   children: React.ReactNode;
-  boardId: string;
-  boardTitle: string;
+  noteId: string;
+  noteTitle: string;
 }
 
-export function BoardDropdown({
+export function NoteDropdown({
   children,
-  boardId,
-  boardTitle,
-}: BoardDropdownProps) {
-  const boardsSnapshot = useSnapshot(boardsStore);
+  noteId,
+  noteTitle,
+}: NoteDropdownProps) {
+  const notesSnapshot = useSnapshot(notesStore);
 
-  async function handleDeleteBoard() {
-    await deleteBoard(boardId);
+  async function handleDeleteNote() {
+    await deleteNote(noteId);
   }
 
   return (
@@ -34,14 +34,14 @@ export function BoardDropdown({
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent className="shadow-none w-[240px]">
         <DropdownMenuLabel className="text-sm font-normal">
-          {boardTitle}
+          {noteTitle}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Edit />
           Переименовать
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeleteBoard}>
+        <DropdownMenuItem onClick={handleDeleteNote}>
           <Trash2 />
           <span>Удалить</span>
         </DropdownMenuItem>

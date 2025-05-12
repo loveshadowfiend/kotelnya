@@ -25,6 +25,18 @@ export async function getNote(noteId: string) {
   return response;
 }
 
+export async function deleteNote(noteId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/notes/${noteId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response;
+}
+
 export async function addNote(projectId: string, title: string) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/projects/${projectId}/notes`, {

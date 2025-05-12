@@ -24,9 +24,13 @@ import { deleteProject, projectsStore } from "@/stores/projects-store";
 import { useSnapshot } from "valtio";
 import { projectStore } from "@/stores/project-store";
 import { userStore } from "@/stores/user-store";
+import { useRouter } from "next/navigation";
+import { getProjects } from "@/api/projects/route";
 
 export function NavProjects() {
+  const router = useRouter();
   const userSnapshot = useSnapshot(userStore);
+  const projectSnapshot = useSnapshot(projectStore);
   const projectsSnapshot = useSnapshot(projectsStore);
 
   const handleDelete = async (projectId: string) => {
@@ -34,28 +38,16 @@ export function NavProjects() {
   };
 
   useEffect(() => {
-    // TODO: transfer fetch logic to api/projects/routes.ts
     const fetchProjects = async () => {
       projectsStore.loading = true;
 
       const payload = await verifyAuth();
-      const token = await getAuthToken();
 
       if (payload === null) {
         return;
       }
 
-      const userId = payload.id;
-      const response = await fetch(
-        `http://103.249.132.70:9001/api/users/${userId}/projects`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await getProjects((payload as { id: string }).id);
 
       if (response.ok) {
         const projects = await response.json();
@@ -85,12 +77,12 @@ export function NavProjects() {
           <DropdownMenuContent className="relative w-60" align="center">
             <DropdownMenuLabel>Проекты</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {projectsStore.loading && (
+            {projectsSnapshot.loading && (
               <div className="flex items-center justify-center overflow-hidden py-3">
                 <Loader2 className="animate-spin" />
               </div>
             )}
-            {!projectsStore.loading &&
+            {!projectsSnapshot.loading &&
               projectsStore.projects?.map((project: Project) => {
                 return (
                   <div
@@ -98,6 +90,7 @@ export function NavProjects() {
                     className="relative flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
                     onClick={() => {
                       projectStore.project = project;
+
                       localStorage.setItem(
                         "currentProject",
                         JSON.stringify({
@@ -105,6 +98,8 @@ export function NavProjects() {
                           userId: userSnapshot.user?._id,
                         })
                       );
+
+                      router.push("/");
                     }}
                   >
                     <Avatar className="rounded-lg">

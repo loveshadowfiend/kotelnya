@@ -18,3 +18,15 @@ export async function addTask(
 
   return response;
 }
+
+export async function deleteTask(taskId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response;
+}

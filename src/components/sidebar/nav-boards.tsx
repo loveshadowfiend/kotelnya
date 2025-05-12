@@ -27,6 +27,7 @@ export function NavBoards() {
   const boardsSnapshot = useSnapshot(boardsStore);
   const projectSnapshot = useSnapshot(projectStore);
 
+  // TODO: transfer logic to api/boards/routes.ts
   useEffect(() => {
     if (!projectSnapshot.project) return;
 
@@ -58,7 +59,7 @@ export function NavBoards() {
   if (boardsSnapshot.loading || !projectSnapshot.project) {
     return (
       <>
-        <SidebarMenuButton>
+        <SidebarMenuButton className="pointer-events-none">
           <Skeleton className="w-60 h-6" />
         </SidebarMenuButton>
         {[...Array(2)].map((_, idx) => (
@@ -106,7 +107,10 @@ export function NavBoards() {
                         boardId={board._id}
                         boardTitle={board.title}
                       >
-                        <SidebarMenuAction className="text-muted-foreground">
+                        <SidebarMenuAction
+                          className="text-muted-foreground"
+                          showOnHover
+                        >
                           <Ellipsis /> <span className="sr-only">Еще</span>
                         </SidebarMenuAction>
                       </BoardDropdown>

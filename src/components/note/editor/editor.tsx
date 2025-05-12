@@ -24,7 +24,7 @@ import ComponentPickerMenuPlugin from "./plugins/component-picker-plugin";
 import MarkdownIoPlugin from "./plugins/markdown-io-plugin";
 import { useSnapshot } from "valtio";
 import { noteStore } from "@/stores/note-store";
-import { getNote } from "@/api/auth/notes/routes";
+import { getNote } from "@/api/notes/routes";
 
 const initialConfig = {
   namespace: "kotelnya-editor",
@@ -78,11 +78,14 @@ export function Editor({ noteId }: EditorProps) {
   }, [noteId]);
 
   if (
-    Object.keys(noteSnapshot).length === 0 &&
-    noteSnapshot.constructor === Object
+    (Object.keys(noteSnapshot).length === 0 &&
+      noteSnapshot.constructor === Object) ||
+    noteSnapshot._id !== noteId
   ) {
     return;
   }
+
+  console.log(noteSnapshot);
 
   return (
     <LexicalComposer
@@ -90,7 +93,7 @@ export function Editor({ noteId }: EditorProps) {
         ...initialConfig,
         editorState: () =>
           $convertFromMarkdownString(
-            noteSnapshot.markdownContent,
+            noteSnapshot.markdownContent ?? "",
             TRANSFORMERS
           ),
       }}

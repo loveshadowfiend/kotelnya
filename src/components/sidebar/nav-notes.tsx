@@ -13,14 +13,15 @@ import {
   SidebarMenuSubItem,
   SidebarMenuAction,
 } from "../ui/sidebar";
-import { BookHeart, Plus } from "lucide-react";
+import { BookHeart, Ellipsis, Plus } from "lucide-react";
 import Link from "next/link";
 import { notesStore } from "@/stores/notes-store";
 import { useEffect } from "react";
-import { getNotes } from "@/api/auth/notes/routes";
+import { getNotes } from "@/api/notes/routes";
 import { Skeleton } from "../ui/skeleton";
 import { AddNote } from "./add-note";
 import { projectStore } from "@/stores/project-store";
+import { NoteDropdown } from "./note-dropdown";
 
 export function NavNotes() {
   const notesSnapshot = useSnapshot(notesStore);
@@ -48,7 +49,7 @@ export function NavNotes() {
   if (notesSnapshot.loading || !projectSnapshot.project) {
     return (
       <>
-        <SidebarMenuButton>
+        <SidebarMenuButton className="pointer-events-none">
           <Skeleton className="w-60 h-6" />
         </SidebarMenuButton>
         {[...Array(2)].map((_, idx) => (
@@ -91,6 +92,14 @@ export function NavNotes() {
                     <SidebarMenuButton asChild>
                       <Link href={`/note/${note._id}`}>{note.title}</Link>
                     </SidebarMenuButton>
+                    <NoteDropdown noteId={note._id} noteTitle={note.title}>
+                      <SidebarMenuAction
+                        className="text-muted-foreground"
+                        showOnHover
+                      >
+                        <Ellipsis /> <span className="sr-only">Еще</span>
+                      </SidebarMenuAction>
+                    </NoteDropdown>
                   </SidebarMenuSubItem>
                 );
               })}

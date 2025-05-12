@@ -26,6 +26,19 @@ export async function getProject(projectId: string) {
   return response;
 }
 
+export async function getProjects(userId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/users/${userId}/projects`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  return response;
+}
+
 export async function createProject(title: string) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/projects`, {

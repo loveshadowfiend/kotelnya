@@ -24,7 +24,7 @@ import { useRouter } from "next/navigation";
 import { useSnapshot } from "valtio";
 import { Input } from "../ui/input";
 import { notesStore } from "@/stores/notes-store";
-import { addNote } from "@/api/auth/notes/routes";
+import { addNote } from "@/api/notes/routes";
 import { projectStore } from "@/stores/project-store";
 
 const formSchema = z.object({
@@ -50,7 +50,7 @@ export function AddNote({ children }: { children: React.ReactNode }) {
     if (response.ok) {
       const data = await response.json();
       notesStore.notes?.push(data);
-      router.push(`/board/${data._id}`);
+      router.push(`/note/${data._id}`);
     }
 
     notesStore.loading = false;
