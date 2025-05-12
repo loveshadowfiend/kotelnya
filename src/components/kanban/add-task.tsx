@@ -6,9 +6,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "../ui/button";
-import { Plus, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
-import { addNewTask } from "@/stores/board-store";
+import { addNewTask, boardStore } from "@/stores/board-store";
 import { Column } from "@/types";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -35,6 +35,7 @@ interface KanbanNewTaskProps {
 export function KanbanAddTask({ column }: KanbanNewTaskProps) {
   const [isLoading, setIsLoading] = useState(false);
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
+  const boardSnapshot = useSnapshot(boardStore);
   const ref = useRef<HTMLFormElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -46,11 +47,7 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const response = await addTask(
-      column._id,
-      kanbanComponentsSnapshop.boardId,
-      values.title
-    );
+    const response = await addTask(column._id, boardSnapshot._id, values.title);
 
     if (response.ok) {
       const newTask = await response.json();
@@ -124,7 +121,8 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
           />
           <div className="flex gap-1">
             <Button type="submit" disabled={isLoading}>
-              Сохранить
+              {!isLoading && <span>Сохранить</span>}
+              {isLoading && <Loader2 className="animate-spin" />}
             </Button>
             <Button
               variant="destructive"

@@ -1,3 +1,6 @@
+import { NoteBreadcrumb } from "@/components/note/breadcrumb";
+import { Editor } from "@/components/note/editor/editor";
+
 export default async function NotePage({
   params,
 }: {
@@ -5,5 +8,10 @@ export default async function NotePage({
 }) {
   const { noteId } = await params;
 
-  return <main></main>;
+  return (
+    <main>
+      <NoteBreadcrumb />
+      <Editor noteId={noteId} />
+    </main>
+  );
 }

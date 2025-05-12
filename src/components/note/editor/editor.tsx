@@ -12,15 +12,19 @@ import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
 import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
-import { TRANSFORMERS } from "@lexical/markdown";
+import { $convertFromMarkdownString, TRANSFORMERS } from "@lexical/markdown";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
 import { FloatingMenuPlugin } from "./plugins/floating-menu-plugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import CodeHighlightPlugin from "./plugins/code-highlight-plugin";
 import DraggableBlockPlugin from "./plugins/draggable-block-plugin";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ComponentPickerMenuPlugin from "./plugins/component-picker-plugin";
+import MarkdownIoPlugin from "./plugins/markdown-io-plugin";
+import { useSnapshot } from "valtio";
+import { noteStore } from "@/stores/note-store";
+import { getNote } from "@/api/auth/notes/routes";
 
 const initialConfig = {
   namespace: "kotelnya-editor",
@@ -43,7 +47,13 @@ function onError(error: any) {
   console.error(error);
 }
 
-export function Editor() {
+interface EditorProps {
+  noteId: string;
+}
+
+export function Editor({ noteId }: EditorProps) {
+  const noteSnapshot = useSnapshot(noteStore);
+
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
 
@@ -53,8 +63,38 @@ export function Editor() {
     }
   };
 
+  useEffect(() => {
+    const fetchAndSetNote = async () => {
+      const response = await getNote(noteId);
+
+      if (response.ok) {
+        const noteData = await response.json();
+
+        Object.assign(noteStore, noteData);
+      }
+    };
+
+    fetchAndSetNote();
+  }, [noteId]);
+
+  if (
+    Object.keys(noteSnapshot).length === 0 &&
+    noteSnapshot.constructor === Object
+  ) {
+    return;
+  }
+
   return (
-    <LexicalComposer initialConfig={initialConfig}>
+    <LexicalComposer
+      initialConfig={{
+        ...initialConfig,
+        editorState: () =>
+          $convertFromMarkdownString(
+            noteSnapshot.markdownContent,
+            TRANSFORMERS
+          ),
+      }}
+    >
       <RichTextPlugin
         contentEditable={
           <ContentEditable
@@ -81,6 +121,7 @@ export function Editor() {
         <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
       )}
       <ComponentPickerMenuPlugin />
+      <MarkdownIoPlugin />
     </LexicalComposer>
   );
 }

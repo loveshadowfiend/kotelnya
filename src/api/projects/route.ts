@@ -13,3 +13,31 @@ export async function deleteProject(projectId: string) {
 
   return response;
 }
+
+export async function getProject(projectId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/projects/${projectId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response;
+}
+
+export async function createProject(title: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/projects`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      title: title,
+    }),
+  });
+
+  return response;
+}

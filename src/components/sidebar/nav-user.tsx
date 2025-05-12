@@ -1,3 +1,5 @@
+"use client";
+
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -5,34 +7,44 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { verifyAuth } from "@/lib/auth";
-import { User } from "@/types";
 import { UserDropdown } from "./user-dropdown";
+import { useEffect } from "react";
+import { getUser } from "@/api/users/route";
+import { useRouter } from "next/navigation";
+import { useSnapshot } from "valtio";
+import { userStore } from "@/stores/user-store";
+import { Skeleton } from "../ui/skeleton";
 
-export async function NavUser() {
-  const user: User = await getUser();
+export function NavUser() {
+  const userSnapshot = useSnapshot(userStore);
+  const router = useRouter();
 
-  async function getUser() {
-    const payload = await verifyAuth();
+  useEffect(() => {
+    async function fetchAndSetUser() {
+      userStore.loading = true;
 
-    if (!payload) {
-      return;
+      const payload = await verifyAuth();
+
+      if (!payload) {
+        router.push("/auth/login");
+
+        return;
+      }
+
+      const response = await getUser((payload as { id: string }).id);
+
+      if (response.ok) {
+        const user = await response.json();
+        userStore.user = user;
+      }
+
+      userStore.loading = false;
     }
 
-    const response = await fetch(
-      `http://103.249.132.70:9001/api/users/${payload.id}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${payload.token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    fetchAndSetUser();
+  }, []);
 
-    const data = await response.json();
-
-    return data;
-  }
+  if (!userSnapshot.user) return <Skeleton className="w-60 h-12 " />;
 
   return (
     <SidebarMenu>
@@ -40,14 +52,14 @@ export async function NavUser() {
         <UserDropdown>
           <SidebarMenuButton size="lg">
             <Avatar className="rounded-lg">
-              <AvatarImage src={user.avatarUrl} />
-              <AvatarFallback className="rounded-lg">
-                {user.username.substring(0, 2)}
-              </AvatarFallback>
+              <AvatarImage src={userSnapshot.user.avatarUrl} />
+              <AvatarFallback className="rounded-lg" />
             </Avatar>
             <div className="flex flex-col justify-center">
-              <span>{user.username}</span>
-              <span className="text-muted-foreground">{user.email}</span>
+              <span>{userSnapshot.user.username}</span>
+              <span className="text-muted-foreground">
+                {userSnapshot.user.email}
+              </span>
             </div>
           </SidebarMenuButton>
         </UserDropdown>

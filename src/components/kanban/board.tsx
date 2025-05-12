@@ -9,7 +9,6 @@ import { useEffect } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { getBoard, updateBoard } from "@/api/boards/route";
 import { modifyBoardObject, unmodifyBoardObject } from "@/lib/utils";
-import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 
 interface KanbanBoardProps {
   boardId: string;
@@ -37,6 +36,14 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
       newColumnOrder.splice(destination.index, 0, draggableId);
 
       boardStore.columnOrder = newColumnOrder;
+
+      const mongoBoard = unmodifyBoardObject(boardStore);
+
+      updateBoard(boardId, {
+        tasks: mongoBoard.tasks,
+        columns: mongoBoard.columns,
+        columnOrder: mongoBoard.columnOrder,
+      });
       return;
     }
 
@@ -56,6 +63,14 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
       };
 
       boardStore.columns[newColumn._id] = newColumn;
+
+      const mongoBoard = unmodifyBoardObject(boardStore);
+
+      updateBoard(boardId, {
+        tasks: mongoBoard.tasks,
+        columns: mongoBoard.columns,
+        columnOrder: mongoBoard.columnOrder,
+      });
 
       return;
     }
@@ -77,11 +92,17 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
 
     boardStore.columns[newSourceColumn._id] = newSourceColumn;
     boardStore.columns[newDestColumn._id] = newDestColumn;
+
+    const mongoBoard = unmodifyBoardObject(boardStore);
+
+    updateBoard(boardId, {
+      tasks: mongoBoard.tasks,
+      columns: mongoBoard.columns,
+      columnOrder: mongoBoard.columnOrder,
+    });
   };
 
   useEffect(() => {
-    kanbanComponentsStore.boardId = boardId;
-
     const fetchAndSetBoard = async () => {
       const boardResponse = await getBoard(boardId);
       if (boardResponse.ok) {
@@ -90,24 +111,9 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
         Object.assign(boardStore, modifyBoardObject(boardData));
       }
     };
+
     fetchAndSetBoard();
   }, [boardId]);
-
-  useEffect(() => {
-    if (
-      Object.keys(boardSnapshot).length === 0 &&
-      boardSnapshot.constructor === Object
-    )
-      return;
-
-    const mongoBoard = unmodifyBoardObject(boardStore);
-
-    // updateBoard(boardId, {
-    //   tasks: mongoBoard.tasks,
-    //   columns: mongoBoard.columns,
-    //   columnOrder: mongoBoard.columnOrder,
-    // });
-  }, [boardSnapshot, boardStore]);
 
   if (
     Object.keys(boardSnapshot).length === 0 &&

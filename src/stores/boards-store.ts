@@ -11,7 +11,10 @@ export const deleteBoard = async (boardId: string) => {
   if (response.ok) {
     const newBoards =
       boardsStore.boards?.filter((board) => board._id !== boardId) ?? null;
+
     boardsStore.boards = newBoards;
+  } else {
+    boardsStore.error = response.statusText;
   }
 
   boardsStore.loading = false;

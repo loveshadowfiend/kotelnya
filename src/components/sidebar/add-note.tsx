@@ -21,19 +21,19 @@ import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { addBoard } from "@/api/boards/route";
 import { useSnapshot } from "valtio";
-import { boardsStore } from "@/stores/boards-store";
 import { Input } from "../ui/input";
+import { notesStore } from "@/stores/notes-store";
+import { addNote } from "@/api/auth/notes/routes";
 import { projectStore } from "@/stores/project-store";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Введите имя задачи" }),
 });
 
-export function AddBoard({ children }: { children: React.ReactNode }) {
-  const boardSnapshot = useSnapshot(boardsStore);
+export function AddNote({ children }: { children: React.ReactNode }) {
   const projectSnapshot = useSnapshot(projectStore);
+  const noteSnapshot = useSnapshot(notesStore);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -43,27 +43,27 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    boardsStore.loading = true;
+    notesStore.loading = true;
 
-    const response = await addBoard(projectSnapshot.project?._id, values.title);
+    const response = await addNote(projectSnapshot.project?._id, values.title);
 
     if (response.ok) {
       const data = await response.json();
-      boardsStore.boards?.push(data);
+      notesStore.notes?.push(data);
       router.push(`/board/${data._id}`);
     }
 
-    boardsStore.loading = false;
+    notesStore.loading = false;
   }
 
-  if (boardSnapshot.loading || !projectStore.project) return null;
+  if (notesStore.loading || !projectSnapshot.project) return;
 
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Добавить доску</DialogTitle>
+          <DialogTitle>Добавить заметку</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -77,7 +77,7 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
                 <FormItem>
                   <FormLabel>Название</FormLabel>
                   <FormControl>
-                    <Input placeholder="Доска" {...field} />
+                    <Input placeholder="Заметка" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

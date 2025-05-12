@@ -1,6 +1,5 @@
 import { getAuthToken } from "@/lib/auth";
 import { API_URL } from "@/lib/config";
-import { Board } from "@/types";
 
 export async function getBoard(boardId: string) {
   const token = await getAuthToken();

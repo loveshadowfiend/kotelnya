@@ -12,22 +12,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronsUpDown, Loader2 } from "lucide-react";
+import { ChevronsUpDown, Delete, Edit, Loader2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AddProject } from "./add-project";
 import { getAuthToken, verifyAuth } from "@/lib/auth";
 import { Project } from "@/types";
 import { useEffect, useState } from "react";
 import { NavCurrentProject } from "./nav-current-project";
+import { Button } from "../ui/button";
+import { deleteProject, projectsStore } from "@/stores/projects-store";
+import { useSnapshot } from "valtio";
+import { projectStore } from "@/stores/project-store";
+import { userStore } from "@/stores/user-store";
 
-export function NavProjectSwitcher() {
-  const [data, setData] = useState<Project[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export function NavProjects() {
+  const userSnapshot = useSnapshot(userStore);
+  const projectsSnapshot = useSnapshot(projectsStore);
+
+  const handleDelete = async (projectId: string) => {
+    deleteProject(projectId);
+  };
 
   useEffect(() => {
+    // TODO: transfer fetch logic to api/projects/routes.ts
     const fetchProjects = async () => {
-      setLoading(true);
+      projectsStore.loading = true;
+
       const payload = await verifyAuth();
       const token = await getAuthToken();
 
@@ -47,15 +57,13 @@ export function NavProjectSwitcher() {
         }
       );
 
-      const json = await response.json();
-
       if (response.ok) {
-        setData(json);
-      } else {
-        setError(json.message ?? "Ошибка при получении проектов");
+        const projects = await response.json();
+
+        projectsStore.projects = projects;
       }
 
-      setLoading(false);
+      projectsStore.loading = false;
     };
 
     fetchProjects();
@@ -77,23 +85,31 @@ export function NavProjectSwitcher() {
           <DropdownMenuContent className="relative w-60" align="center">
             <DropdownMenuLabel>Проекты</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {loading && (
+            {projectsStore.loading && (
               <div className="flex items-center justify-center overflow-hidden py-3">
                 <Loader2 className="animate-spin" />
               </div>
             )}
-            {!loading &&
-              data.map((project: Project) => {
+            {!projectsStore.loading &&
+              projectsStore.projects?.map((project: Project) => {
                 return (
                   <div
                     key={project._id}
-                    className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
+                    className="relative flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
+                    onClick={() => {
+                      projectStore.project = project;
+                      localStorage.setItem(
+                        "currentProject",
+                        JSON.stringify({
+                          id: project._id,
+                          userId: userSnapshot.user?._id,
+                        })
+                      );
+                    }}
                   >
                     <Avatar className="rounded-lg">
                       <AvatarImage src="" />
-                      <AvatarFallback className="rounded-lg">
-                        {project.title.substring(0, 2)}
-                      </AvatarFallback>
+                      <AvatarFallback className="rounded-lg" />
                     </Avatar>
                     <div className="flex flex-col">
                       <p className="text-sm">{project.title}</p>
@@ -101,10 +117,25 @@ export function NavProjectSwitcher() {
                         {project.status}
                       </p>
                     </div>
+                    <div className="absolute flex right-0 z-50">
+                      {/* <Button
+                        className="text-muted-foreground w-5 h-5"
+                        variant="ghost"
+                      >
+                        <Edit />
+                      </Button> */}
+                      <Button
+                        className="text-muted-foreground w-5 h-5"
+                        variant="ghost"
+                        onClick={() => handleDelete(project._id)}
+                      >
+                        <Delete />
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
-            {!loading && (
+            {!projectsStore.loading && (
               <AddProject>
                 <div className="flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit">
                   <Avatar className="rounded-lg">

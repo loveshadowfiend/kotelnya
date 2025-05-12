@@ -21,17 +21,21 @@ import {
   CollapsibleTrigger,
 } from "../ui/collapsible";
 import { AddBoard } from "./add-board";
+import { projectStore } from "@/stores/project-store";
 
 export function NavBoards() {
   const boardsSnapshot = useSnapshot(boardsStore);
+  const projectSnapshot = useSnapshot(projectStore);
 
   useEffect(() => {
+    if (!projectSnapshot.project) return;
+
     async function fetchBoards() {
       boardsStore.loading = true;
 
       const token = await getAuthToken();
       const response = await fetch(
-        "http://103.249.132.70:9001/api/projects/6814eb6af3982bf9826388aa/boards",
+        `http://103.249.132.70:9001/api/projects/${projectSnapshot.project?._id}/boards`,
         {
           method: "GET",
           headers: {
@@ -39,9 +43,9 @@ export function NavBoards() {
           },
         }
       );
-      const data = await response.json();
 
       if (response.ok) {
+        const data = await response.json();
         boardsStore.boards = data;
       }
 
@@ -49,9 +53,9 @@ export function NavBoards() {
     }
 
     fetchBoards();
-  }, []);
+  }, [projectSnapshot]);
 
-  if (boardsSnapshot.loading) {
+  if (boardsSnapshot.loading || !projectSnapshot.project) {
     return (
       <>
         <SidebarMenuButton>

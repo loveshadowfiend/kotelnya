@@ -1,5 +1,4 @@
 export type KanbanComponentsState = {
-  boardId: string;
   isAddingTask: boolean;
   isAddingCategory: boolean;
   addNewTaskActiveColumn: string;
@@ -84,10 +83,11 @@ export type Project = {
 
 export type ProjectState = {
   project: Project | null;
+  loading: boolean;
 };
 
 export type ProjectsState = {
-  projects: Project[];
+  projects: Project[] | null;
   loading: boolean;
   error: string | null;
 };
@@ -103,7 +103,12 @@ export type BoardsState = {
 };
 
 export type NotesState = {
-  notes: Note[];
+  notes: Note[] | null;
   loading: boolean;
   error: string | null;
+};
+
+export type UserState = {
+  user: User | null;
+  loading: boolean;
 };

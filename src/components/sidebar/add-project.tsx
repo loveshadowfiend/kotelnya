@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { getAuthToken } from "@/lib/auth";
+import { addProject, projectsStore } from "@/stores/projects-store";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Введите имя проекта" }),
@@ -34,16 +35,9 @@ export function AddProject({ children }: { children: React.ReactNode }) {
     },
   });
 
+  // TODO: transfer logic to api/projects/routes.ts
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    const token = await getAuthToken();
-    const response = await fetch("http://103.249.132.70:9001/api/projects", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(values),
-    });
+    await addProject(values.title);
   }
 
   return (

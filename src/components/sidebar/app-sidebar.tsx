@@ -1,4 +1,4 @@
-import { Cat, Kanban, BookHeart, Settings, Archive, Plus } from "lucide-react";
+import { Cat, Settings, Archive } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -10,19 +10,11 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { NavProjectSwitcher } from "./nav-project-switcher";
+import { NavProjects } from "./nav-projects";
 import Link from "next/link";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../ui/collapsible";
 import { NavUser } from "./nav-user";
-import { AddBoard } from "./add-board";
 import { NavBoards } from "./nav-boards";
 import { NavNotes } from "./nav-notes";
 
@@ -30,7 +22,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b">
-        <NavProjectSwitcher />
+        <NavProjects />
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
@@ -52,14 +44,6 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="#">
-                    <Archive />
-                    <span>Архив</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
@@ -67,23 +51,9 @@ export function AppSidebar() {
           <SidebarGroupLabel>Рабочее пространство</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {/* <Collapsible defaultOpen className="group/collapsible">
-                <SidebarMenuItem>
-                  <CollapsibleTrigger asChild>
-                    <SidebarMenuButton>
-                      <Kanban />
-                      <span>Канбан-доска</span>
-                    </SidebarMenuButton>
-                  </CollapsibleTrigger>
-                  <CollapsibleContent>
-                    <SidebarMenuSub>
-                      <NavBoards />
-                      <AddBoard />
-                    </SidebarMenuSub>
-                  </CollapsibleContent>
-                </SidebarMenuItem>
-              </Collapsible> */}
               <NavBoards />
+            </SidebarMenu>
+            <SidebarMenu>
               <NavNotes />
             </SidebarMenu>
           </SidebarGroupContent>

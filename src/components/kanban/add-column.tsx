@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { useClickOutside } from "@/hooks/use-outside-click";
-import { addNewColumn } from "@/stores/board-store";
+import { addNewColumn, boardStore } from "@/stores/board-store";
 import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2, Plus, X } from "lucide-react";
@@ -30,6 +30,7 @@ const formSchema = z.object({
 export function KanbanAddColumn() {
   const [isLoading, setIsLoading] = useState(false);
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
+  const boardSnapshot = useSnapshot(boardStore);
   const ref = useRef<HTMLFormElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -41,10 +42,7 @@ export function KanbanAddColumn() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const response = await createColumn(
-      kanbanComponentsSnapshop.boardId,
-      values.title
-    );
+    const response = await createColumn(boardSnapshot._id, values.title);
 
     if (response.ok) {
       const newColumn = await response.json();
