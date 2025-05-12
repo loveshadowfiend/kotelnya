@@ -26,6 +26,7 @@ import { Input } from "../ui/input";
 import { notesStore } from "@/stores/notes-store";
 import { addNote } from "@/api/notes/routes";
 import { projectStore } from "@/stores/project-store";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Введите имя задачи" }),
@@ -49,8 +50,10 @@ export function AddNote({ children }: { children: React.ReactNode }) {
 
     if (response.ok) {
       const data = await response.json();
+
       notesStore.notes?.push(data);
       router.push(`/note/${data._id}`);
+      toast.success(`Заметка ${values.title} успешно создана`);
     }
 
     notesStore.loading = false;

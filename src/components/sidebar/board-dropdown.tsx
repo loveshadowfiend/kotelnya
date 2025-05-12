@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSnapshot } from "valtio";
 import { Edit, Trash2 } from "lucide-react";
+import { boardStore } from "@/stores/board-store";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface BoardDropdownProps {
   children: React.ReactNode;
@@ -23,10 +26,22 @@ export function BoardDropdown({
   boardId,
   boardTitle,
 }: BoardDropdownProps) {
+  const params = useParams();
+  const router = useRouter();
   const boardsSnapshot = useSnapshot(boardsStore);
 
   async function handleDeleteBoard() {
+    if (params.boardId && params.boardId === boardId) {
+      router.push("/");
+    }
+
     await deleteBoard(boardId);
+
+    if (boardsStore.error) {
+      toast.error(`Возникла ошибка: ${boardsStore.error}`);
+    } else {
+      toast.success(`Доска ${boardTitle} успешно удалена`);
+    }
   }
 
   return (

@@ -26,6 +26,7 @@ import { useSnapshot } from "valtio";
 import { boardsStore } from "@/stores/boards-store";
 import { Input } from "../ui/input";
 import { projectStore } from "@/stores/project-store";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "Введите имя задачи" }),
@@ -49,8 +50,10 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
 
     if (response.ok) {
       const data = await response.json();
+
       boardsStore.boards?.push(data);
       router.push(`/board/${data._id}`);
+      toast.success(`Доска ${values.title} успешно создана`);
     }
 
     boardsStore.loading = false;

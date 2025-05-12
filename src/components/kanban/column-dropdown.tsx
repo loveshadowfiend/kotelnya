@@ -26,11 +26,9 @@ export function ColumnDropdown({
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
 
   async function handleDeleteColumn() {
-    const response = await deleteColumnApi(columnId);
+    deleteColumnStore(columnId);
 
-    if (response.ok) {
-      deleteColumnStore(columnId);
-    }
+    const response = await deleteColumnApi(columnId);
   }
 
   return (
