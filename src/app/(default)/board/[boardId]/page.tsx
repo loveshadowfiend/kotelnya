@@ -10,7 +10,7 @@ export default async function BoardPage({
 
   return (
     <main className="min-h-screen space-y-6 gap-6">
-      <KanbanBreadcrumb />
+      <KanbanBreadcrumb boardId={boardId} />
       <KanbanBoard boardId={boardId} />
     </main>
   );

@@ -166,7 +166,7 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         type="multiple"
         value={state}
         ref={ref}
-        className="flex items-center justify-between bg-background border rounded-lg z-50"
+        className="flex items-center justify-between bg-background border rounded-lg z-10000"
         aria-hidden={!shouldShow}
         style={{
           position: "absolute",

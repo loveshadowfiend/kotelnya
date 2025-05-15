@@ -8,40 +8,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSnapshot } from "valtio";
-import { Edit, Router, Trash2 } from "lucide-react";
-import { notesStore, deleteNote } from "@/stores/notes-store";
-import { useRouter } from "next/navigation";
+import { Edit, Trash2 } from "lucide-react";
+import { deleteTask as deleteTaskStore } from "@/stores/board-store";
+import { deleteTask as deleteTaskApi } from "@/api/tasks/route";
 import { toast } from "sonner";
-import { useParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 interface NoteDropdownProps {
   children: React.ReactNode;
-  noteId: string;
-  noteTitle: string;
+  columnId: string;
+  taskId: string;
+  taskTitle: string;
 }
 
-export function NoteDropdown({
+export function ItemDropdown({
   children,
-  noteId,
-  noteTitle,
+  columnId,
+  taskId,
+  taskTitle,
 }: NoteDropdownProps) {
-  const params = useParams();
   const router = useRouter();
-  const notesSnapshot = useSnapshot(notesStore);
 
-  async function handleDeleteNote() {
-    if (params.noteId && params.noteId === noteId) {
-      router.push("/");
-    }
+  async function handleDeleteTask() {
+    toast.promise(deleteTaskApi(taskId), {
+      loading: "Удаление задачи...",
+      success: () => {
+        deleteTaskStore(columnId, taskId);
 
-    await deleteNote(noteId);
-
-    if (notesStore.error) {
-      toast.error(`Возникла ошибка: ${notesStore.error}`);
-    } else {
-      toast.success(`Заметка "${noteTitle}" успешно удалена`);
-    }
+        return `Задача "${taskTitle}" успешно удалена`;
+      },
+      error: "Не удалось удалить задачу",
+    });
   }
 
   return (
@@ -49,14 +46,19 @@ export function NoteDropdown({
       <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
       <DropdownMenuContent className="shadow-none w-[240px]">
         <DropdownMenuLabel className="text-sm font-normal">
-          {noteTitle}
+          {taskTitle}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <Edit />
           Переименовать
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeleteNote}>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDeleteTask();
+          }}
+        >
           <Trash2 />
           <span>Удалить</span>
         </DropdownMenuItem>

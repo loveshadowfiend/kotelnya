@@ -79,7 +79,7 @@ export function LoginForm() {
           render={({ field }) => (
             <FormItem>
               <FormControl>
-                <Input placeholder="email / имя пользователя" {...field} />
+                <Input placeholder="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

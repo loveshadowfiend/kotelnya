@@ -5,7 +5,7 @@ import { KanbanColumn } from "@/components/kanban/column";
 import { KanbanAddColumn } from "./add-column";
 import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { getBoard, updateBoard } from "@/api/boards/route";
 import { modifyBoardObject, unmodifyBoardObject } from "@/lib/utils";
@@ -15,7 +15,11 @@ interface KanbanBoardProps {
 }
 
 export function KanbanBoard({ boardId }: KanbanBoardProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const boardSnapshot = useSnapshot(boardStore);
+  const isBoardEmpty =
+    Object.keys(boardSnapshot).length === 0 &&
+    boardSnapshot.constructor === Object;
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
@@ -104,21 +108,22 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
 
   useEffect(() => {
     const fetchAndSetBoard = async () => {
+      setIsLoading(true);
+
       const boardResponse = await getBoard(boardId);
       if (boardResponse.ok) {
         const boardData = await boardResponse.json();
 
         Object.assign(boardStore, modifyBoardObject(boardData));
       }
+
+      setIsLoading(false);
     };
 
     fetchAndSetBoard();
   }, [boardId]);
 
-  if (
-    Object.keys(boardSnapshot).length === 0 &&
-    boardSnapshot.constructor === Object
-  ) {
+  if (isBoardEmpty || boardSnapshot._id !== boardId || isLoading) {
     return (
       <div
         className="
@@ -147,8 +152,6 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
       </div>
     );
   }
-
-  console.log(JSON.stringify(boardSnapshot));
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>

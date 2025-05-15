@@ -9,8 +9,8 @@ export default async function NotePage({
   const { noteId } = await params;
 
   return (
-    <main>
-      <NoteBreadcrumb />
+    <main className="w-full">
+      <NoteBreadcrumb noteId={noteId} />
       <Editor noteId={noteId} />
     </main>
   );

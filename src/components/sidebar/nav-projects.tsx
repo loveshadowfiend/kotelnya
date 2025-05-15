@@ -12,12 +12,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronsUpDown, Delete, Edit, Loader2 } from "lucide-react";
+import { ChevronsUpDown, Loader2, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AddProject } from "./add-project";
-import { getAuthToken, verifyAuth } from "@/lib/auth";
+import { verifyAuth } from "@/lib/auth";
 import { Project } from "@/types";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { NavCurrentProject } from "./nav-current-project";
 import { Button } from "../ui/button";
 import { deleteProject, projectsStore } from "@/stores/projects-store";
@@ -87,7 +87,7 @@ export function NavProjects() {
                 return (
                   <div
                     key={project._id}
-                    className="relative flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
+                    className="relative group flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
                     onClick={() => {
                       projectStore.project = project;
 
@@ -112,7 +112,7 @@ export function NavProjects() {
                         {project.status}
                       </p>
                     </div>
-                    <div className="absolute flex right-0 z-50">
+                    <div className="absolute flex right-3 z-50">
                       {/* <Button
                         className="text-muted-foreground w-5 h-5"
                         variant="ghost"
@@ -120,11 +120,11 @@ export function NavProjects() {
                         <Edit />
                       </Button> */}
                       <Button
-                        className="text-muted-foreground w-5 h-5"
+                        className="hidden text-muted-foreground w-5 h-5 group-hover:inline-flex"
                         variant="ghost"
                         onClick={() => handleDelete(project._id)}
                       >
-                        <Delete />
+                        <Trash2 />
                       </Button>
                     </div>
                   </div>

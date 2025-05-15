@@ -12,6 +12,9 @@ import { useState } from "react";
 import { KanbanCard } from "./card";
 import { Column, Task } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ItemDropdown } from "./item-dropdown";
+import { Button } from "../ui/button";
+import { Ellipsis } from "lucide-react";
 
 interface KanbanItemProps {
   task: Task;
@@ -36,8 +39,20 @@ export function KanbanItem({ task, column, index }: KanbanItemProps) {
             onClick={() => setIsDialogOpen(true)}
           >
             <CardHeader>
-              <CardTitle className="text-sm font-normal">
-                {task.title}
+              <CardTitle className="flex justify-between items-center text-sm font-normal">
+                <span>{task.title}</span>
+                <ItemDropdown
+                  columnId={column._id}
+                  taskId={task._id}
+                  taskTitle={task.title}
+                >
+                  <Button
+                    className="text-muted-foreground w-4 h-4"
+                    variant="ghost"
+                  >
+                    <Ellipsis />
+                  </Button>
+                </ItemDropdown>
               </CardTitle>
               {task.assignee.length > 0 && (
                 <CardDescription className="flex items-center gap-2 mt-2">

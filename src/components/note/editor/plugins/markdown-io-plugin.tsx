@@ -27,6 +27,7 @@ export default function MarkdownIoPlugin() {
           editorState.read(() => {
             const markdownContent = $convertToMarkdownString(TRANSFORMERS);
 
+            noteStore.markdownContent = markdownContent;
             updateNote(noteSnapshot._id, markdownContent);
           });
         }, 1000);

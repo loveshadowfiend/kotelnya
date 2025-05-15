@@ -17,6 +17,7 @@ export function modifyBoardObject(board: Board) {
           _id: task._id,
           title: task.title,
           assignee: task.assignee,
+          description: task.description,
           createdAt: task.createdAt,
           updatedAt: task.updatedAt,
           __v: task.__v,

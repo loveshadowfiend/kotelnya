@@ -34,7 +34,6 @@ const formSchema = z.object({
 
 export function AddNote({ children }: { children: React.ReactNode }) {
   const projectSnapshot = useSnapshot(projectStore);
-  const noteSnapshot = useSnapshot(notesStore);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

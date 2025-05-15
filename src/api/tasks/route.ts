@@ -30,3 +30,22 @@ export async function deleteTask(taskId: string) {
 
   return response;
 }
+
+export async function updateTask(
+  taskId: string,
+  title: string,
+  description: string
+) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      title: title,
+      description: description,
+    }),
+  });
+}

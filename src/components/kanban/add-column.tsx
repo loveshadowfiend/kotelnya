@@ -17,6 +17,7 @@ import { useSnapshot } from "valtio";
 import { z } from "zod";
 import { Textarea } from "../ui/textarea";
 import { createColumn } from "@/api/columns/route";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   title: z
@@ -51,7 +52,9 @@ export function KanbanAddColumn() {
       // form.setFocus("title");
       kanbanComponentsStore.isAddingCategory = false;
     } else {
-      console.log("анлаки");
+      toast.error(
+        `Возникла ошибка при создании списка: ${response.statusText}`
+      );
     }
 
     setIsLoading(false);
@@ -121,8 +124,7 @@ export function KanbanAddColumn() {
           />
           <div className="flex gap-1">
             <Button type="submit" disabled={isLoading}>
-              {isLoading && <Loader2 className="animate-spin" />}
-              {!isLoading && "Добавить"}
+              Добавить
             </Button>
             <Button
               variant="destructive"

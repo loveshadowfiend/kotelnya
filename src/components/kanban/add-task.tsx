@@ -18,6 +18,7 @@ import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 import { useClickOutside } from "@/hooks/use-outside-click";
 import { useEffect, useRef, useState } from "react";
 import { addTask } from "@/api/tasks/route";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   title: z
@@ -25,7 +26,7 @@ const formSchema = z.object({
     .min(1, {
       message: "Название не может быть пустым",
     })
-    .max(32, { message: "Название не может быть длиннее 32 символов" }),
+    .max(64, { message: "Название не может быть длиннее 64 символов" }),
 });
 
 interface KanbanNewTaskProps {
@@ -56,7 +57,9 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
       // form.setFocus("title");
       kanbanComponentsStore.addNewTaskActiveColumn = "";
     } else {
-      console.log("анлаки");
+      toast.error(
+        `Возникла ошибка при создании списка: ${response.statusText}`
+      );
     }
 
     setIsLoading(false);
@@ -121,8 +124,7 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
           />
           <div className="flex gap-1">
             <Button type="submit" disabled={isLoading}>
-              {!isLoading && <span>Сохранить</span>}
-              {isLoading && <Loader2 className="animate-spin" />}
+              <span>Сохранить</span>
             </Button>
             <Button
               variant="destructive"

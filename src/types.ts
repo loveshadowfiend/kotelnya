@@ -53,6 +53,7 @@ export type Column = {
 export type Task = {
   _id: string;
   title: string;
+  description: string;
   assignee: string[];
   createdAt: string;
   updatedAt: string;

@@ -25,6 +25,8 @@ import MarkdownIoPlugin from "./plugins/markdown-io-plugin";
 import { useSnapshot } from "valtio";
 import { noteStore } from "@/stores/note-store";
 import { getNote } from "@/api/notes/routes";
+import LexicalAutoLinkPlugin from "./plugins/auto-link-plugin";
+import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 
 const initialConfig = {
   namespace: "kotelnya-editor",
@@ -52,11 +54,13 @@ interface EditorProps {
 }
 
 export function Editor({ noteId }: EditorProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const noteSnapshot = useSnapshot(noteStore);
-
+  const isNoteEmpty =
+    Object.keys(noteSnapshot).length === 0 &&
+    noteSnapshot.constructor === Object;
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
-
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -65,6 +69,8 @@ export function Editor({ noteId }: EditorProps) {
 
   useEffect(() => {
     const fetchAndSetNote = async () => {
+      setIsLoading(true);
+
       const response = await getNote(noteId);
 
       if (response.ok) {
@@ -72,20 +78,20 @@ export function Editor({ noteId }: EditorProps) {
 
         Object.assign(noteStore, noteData);
       }
+
+      setIsLoading(false);
     };
 
     fetchAndSetNote();
   }, [noteId]);
 
   if (
-    (Object.keys(noteSnapshot).length === 0 &&
-      noteSnapshot.constructor === Object) ||
-    noteSnapshot._id !== noteId
+    (isNoteEmpty && noteSnapshot.constructor === Object) ||
+    noteSnapshot._id !== noteId ||
+    isLoading
   ) {
     return;
   }
-
-  console.log(noteSnapshot);
 
   return (
     <LexicalComposer
@@ -101,7 +107,7 @@ export function Editor({ noteId }: EditorProps) {
       <RichTextPlugin
         contentEditable={
           <ContentEditable
-            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
+            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative editor"
             aria-placeholder={"Введите текст..."}
             placeholder={
               <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
@@ -125,6 +131,8 @@ export function Editor({ noteId }: EditorProps) {
       )}
       <ComponentPickerMenuPlugin />
       <MarkdownIoPlugin />
+      <LexicalAutoLinkPlugin />
+      <ClickableLinkPlugin />
     </LexicalComposer>
   );
 }
