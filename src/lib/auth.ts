@@ -17,7 +17,7 @@ export async function setAuthCookie(token: string) {
 
   (await cookieStore).set("auth-token", token, {
     httpOnly: true,
-    // secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production",
     expires: expiresAt,
     sameSite: "lax",
     path: "/",

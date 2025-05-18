@@ -22,6 +22,7 @@ import {
 } from "../ui/collapsible";
 import { AddBoard } from "./add-board";
 import { projectStore } from "@/stores/project-store";
+import { getBoards } from "@/api/boards/route";
 
 export function NavBoards() {
   const boardsSnapshot = useSnapshot(boardsStore);
@@ -34,16 +35,7 @@ export function NavBoards() {
     async function fetchBoards() {
       boardsStore.loading = true;
 
-      const token = await getAuthToken();
-      const response = await fetch(
-        `http://103.249.132.70:9001/api/projects/${projectSnapshot.project?._id}/boards`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await getBoards(projectSnapshot.project?._id);
 
       if (response.ok) {
         const data = await response.json();

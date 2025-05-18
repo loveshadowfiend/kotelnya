@@ -13,6 +13,18 @@ export async function getBoard(boardId: string) {
   return response;
 }
 
+export async function getBoards(projectId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/projects/${projectId}/boards`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response;
+}
+
 export async function deleteBoard(boardId: string) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/boards/${boardId}`, {
