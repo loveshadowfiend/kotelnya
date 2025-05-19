@@ -46,6 +46,7 @@ import {
 } from "@lexical/rich-text";
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
 import { $createListNode } from "@lexical/list";
+import { cn } from "@/lib/utils";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 
@@ -166,14 +167,17 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         type="multiple"
         value={state}
         ref={ref}
-        className="flex items-center justify-between bg-background border rounded-lg z-10000"
+        className={cn(
+          `absolute items-center justify-between bg-background border rounded-lg z-10000`,
+          {
+            visible: shouldShow,
+            invisible: !shouldShow,
+          }
+        )}
         aria-hidden={!shouldShow}
         style={{
-          position: "absolute",
-          top: coords?.y,
-          left: coords?.x,
-          visibility: shouldShow ? "visible" : "hidden",
-          opacity: shouldShow ? 1 : 0,
+          top: coords?.y === undefined ? 0 : coords?.y,
+          left: coords?.x === undefined ? 0 : coords?.x,
         }}
       >
         <Select

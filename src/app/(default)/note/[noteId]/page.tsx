@@ -9,7 +9,7 @@ export default async function NotePage({
   const { noteId } = await params;
 
   return (
-    <main className="w-full">
+    <main className="w-full my-0">
       <NoteBreadcrumb noteId={noteId} />
       <Editor noteId={noteId} />
     </main>
