@@ -1,3 +1,5 @@
+import { updateBoard } from "@/api/boards/route";
+import { unmodifyBoardObject } from "@/lib/utils";
 import { BoardModified, Column, Task } from "@/types";
 import { proxy } from "valtio";
 
@@ -9,6 +11,7 @@ export const addNewTask = (
   const newTask: Task = {
     _id: newTaskId,
     title,
+    description: "",
     assignee: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
@@ -71,6 +74,7 @@ export const deleteColumn = (columnId: string) => {
 };
 
 export const moveTask = (
+  boardId: string,
   sourceColumnId: string,
   destinationColumnId: string,
   taskId: string,
@@ -95,6 +99,14 @@ export const moveTask = (
     ...destinationColumn,
     tasks: newDestinationTaskIds,
   };
+
+  const mongoBoard = unmodifyBoardObject(boardStore);
+
+  updateBoard(boardId, {
+    tasks: mongoBoard.tasks,
+    columns: mongoBoard.columns,
+    columnOrder: mongoBoard.columnOrder,
+  });
 };
 
 export const getAllColumnTitlesAndIds = () => {

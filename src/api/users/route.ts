@@ -24,3 +24,19 @@ export async function getUserProjects(userId: string) {
 
   return response;
 }
+
+export async function searchUsers(query: string) {
+  const token = await getAuthToken();
+  const response = await fetch(
+    `${API_URL}/api/users/search?query=${encodeURIComponent(query)}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  return response;
+}

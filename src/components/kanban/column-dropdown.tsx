@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface ColumnDropdownProps {
   children: React.ReactNode;
@@ -26,9 +27,15 @@ export function ColumnDropdown({
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
 
   async function handleDeleteColumn() {
-    deleteColumnStore(columnId);
+    toast.promise(deleteColumnApi(columnId), {
+      loading: "Удаление списка...",
+      success: () => {
+        deleteColumnStore(columnId);
 
-    const response = await deleteColumnApi(columnId);
+        return `Список "${columnTitle}" успешно удален`;
+      },
+      error: "Не удалось удалить список",
+    });
   }
 
   return (

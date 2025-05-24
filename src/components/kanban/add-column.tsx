@@ -43,19 +43,18 @@ export function KanbanAddColumn() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const response = await createColumn(boardSnapshot._id, values.title);
+    toast.promise(createColumn(boardSnapshot._id, values.title), {
+      loading: "Создание задачи...",
+      success: async (response) => {
+        const newColumn = await response.json();
+        addNewColumn(newColumn._id, values.title);
+        form.reset();
+        kanbanComponentsStore.isAddingCategory = false;
 
-    if (response.ok) {
-      const newColumn = await response.json();
-      addNewColumn(newColumn._id, values.title);
-      form.reset();
-      // form.setFocus("title");
-      kanbanComponentsStore.isAddingCategory = false;
-    } else {
-      toast.error(
-        `Возникла ошибка при создании списка: ${response.statusText}`
-      );
-    }
+        return `Список "${values.title}" успешно создан`;
+      },
+      error: "Не удалось создать список",
+    });
 
     setIsLoading(false);
   }

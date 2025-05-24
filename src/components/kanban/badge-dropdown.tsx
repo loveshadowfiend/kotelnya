@@ -9,7 +9,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
-import { moveTask } from "@/stores/board-store";
+import { boardStore, moveTask } from "@/stores/board-store";
+import { useSnapshot } from "valtio";
 
 interface BadgeDropdownProps {
   className?: string;
@@ -31,6 +32,9 @@ export function BadgeDropdown({
   items,
   variant = "default",
 }: BadgeDropdownProps) {
+  const boardSnapshot = useSnapshot(boardStore);
+  const boardId = boardSnapshot._id;
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -47,7 +51,7 @@ export function BadgeDropdown({
           <DropdownMenuItem
             key={index}
             onClick={(e) => {
-              moveTask(currentColumndId, item.id, taskId, 0);
+              moveTask(boardId, currentColumndId, item.id, taskId, 0);
             }}
           >
             {item.title}

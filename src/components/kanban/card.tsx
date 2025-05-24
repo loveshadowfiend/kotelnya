@@ -10,7 +10,7 @@ import { getAllColumnTitlesAndIds, boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { BadgeDropdown } from "../badge-dropdown";
+import { BadgeDropdown } from "./badge-dropdown";
 import { DatePicker } from "./date-picker";
 import { updateTask } from "@/api/tasks/route";
 

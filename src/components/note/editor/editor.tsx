@@ -27,6 +27,7 @@ import { noteStore } from "@/stores/note-store";
 import { getNote } from "@/api/notes/routes";
 import LexicalAutoLinkPlugin from "./plugins/auto-link-plugin";
 import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
+import { $setSelection } from "lexical";
 
 const initialConfig = {
   namespace: "kotelnya-editor",
@@ -76,7 +77,7 @@ export function Editor({ noteId }: EditorProps) {
       if (response.ok) {
         const noteData = await response.json();
 
-        Object.assign(noteStore, noteData);
+        noteStore.note = noteData;
       }
 
       setIsLoading(false);
@@ -85,9 +86,13 @@ export function Editor({ noteId }: EditorProps) {
     fetchAndSetNote();
   }, [noteId]);
 
+  useEffect(() => {
+    noteStore.note = null;
+  }, []);
+
   if (
-    (isNoteEmpty && noteSnapshot.constructor === Object) ||
-    noteSnapshot._id !== noteId ||
+    !noteSnapshot.note ||
+    (noteSnapshot.note && noteSnapshot.note._id !== noteId) ||
     isLoading
   ) {
     return;
@@ -97,11 +102,13 @@ export function Editor({ noteId }: EditorProps) {
     <LexicalComposer
       initialConfig={{
         ...initialConfig,
-        editorState: () =>
+        editorState: () => {
           $convertFromMarkdownString(
-            noteSnapshot.markdownContent ?? "",
+            noteSnapshot.note?.markdownContent ?? "",
             TRANSFORMERS
-          ),
+          );
+          $setSelection(null);
+        },
       }}
     >
       <RichTextPlugin
@@ -130,7 +137,7 @@ export function Editor({ noteId }: EditorProps) {
         <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
       )}
       <ComponentPickerMenuPlugin />
-      <MarkdownIoPlugin />
+      <MarkdownIoPlugin noteId={noteSnapshot.note?._id ?? ""} />
       <LexicalAutoLinkPlugin />
       <ClickableLinkPlugin />
     </LexicalComposer>

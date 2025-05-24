@@ -12,7 +12,6 @@ import { Edit, Trash2 } from "lucide-react";
 import { deleteTask as deleteTaskStore } from "@/stores/board-store";
 import { deleteTask as deleteTaskApi } from "@/api/tasks/route";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 interface NoteDropdownProps {
   children: React.ReactNode;
@@ -27,8 +26,6 @@ export function ItemDropdown({
   taskId,
   taskTitle,
 }: NoteDropdownProps) {
-  const router = useRouter();
-
   async function handleDeleteTask() {
     toast.promise(deleteTaskApi(taskId), {
       loading: "Удаление задачи...",

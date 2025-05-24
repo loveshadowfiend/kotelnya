@@ -9,3 +9,13 @@ export async function registerUser(userJSON: string) {
 
   return response;
 }
+
+export async function loginUser(userJSON: string) {
+  const response = await fetch(`${API_URL}/api/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: userJSON,
+  });
+
+  return response;
+}

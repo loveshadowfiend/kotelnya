@@ -48,19 +48,18 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const response = await addTask(column._id, boardSnapshot._id, values.title);
+    toast.promise(addTask(column._id, boardSnapshot._id, values.title), {
+      loading: "Создание задачи...",
+      success: async (response) => {
+        const newTask = await response.json();
+        addNewTask(newTask._id, column._id, values.title);
+        form.reset();
+        kanbanComponentsStore.addNewTaskActiveColumn = "";
 
-    if (response.ok) {
-      const newTask = await response.json();
-      addNewTask(newTask._id, column._id, values.title);
-      form.reset();
-      // form.setFocus("title");
-      kanbanComponentsStore.addNewTaskActiveColumn = "";
-    } else {
-      toast.error(
-        `Возникла ошибка при создании списка: ${response.statusText}`
-      );
-    }
+        return `Задача "${values.title}" успешно создана`;
+      },
+      error: "Не удалось создать задачу",
+    });
 
     setIsLoading(false);
   }

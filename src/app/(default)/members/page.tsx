@@ -1,4 +1,5 @@
 import { MembersList } from "@/components/members/list";
+import { MembersSearchCombobox } from "@/components/members/members-search-combobox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface MembersPageProps {
@@ -12,13 +13,19 @@ export default function MembersPage() {
     <main className="flex flex-col h-screen mx-auto w-[66%] items-center pt-16 gap-8">
       <Tabs defaultValue="members" className="w-full">
         <TabsList className="mx-auto">
-          <TabsTrigger value="members">участники проекта</TabsTrigger>
-          <TabsTrigger value="invite">приглашение пользователей</TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="members">
+            участники проекта
+          </TabsTrigger>
+          <TabsTrigger className="cursor-pointer" value="invite">
+            приглашение пользователей
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="members">
           <MembersList />
         </TabsContent>
-        <TabsContent value="invite">ayo</TabsContent>
+        <TabsContent value="invite">
+          <MembersSearchCombobox />
+        </TabsContent>
       </Tabs>
     </main>
   );

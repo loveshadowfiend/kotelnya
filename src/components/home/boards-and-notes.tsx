@@ -6,26 +6,24 @@ import { useSnapshot } from "valtio";
 import { BookHeart, Kanban, Plus } from "lucide-react";
 import Link from "next/link";
 import { notesStore } from "@/stores/notes-store";
-import { useRef } from "react";
-import { AddProject } from "../sidebar/add-project";
 import { AddBoard } from "../sidebar/add-board";
 import { AddNote } from "../sidebar/add-note";
+import { Skeleton } from "../ui/skeleton";
 
 interface BoardsAndNotesProps {
   variant: "boards" | "notes";
 }
 
 export function BoardsAndNotes({ variant }: BoardsAndNotesProps) {
-  const ref = useRef<HTMLDivElement>(null);
   const boardsSnapshot = useSnapshot(boardsStore);
   const notesSnapshot = useSnapshot(notesStore);
 
   if (variant === "boards" && boardsSnapshot.boards === null) {
-    return <div></div>;
+    return BoardsAndNotesSkeleton();
   }
 
   if (variant === "notes" && notesSnapshot.notes === null) {
-    return <div></div>;
+    return BoardsAndNotesSkeleton();
   }
 
   return (
@@ -44,7 +42,7 @@ export function BoardsAndNotes({ variant }: BoardsAndNotesProps) {
           </>
         )}
       </div>
-      <div className="flex w-full gap-3 px-10" ref={ref}>
+      <div className="flex w-full gap-3 px-10">
         <ScrollArea className="w-1 flex-1 rounded-md">
           <div className="flex gap-2 pb-5">
             {variant === "boards" &&
@@ -91,6 +89,27 @@ export function BoardsAndNotes({ variant }: BoardsAndNotesProps) {
             )}
           </div>
           <ScrollBar orientation="horizontal" className="w-full" />
+        </ScrollArea>
+      </div>
+    </>
+  );
+}
+
+export function BoardsAndNotesSkeleton() {
+  return (
+    <>
+      <div className="flex gap-2 text-muted-foreground items-center w-full px-10 mt-10 mb-3">
+        <Skeleton className="h-4 w-4" />
+        <Skeleton className="h-4 w-20" />
+      </div>
+      <div className="flex w-full gap-3 px-10">
+        <ScrollArea className="w-1 flex-1 rounded-md">
+          <div className="flex gap-2 pb-5">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="w-60 h-40 rounded-md" />
+            ))}
+          </div>
+          <ScrollBar orientation="horizontal" className="w-full hidden" />
         </ScrollArea>
       </div>
     </>

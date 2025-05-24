@@ -1,4 +1,4 @@
-import { Cat, Settings, Archive } from "lucide-react";
+import { Cat, Settings, Archive, Users } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -41,6 +41,14 @@ export function AppSidebar() {
                   <Link href="#">
                     <Settings />
                     <span>Настройки</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/members">
+                    <Users />
+                    <span>Участники</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

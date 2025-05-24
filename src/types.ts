@@ -103,6 +103,10 @@ export type BoardsState = {
   error: string | null;
 };
 
+export type NoteState = {
+  note: Note | null;
+};
+
 export type NotesState = {
   notes: Note[] | null;
   loading: boolean;

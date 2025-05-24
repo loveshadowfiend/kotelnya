@@ -20,9 +20,6 @@ interface NoteBreadcrumbProps {
 
 export function NoteBreadcrumb({ noteId }: NoteBreadcrumbProps) {
   const noteSnapshot = useSnapshot(noteStore);
-  const isNoteEmpty =
-    Object.keys(noteSnapshot).length === 0 &&
-    noteSnapshot.constructor === Object;
 
   return (
     <div className="fixed flex justify-between w-full bg-background z-50 border-b">
@@ -42,12 +39,11 @@ export function NoteBreadcrumb({ noteId }: NoteBreadcrumbProps) {
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbPage className="flex items-center">
-              {(isNoteEmpty || noteSnapshot._id !== noteId) && (
+              {(!noteSnapshot.note ||
+                (noteSnapshot.note && noteSnapshot.note?._id !== noteId)) && (
                 <Loader2 className="animate-spin h-4 w-4" />
               )}
-              {!isNoteEmpty && noteSnapshot._id === noteId && (
-                <span>{noteSnapshot.title}</span>
-              )}
+              {noteSnapshot.note && <span>{noteSnapshot.note.title}</span>}
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
