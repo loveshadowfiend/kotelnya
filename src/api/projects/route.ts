@@ -54,3 +54,19 @@ export async function createProject(title: string) {
 
   return response;
 }
+
+export async function addProjectMember(projectId: string, userId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/projects/${projectId}/users`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      userId: userId,
+    }),
+  });
+
+  return response;
+}

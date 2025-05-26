@@ -13,6 +13,7 @@ import { Textarea } from "../ui/textarea";
 import { BadgeDropdown } from "./badge-dropdown";
 import { DatePicker } from "./date-picker";
 import { updateTask } from "@/api/tasks/route";
+import { KanbanRenameTaskDropdown } from "./rename-task-dropdown";
 
 interface KanbanCardProps {
   taskId: string;
@@ -35,9 +36,14 @@ export function KanbanCard({
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-3 field-sizing-content">
-            {boardSnapshot.tasks[taskId].title}
-          </DialogTitle>
+          <KanbanRenameTaskDropdown
+            taskId={taskId}
+            taskTitle={boardSnapshot.tasks[taskId].title}
+          >
+            <DialogTitle className="w-full flex items-center gap-3 field-sizing-content hover:cursor-pointer">
+              {boardSnapshot.tasks[taskId].title}{" "}
+            </DialogTitle>
+          </KanbanRenameTaskDropdown>
           <DialogDescription>
             <BadgeDropdown
               className="my-2"

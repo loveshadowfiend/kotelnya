@@ -14,6 +14,7 @@ import { useRouter } from "next/navigation";
 import { useSnapshot } from "valtio";
 import { userStore } from "@/stores/user-store";
 import { Skeleton } from "../ui/skeleton";
+import { API_URL } from "@/lib/config";
 
 export function NavUser() {
   const userSnapshot = useSnapshot(userStore);
@@ -52,7 +53,7 @@ export function NavUser() {
         <UserDropdown>
           <SidebarMenuButton size="lg">
             <Avatar className="rounded-lg">
-              <AvatarImage src={userSnapshot.user.avatarUrl} />
+              <AvatarImage src={`${API_URL}${userSnapshot.user.avatarUrl}`} />
               <AvatarFallback className="rounded-lg" />
             </Avatar>
             <div className="flex flex-col justify-center">

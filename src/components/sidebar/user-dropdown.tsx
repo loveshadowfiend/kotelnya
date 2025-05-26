@@ -9,10 +9,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { deleteAuthCookie } from "@/lib/auth";
-import { LogOut } from "lucide-react";
+import { Image, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ChangeAvatar } from "./change-avatar";
+import { useState } from "react";
+import { useSnapshot } from "valtio";
+import { userStore } from "@/stores/user-store";
+import { API_URL } from "@/lib/config";
 
 export function UserDropdown({ children }: { children: React.ReactNode }) {
+  const [avatarDialogOpen, setAvatarDialogOpen] = useState(false);
+  const userSnapshot = useSnapshot(userStore);
   const router = useRouter();
 
   async function logOutHandle() {
@@ -21,17 +28,43 @@ export function UserDropdown({ children }: { children: React.ReactNode }) {
     router.push("/auth/login");
   }
 
+  if (userSnapshot.user === null) {
+    return;
+  }
+
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
-      <DropdownMenuContent className="shadow-none w-[240px]">
-        <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logOutHandle}>
-          <LogOut />
-          <span>Выйти</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
+        <DropdownMenuContent className="shadow-none w-[240px]">
+          <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={logOutHandle}>
+            <LogOut />
+            <span>Выйти</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setAvatarDialogOpen(true);
+            }}
+          >
+            <Image />
+            <span>Поменять аватарку</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ChangeAvatar
+        userId={userSnapshot.user._id}
+        open={avatarDialogOpen}
+        onOpenChange={setAvatarDialogOpen}
+        currentAvatar={
+          userSnapshot.user.avatarUrl === ""
+            ? ""
+            : `${API_URL}${userSnapshot.user.avatarUrl}`
+        }
+      />
+    </>
   );
 }

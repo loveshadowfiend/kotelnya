@@ -74,7 +74,10 @@ export function NavProjects() {
               <ChevronsUpDown />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="relative w-60" align="center">
+          <DropdownMenuContent
+            className="relative w-60 shadow-none"
+            align="center"
+          >
             <DropdownMenuLabel>Проекты</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {projectsSnapshot.loading && (

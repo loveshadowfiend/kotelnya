@@ -17,31 +17,38 @@ import { AvatarFallback } from "@radix-ui/react-avatar";
 import { useEffect, useState } from "react";
 import { Loader2, Plus } from "lucide-react";
 import { Button } from "../ui/button";
-
-const cats = [
-  "Siamese",
-  "British Shorthair",
-  "Maine Coon",
-  "Persian",
-  "Ragdoll",
-  "Sphynx",
-];
-const dogs = [
-  "German Shepherd",
-  "Bulldog",
-  "Labrador Retriever",
-  "Golden Retriever",
-  "French Bulldog",
-  "Siberian Husky",
-];
+import { useSnapshot } from "valtio";
+import { projectStore } from "@/stores/project-store";
+import { toast } from "sonner";
+import { addProjectMember } from "@/api/projects/route";
 
 export function MembersSearchCombobox() {
+  const projectSnapshot = useSnapshot(projectStore);
+  const [isAdding, setIsAdding] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [commandInput, setCommandInput] = useState<string>("");
   const [results, setResults] = useState<User[]>([]);
 
+  const addUserToProject = async (user: User) => {
+    if (!projectSnapshot.project) return;
+
+    setIsAdding(true);
+
+    toast.promise(addProjectMember(projectSnapshot.project._id, user._id), {
+      loading: "Добавление пользователя...",
+      success: () => {
+        projectStore.project?.users.push(user);
+
+        return `Пользователь ${user.username} добавлен в проект`;
+      },
+      error: "Не удалось добавить пользователя",
+    });
+
+    setIsAdding(false);
+  };
+
   useEffect(() => {
-    const mockApiSearch = async (searchQuery: string) => {
+    const apiSearch = async (searchQuery: string) => {
       if (searchQuery === "") {
         setResults([]);
         return;
@@ -61,7 +68,7 @@ export function MembersSearchCombobox() {
       setIsLoading(false);
     };
 
-    mockApiSearch(commandInput);
+    apiSearch(commandInput);
   }, [commandInput]);
 
   return (
@@ -98,7 +105,15 @@ export function MembersSearchCombobox() {
                   <span> {result.username}</span>
                   <span className="text-muted-foreground">{result.email}</span>
                 </div>
-                <Button className="text-sm">
+                <Button
+                  className="text-sm"
+                  disabled={
+                    projectSnapshot.project?.users
+                      .map((user: User) => user._id)
+                      .includes(result._id) || isAdding
+                  }
+                  onClick={() => addUserToProject(result)}
+                >
                   <Plus /> Добавить
                 </Button>
               </div>

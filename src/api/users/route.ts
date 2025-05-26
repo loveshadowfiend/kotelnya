@@ -40,3 +40,16 @@ export async function searchUsers(query: string) {
 
   return response;
 }
+
+export async function loadUserAvatar(userId: string, formData: FormData) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/users/${userId}/avatar`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  return response;
+}
