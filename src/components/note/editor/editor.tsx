@@ -57,9 +57,6 @@ interface EditorProps {
 export function Editor({ noteId }: EditorProps) {
   const [isLoading, setIsLoading] = useState(false);
   const noteSnapshot = useSnapshot(noteStore);
-  const isNoteEmpty =
-    Object.keys(noteSnapshot).length === 0 &&
-    noteSnapshot.constructor === Object;
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {

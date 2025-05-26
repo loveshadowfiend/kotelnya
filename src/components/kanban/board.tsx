@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { getBoard, updateBoard } from "@/api/boards/route";
 import { modifyBoardObject, unmodifyBoardObject } from "@/lib/utils";
+import { useSyncToYjsEffect } from "@/yjs/useSyncToYjsEffect";
 
 interface KanbanBoardProps {
   boardId: string;
@@ -122,6 +123,8 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
 
     fetchAndSetBoard();
   }, [boardId]);
+
+  useSyncToYjsEffect(boardId);
 
   if (isBoardEmpty || boardSnapshot._id !== boardId || isLoading) {
     return (
