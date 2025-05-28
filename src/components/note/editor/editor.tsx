@@ -144,24 +144,22 @@ export function Editor({ noteId }: EditorProps) {
 
   return (
     <LexicalComposer key={noteId} initialConfig={initialConfig}>
-      {isSynced && (
-        <RichTextPlugin
-          contentEditable={
-            <ContentEditable
-              className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
-              aria-placeholder="Введите текст или '/' для комманд"
-              placeholder={
-                <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
-                  Введите текст или '/' для комманд
-                </div>
-              }
-              ref={onRef}
-            />
-          }
-          ErrorBoundary={LexicalErrorBoundary}
-        />
-      )}
-      {!isSynced && <EditorSkeleton />}
+      <RichTextPlugin
+        contentEditable={
+          <ContentEditable
+            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
+            aria-placeholder="Введите текст или '/' для комманд"
+            placeholder={
+              <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
+                Введите текст или '/' для комманд
+              </div>
+            }
+            ref={onRef}
+          />
+        }
+        ErrorBoundary={LexicalErrorBoundary}
+      />
+      )
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       {/* <HistoryPlugin /> */}
       <AutoFocusPlugin />
