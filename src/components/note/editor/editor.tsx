@@ -28,9 +28,10 @@ import { getNote } from "@/api/notes/routes";
 import LexicalAutoLinkPlugin from "./plugins/auto-link-plugin";
 import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
 import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
-import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { userStore } from "@/stores/user-store";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Doc } from "yjs";
 
 function onError(error: any) {
   console.error(error);
@@ -59,6 +60,7 @@ export function Editor({ noteId }: EditorProps) {
     ],
   };
   const [isLoading, setIsLoading] = useState(true);
+  const [isSynced, setIsSynced] = useState(false);
   const noteSnapshot = useSnapshot(noteStore);
   const userSnapshot = useSnapshot(userStore);
   const [floatingAnchorElem, setFloatingAnchorElem] =
@@ -69,11 +71,11 @@ export function Editor({ noteId }: EditorProps) {
     }
   };
 
-  const providerFactory = (id: string, yjsDocMap: Map<string, Y.Doc>) => {
+  const providerFactory = (id: string, yjsDocMap: Map<string, Doc>) => {
     let doc = null;
 
     if (!yjsDocMap.has(id)) {
-      doc = new Y.Doc();
+      doc = new Doc();
       yjsDocMap.set(id, doc);
     } else {
       doc = yjsDocMap.get(id)!;
@@ -88,6 +90,11 @@ export function Editor({ noteId }: EditorProps) {
       } else if (event.status === "disconnected") {
         console.log(`Disconnected from Yjs provider for note ${id}`);
       }
+    });
+
+    provider.on("sync", (synced: boolean) => {
+      console.log(`Yjs synced: ${synced} for note ${id}`);
+      setIsSynced(synced);
     });
 
     return provider;
@@ -120,12 +127,12 @@ export function Editor({ noteId }: EditorProps) {
     (noteSnapshot.note && noteSnapshot.note._id !== noteId) ||
     userSnapshot.user === null
   ) {
-    return;
+    return <EditorSkeleton />;
   }
 
   return (
     <LexicalComposer key={noteId} initialConfig={initialConfig}>
-      {!isLoading && (
+      {isSynced && (
         <RichTextPlugin
           contentEditable={
             <ContentEditable
@@ -142,8 +149,9 @@ export function Editor({ noteId }: EditorProps) {
           ErrorBoundary={LexicalErrorBoundary}
         />
       )}
+      {!isSynced && <EditorSkeleton />}
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-      <HistoryPlugin />
+      {/* <HistoryPlugin /> */}
       <AutoFocusPlugin />
       <FloatingMenuPlugin />
       <CodeHighlightPlugin />
@@ -164,5 +172,15 @@ export function Editor({ noteId }: EditorProps) {
         username={userSnapshot.user.username}
       />
     </LexicalComposer>
+  );
+}
+
+function EditorSkeleton() {
+  return (
+    <div className="flex flex-col gap-3 items-center justify-center lg:py-32 lg:px-40">
+      <Skeleton className="w-full h-10 rounded-full" />
+      <Skeleton className="w-full h-68 rounded-lg" />
+      <Skeleton className="w-full h-96 rounded-lg mt-7" />
+    </div>
   );
 }

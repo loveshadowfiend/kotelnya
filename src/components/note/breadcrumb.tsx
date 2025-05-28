@@ -22,7 +22,7 @@ export function NoteBreadcrumb({ noteId }: NoteBreadcrumbProps) {
   const noteSnapshot = useSnapshot(noteStore);
 
   return (
-    <div className="fixed flex justify-between w-full bg-background z-50 border-b">
+    <div className="fixed flex justify-between w-full bg-background z-10000 border-b">
       <Breadcrumb className="flex items-center h-[64px] px-[var(--global-px)] w-full lg:px-[var(--global-px-lg)]">
         <BreadcrumbList>
           <div className="flex h-4 items-center gap-3 mr-3">
