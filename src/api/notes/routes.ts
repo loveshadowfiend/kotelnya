@@ -3,7 +3,7 @@ import { API_URL } from "@/lib/config";
 
 export async function getNotes(projectId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/projects/${projectId}/notes`, {
+  const response = await fetch(`${API_URL}/projects/${projectId}/notes`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -15,7 +15,7 @@ export async function getNotes(projectId: string) {
 
 export async function getNote(noteId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/notes/${noteId}`, {
+  const response = await fetch(`${API_URL}/notes/${noteId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -27,7 +27,7 @@ export async function getNote(noteId: string) {
 
 export async function deleteNote(noteId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/notes/${noteId}`, {
+  const response = await fetch(`${API_URL}/notes/${noteId}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ export async function deleteNote(noteId: string) {
 
 export async function addNote(projectId: string, title: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/projects/${projectId}/notes`, {
+  const response = await fetch(`${API_URL}/projects/${projectId}/notes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export async function addNote(projectId: string, title: string) {
 
 export async function updateNote(noteId: string, markdownContent: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/notes/${noteId}`, {
+  const response = await fetch(`${API_URL}/notes/${noteId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",

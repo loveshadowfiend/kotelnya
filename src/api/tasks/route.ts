@@ -7,7 +7,7 @@ export async function addTask(
   title: string
 ) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/boards/${boardId}/tasks`, {
+  const response = await fetch(`${API_URL}/boards/${boardId}/tasks`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,7 +21,7 @@ export async function addTask(
 
 export async function deleteTask(taskId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
+  const response = await fetch(`${API_URL}/tasks/${taskId}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -37,7 +37,7 @@ export async function updateTask(
   description: string
 ) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
+  const response = await fetch(`${API_URL}/tasks/${taskId}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,

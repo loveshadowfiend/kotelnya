@@ -82,7 +82,11 @@ export function Editor({ noteId }: EditorProps) {
     }
 
     // Create new provider
-    const provider = new WebsocketProvider("ws://103.249.132.70:1234", id, doc);
+    const provider = new WebsocketProvider(
+      process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:1234",
+      id,
+      doc
+    );
 
     provider.on("status", (event) => {
       if (event.status === "connected") {

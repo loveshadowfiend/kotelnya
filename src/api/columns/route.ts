@@ -3,7 +3,7 @@ import { API_URL } from "@/lib/config";
 
 export async function createColumn(boardId: string, title: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/boards/${boardId}/columns`, {
+  const response = await fetch(`${API_URL}/boards/${boardId}/columns`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -19,7 +19,7 @@ export async function createColumn(boardId: string, title: string) {
 
 export async function deleteColumn(columnId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/columns/${columnId}`, {
+  const response = await fetch(`${API_URL}/columns/${columnId}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,

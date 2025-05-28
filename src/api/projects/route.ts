@@ -3,7 +3,7 @@ import { API_URL } from "@/lib/config";
 
 export async function deleteProject(projectId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/projects/${projectId}`, {
+  const response = await fetch(`${API_URL}/projects/${projectId}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -16,7 +16,7 @@ export async function deleteProject(projectId: string) {
 
 export async function getProject(projectId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/projects/${projectId}`, {
+  const response = await fetch(`${API_URL}/projects/${projectId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ export async function getProject(projectId: string) {
 
 export async function getProjects(userId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/users/${userId}/projects`, {
+  const response = await fetch(`${API_URL}/users/${userId}/projects`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -41,7 +41,7 @@ export async function getProjects(userId: string) {
 
 export async function createProject(title: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/projects`, {
+  const response = await fetch(`${API_URL}/projects`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export async function createProject(title: string) {
 
 export async function addProjectMember(projectId: string, userId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/api/projects/${projectId}/users`, {
+  const response = await fetch(`${API_URL}/projects/${projectId}/users`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

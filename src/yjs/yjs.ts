@@ -5,7 +5,7 @@ import { WebsocketProvider } from "y-websocket";
 export const createYjsStore = (channel: string) => {
   const ydoc = new Y.Doc();
   const provider = new WebsocketProvider(
-    "ws://103.249.132.70:1234",
+    process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:1234",
     channel,
     ydoc
   );
