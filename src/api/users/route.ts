@@ -3,7 +3,7 @@ import { API_URL } from "@/lib/config";
 
 export async function getUser(userId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/users/${userId}`, {
+  const response = await fetch(`${API_URL}/api/users/${userId}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -15,7 +15,7 @@ export async function getUser(userId: string) {
 
 export async function getUserProjects(userId: string) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/users/${userId}/projects`, {
+  const response = await fetch(`${API_URL}/api/users/${userId}/projects`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -28,7 +28,7 @@ export async function getUserProjects(userId: string) {
 export async function searchUsers(query: string) {
   const token = await getAuthToken();
   const response = await fetch(
-    `${API_URL}/users/search?query=${encodeURIComponent(query)}`,
+    `${API_URL}/api/users/search?query=${encodeURIComponent(query)}`,
     {
       method: "GET",
       headers: {
@@ -43,7 +43,7 @@ export async function searchUsers(query: string) {
 
 export async function loadUserAvatar(userId: string, formData: FormData) {
   const token = await getAuthToken();
-  const response = await fetch(`${API_URL}/users/${userId}/avatar`, {
+  const response = await fetch(`${API_URL}/api/users/${userId}/avatar`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
