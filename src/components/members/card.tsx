@@ -13,7 +13,7 @@ export function MemberCard({ user }: { user: User }) {
           <Avatar className="rounded-md">
             <AvatarImage src={`${API_URL}${user.avatarUrl}`} />
             <AvatarFallback className="flex items-center justify-center text-sm rounded-lg aspect-square bg-accent text-muted-foreground">
-              {user.username.substring(0, 2)}
+              {(user.username ?? "").substring(0, 2)}
             </AvatarFallback>
           </Avatar>
           <div>

@@ -101,6 +101,14 @@ export function Editor({ noteId }: EditorProps) {
       setIsSynced(synced);
     });
 
+    provider.on("connection-error", (event) => {
+      console.log("Connection error:", event);
+    });
+
+    provider.on("connection-close", (event) => {
+      console.log("Connection closed:", event);
+    });
+
     return provider;
   };
 
