@@ -107,7 +107,9 @@ export function NavProjects() {
                   >
                     <Avatar className="rounded-lg">
                       <AvatarImage src="" />
-                      <AvatarFallback className="rounded-lg" />
+                      <AvatarFallback className="rounded-lg text-sm">
+                        {project.title.substring(0, 2)}
+                      </AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
                       <p className="text-sm">{project.title}</p>

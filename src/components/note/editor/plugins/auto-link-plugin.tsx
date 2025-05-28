@@ -1,4 +1,4 @@
-import type { JSX } from "react";
+"use client";
 
 import {
   AutoLinkPlugin,

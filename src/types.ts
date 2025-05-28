@@ -3,6 +3,7 @@ export type KanbanComponentsState = {
   isAddingCategory: boolean;
   addNewTaskActiveColumn: string;
   renamingColumn: string;
+  renamingTask: string;
 };
 
 export type User = {

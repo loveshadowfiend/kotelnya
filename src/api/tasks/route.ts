@@ -48,4 +48,6 @@ export async function updateTask(
       description: description,
     }),
   });
+
+  return response;
 }

@@ -19,7 +19,7 @@ import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import CodeHighlightPlugin from "./plugins/code-highlight-plugin";
 import DraggableBlockPlugin from "./plugins/draggable-block-plugin";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ComponentPickerMenuPlugin from "./plugins/component-picker-plugin";
 import MarkdownIoPlugin from "./plugins/markdown-io-plugin";
 import { useSnapshot } from "valtio";
@@ -27,24 +27,10 @@ import { noteStore } from "@/stores/note-store";
 import { getNote } from "@/api/notes/routes";
 import LexicalAutoLinkPlugin from "./plugins/auto-link-plugin";
 import { ClickableLinkPlugin } from "@lexical/react/LexicalClickableLinkPlugin";
-import { $setSelection } from "lexical";
-
-const initialConfig = {
-  namespace: "kotelnya-editor",
-  theme,
-  onError,
-  nodes: [
-    HeadingNode,
-    QuoteNode,
-    ListNode,
-    ListItemNode,
-    HorizontalRuleNode,
-    LinkNode,
-    CodeNode,
-    CodeHighlightNode,
-    AutoLinkNode,
-  ],
-};
+import { CollaborationPlugin } from "@lexical/react/LexicalCollaborationPlugin";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+import { userStore } from "@/stores/user-store";
 
 function onError(error: any) {
   console.error(error);
@@ -55,14 +41,56 @@ interface EditorProps {
 }
 
 export function Editor({ noteId }: EditorProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const initialConfig = {
+    namespace: `kotelnya-editor-${noteId}`,
+    editorState: null,
+    theme,
+    onError,
+    nodes: [
+      HeadingNode,
+      QuoteNode,
+      ListNode,
+      ListItemNode,
+      HorizontalRuleNode,
+      LinkNode,
+      CodeNode,
+      CodeHighlightNode,
+      AutoLinkNode,
+    ],
+  };
+  const [isLoading, setIsLoading] = useState(true);
   const noteSnapshot = useSnapshot(noteStore);
+  const userSnapshot = useSnapshot(userStore);
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
     }
+  };
+
+  const providerFactory = (id: string, yjsDocMap: Map<string, Y.Doc>) => {
+    let doc = null;
+
+    if (!yjsDocMap.has(id)) {
+      doc = new Y.Doc();
+      yjsDocMap.set(id, doc);
+    } else {
+      doc = yjsDocMap.get(id)!;
+    }
+
+    // Create new provider
+    const provider = new WebsocketProvider("ws://103.249.132.70:1234", id, doc);
+
+    provider.on("status", (event) => {
+      if (event.status === "connected") {
+        console.log(`Connected to Yjs provider for note ${id}`);
+      } else if (event.status === "disconnected") {
+        console.log(`Disconnected from Yjs provider for note ${id}`);
+      }
+    });
+
+    return provider;
   };
 
   useEffect(() => {
@@ -83,46 +111,33 @@ export function Editor({ noteId }: EditorProps) {
     fetchAndSetNote();
   }, [noteId]);
 
-  useEffect(() => {
-    noteStore.note = null;
-  }, []);
-
   if (
     !noteSnapshot.note ||
     (noteSnapshot.note && noteSnapshot.note._id !== noteId) ||
-    isLoading
+    userSnapshot.user === null
   ) {
     return;
   }
 
   return (
-    <LexicalComposer
-      initialConfig={{
-        ...initialConfig,
-        editorState: () => {
-          $convertFromMarkdownString(
-            noteSnapshot.note?.markdownContent ?? "",
-            TRANSFORMERS
-          );
-          $setSelection(null);
-        },
-      }}
-    >
-      <RichTextPlugin
-        contentEditable={
-          <ContentEditable
-            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
-            aria-placeholder="Введите текст или '/' для комманд"
-            placeholder={
-              <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
-                Введите текст или '/' для комманд
-              </div>
-            }
-            ref={onRef}
-          />
-        }
-        ErrorBoundary={LexicalErrorBoundary}
-      />
+    <LexicalComposer key={noteId} initialConfig={initialConfig}>
+      {!isLoading && (
+        <RichTextPlugin
+          contentEditable={
+            <ContentEditable
+              className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
+              aria-placeholder="Введите текст или '/' для комманд"
+              placeholder={
+                <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
+                  Введите текст или '/' для комманд
+                </div>
+              }
+              ref={onRef}
+            />
+          }
+          ErrorBoundary={LexicalErrorBoundary}
+        />
+      )}
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       <HistoryPlugin />
       <AutoFocusPlugin />
@@ -137,6 +152,13 @@ export function Editor({ noteId }: EditorProps) {
       <MarkdownIoPlugin noteId={noteSnapshot.note?._id ?? ""} />
       <LexicalAutoLinkPlugin />
       <ClickableLinkPlugin />
+      <CollaborationPlugin
+        id={`note-${noteSnapshot.note!._id}`}
+        // @ts-ignore
+        providerFactory={providerFactory}
+        shouldBootstrap={true}
+        username={userSnapshot.user.username}
+      />
     </LexicalComposer>
   );
 }

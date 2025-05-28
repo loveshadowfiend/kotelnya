@@ -12,6 +12,7 @@ import { Edit, Trash2 } from "lucide-react";
 import { deleteTask as deleteTaskStore } from "@/stores/board-store";
 import { deleteTask as deleteTaskApi } from "@/api/tasks/route";
 import { toast } from "sonner";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 
 interface NoteDropdownProps {
   children: React.ReactNode;
@@ -46,7 +47,12 @@ export function ItemDropdown({
           {taskTitle}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={(e) => {
+            e.stopPropagation();
+            kanbanComponentsStore.renamingTask = taskId;
+          }}
+        >
           <Edit />
           Переименовать
         </DropdownMenuItem>

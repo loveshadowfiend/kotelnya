@@ -10,6 +10,7 @@ import { Input } from "../ui/input";
 import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { useState } from "react";
+import { updateTask } from "@/api/tasks/route";
 
 interface KanbanRenameTaskDropdownProps {
   children: React.ReactNode;
@@ -22,11 +23,31 @@ export function KanbanRenameTaskDropdown({
   taskId,
   taskTitle,
 }: KanbanRenameTaskDropdownProps) {
+  const [open, setOpen] = useState(false);
   const [initialName, setInitialName] = useState(taskTitle);
   const boardSnapshot = useSnapshot(boardStore);
 
   return (
-    <DropdownMenu dir="ltr">
+    <DropdownMenu
+      dir="ltr"
+      open={open}
+      onOpenChange={(open) => {
+        if (!open) {
+          if (boardStore.tasks[taskId].title.trim() === "") {
+            boardStore.tasks[taskId].title = initialName;
+          } else {
+            updateTask(
+              taskId,
+              boardStore.tasks[taskId].title,
+              boardStore.tasks[taskId].description
+            );
+            setInitialName(boardStore.tasks[taskId].title);
+          }
+        }
+
+        setOpen(open);
+      }}
+    >
       <DropdownMenuTrigger>{children}</DropdownMenuTrigger>
       <DropdownMenuContent className="w-72" side="bottom" align="start">
         <Input

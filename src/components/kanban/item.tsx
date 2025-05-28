@@ -15,6 +15,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import { ItemDropdown } from "./item-dropdown";
 import { Button } from "../ui/button";
 import { Ellipsis } from "lucide-react";
+import { KanbanRenameTaskForm } from "./rename-task-form";
+import { useSnapshot } from "valtio";
+import { kanbanComponentsStore } from "@/stores/kanban-components-store";
 
 interface KanbanItemProps {
   task: Task;
@@ -23,56 +26,64 @@ interface KanbanItemProps {
 }
 
 export function KanbanItem({ task, column, index }: KanbanItemProps) {
+  const kanbanComponentsSnapshot = useSnapshot(kanbanComponentsStore);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
   return (
     <>
-      <Draggable draggableId={task._id} index={index}>
-        {(provided, snapshot) => (
-          <Card
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            className={`cursor-pointer mb-3 hover:bg-muted ${
-              snapshot.isDragging ? "cursor-grab shadow-sm bg-muted" : ""
-            }`}
-            onClick={() => setIsDialogOpen(true)}
-          >
-            <CardHeader>
-              <CardTitle className="flex justify-between items-center text-sm font-normal">
-                <span>{task.title}</span>
-                <ItemDropdown
-                  columnId={column._id}
-                  taskId={task._id}
-                  taskTitle={task.title}
-                >
-                  <Button
-                    className="text-muted-foreground w-4 h-4"
-                    variant="ghost"
-                  >
-                    <Ellipsis />
-                  </Button>
-                </ItemDropdown>
-              </CardTitle>
-              {task.assignee.length > 0 && (
-                <CardDescription className="flex items-center gap-2 mt-2">
-                  <Avatar className="w-6 h-6 flex items-center">
-                    <AvatarImage />
-                    <AvatarFallback className="text-xs">NN</AvatarFallback>
-                  </Avatar>
-                  <span>{task.assignee}</span>
-                </CardDescription>
-              )}
-            </CardHeader>
-          </Card>
-        )}
-      </Draggable>
-      <KanbanCard
-        taskId={task._id}
-        columnId={column._id}
-        isDialogOpen={isDialogOpen}
-        setIsDialogOpen={setIsDialogOpen}
-      />
+      {kanbanComponentsSnapshot.renamingTask === task._id && (
+        <KanbanRenameTaskForm task={task} />
+      )}
+      {kanbanComponentsSnapshot.renamingTask !== task._id && (
+        <>
+          <Draggable draggableId={task._id} index={index}>
+            {(provided, snapshot) => (
+              <Card
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                className={`cursor-pointer mb-3 hover:bg-muted ${
+                  snapshot.isDragging ? "cursor-grab shadow-sm bg-muted" : ""
+                }`}
+                onClick={() => setIsDialogOpen(true)}
+              >
+                <CardHeader>
+                  <CardTitle className="flex justify-between items-center text-sm font-normal">
+                    <span>{task.title}</span>
+                    <ItemDropdown
+                      columnId={column._id}
+                      taskId={task._id}
+                      taskTitle={task.title}
+                    >
+                      <Button
+                        className="text-muted-foreground w-4 h-4"
+                        variant="ghost"
+                      >
+                        <Ellipsis />
+                      </Button>
+                    </ItemDropdown>
+                  </CardTitle>
+                  {task.assignee.length > 0 && (
+                    <CardDescription className="flex items-center gap-2 mt-2">
+                      <Avatar className="w-6 h-6 flex items-center">
+                        <AvatarImage />
+                        <AvatarFallback className="text-xs">NN</AvatarFallback>
+                      </Avatar>
+                      <span>{task.assignee}</span>
+                    </CardDescription>
+                  )}
+                </CardHeader>
+              </Card>
+            )}
+          </Draggable>
+          <KanbanCard
+            taskId={task._id}
+            columnId={column._id}
+            isDialogOpen={isDialogOpen}
+            setIsDialogOpen={setIsDialogOpen}
+          />
+        </>
+      )}
     </>
   );
 }
