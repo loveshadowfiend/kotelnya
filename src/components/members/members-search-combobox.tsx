@@ -11,7 +11,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { searchUsers } from "@/api/users/route";
-import { User } from "@/types";
+import { Project, User } from "@/types";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { useEffect, useState } from "react";
@@ -21,6 +21,7 @@ import { useSnapshot } from "valtio";
 import { projectStore } from "@/stores/project-store";
 import { toast } from "sonner";
 import { addProjectMember } from "@/api/projects/route";
+import { API_URL } from "@/lib/config";
 
 export function MembersSearchCombobox() {
   const projectSnapshot = useSnapshot(projectStore);
@@ -36,8 +37,10 @@ export function MembersSearchCombobox() {
 
     toast.promise(addProjectMember(projectSnapshot.project._id, user._id), {
       loading: "Добавление пользователя...",
-      success: () => {
-        projectStore.project?.users.push(user);
+      success: async (response) => {
+        const data: Project = await response.json();
+
+        projectStore.project = data;
 
         return `Пользователь ${user.username} добавлен в проект`;
       },
@@ -90,15 +93,17 @@ export function MembersSearchCombobox() {
             "ничего не найдено"}
         </CommandEmpty>
         <CommandGroup>
-          {results.map((result) => (
+          {results.map((result: User) => (
             <CommandItem
               className="py-4 px-4 space-x-2"
               key={result._id}
               value={result._id}
             >
-              <Avatar className="rounded-full">
-                <AvatarImage src="https://sun9-49.userapi.com/impg/KHzTpEa-GfO-WkmJASroLY0XdnB9OwjMnNN32Q/hmIDDvT9UbU.jpg?size=372x372&quality=95&sign=5e4d1a8a253e0def82b79e85f341f64f&type=album" />
-                <AvatarFallback className="rounded-lg" />
+              <Avatar className="rounded-lg">
+                <AvatarImage src={`${API_URL}${result.avatarUrl}`} />
+                <AvatarFallback className="flex items-center justify-center text-sm rounded-lg aspect-square bg-accent text-muted-foreground">
+                  {result.username.substring(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div className="flex w-full justify-between items-center">
                 <div className="flex flex-col justify-center">
@@ -109,7 +114,7 @@ export function MembersSearchCombobox() {
                   className="text-sm"
                   disabled={
                     projectSnapshot.project?.users
-                      .map((user: User) => user._id)
+                      .map((user) => user.userId._id)
                       .includes(result._id) || isAdding
                   }
                   onClick={() => addUserToProject(result)}

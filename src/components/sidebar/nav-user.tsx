@@ -54,7 +54,9 @@ export function NavUser() {
           <SidebarMenuButton size="lg">
             <Avatar className="rounded-lg">
               <AvatarImage src={`${API_URL}${userSnapshot.user.avatarUrl}`} />
-              <AvatarFallback className="rounded-lg" />
+              <AvatarFallback className="rounded-lg text-muted-foreground">
+                {userSnapshot.user.username.substring(0, 2)}
+              </AvatarFallback>
             </Avatar>
             <div className="flex flex-col justify-center">
               <span>{userSnapshot.user.username}</span>

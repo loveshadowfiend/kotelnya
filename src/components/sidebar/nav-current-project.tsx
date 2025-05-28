@@ -98,7 +98,9 @@ export function NavCurrentProject() {
     <div className="flex items-center gap-2">
       <Avatar className="rounded-lg">
         <AvatarImage src="" />
-        <AvatarFallback className="rounded-lg text-sm"></AvatarFallback>
+        <AvatarFallback className="rounded-lg text-sm text-muted-foreground">
+          {projectSnapshot.project.title.substring(0, 2)}
+        </AvatarFallback>
       </Avatar>
       <div className="flex flex-col">
         <p className="font-medium">{projectSnapshot.project.title}</p>

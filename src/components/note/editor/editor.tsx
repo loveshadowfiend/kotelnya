@@ -111,6 +111,10 @@ export function Editor({ noteId }: EditorProps) {
     fetchAndSetNote();
   }, [noteId]);
 
+  useEffect(() => {
+    noteStore.note = null;
+  }, []);
+
   if (
     !noteSnapshot.note ||
     (noteSnapshot.note && noteSnapshot.note._id !== noteId) ||

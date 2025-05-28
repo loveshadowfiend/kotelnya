@@ -39,10 +39,6 @@ export function UserDropdown({ children }: { children: React.ReactNode }) {
         <DropdownMenuContent className="shadow-none w-[240px]">
           <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={logOutHandle}>
-            <LogOut />
-            <span>Выйти</span>
-          </DropdownMenuItem>
           <DropdownMenuItem
             onClick={(e) => {
               e.preventDefault();
@@ -52,6 +48,10 @@ export function UserDropdown({ children }: { children: React.ReactNode }) {
           >
             <Image />
             <span>Поменять аватарку</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={logOutHandle}>
+            <LogOut />
+            <span>Выйти</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

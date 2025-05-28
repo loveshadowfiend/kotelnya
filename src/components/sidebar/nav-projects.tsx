@@ -107,7 +107,7 @@ export function NavProjects() {
                   >
                     <Avatar className="rounded-lg">
                       <AvatarImage src="" />
-                      <AvatarFallback className="rounded-lg text-sm">
+                      <AvatarFallback className="rounded-lg text-sm text-muted-foreground">
                         {project.title.substring(0, 2)}
                       </AvatarFallback>
                     </Avatar>

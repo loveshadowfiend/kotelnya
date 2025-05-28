@@ -75,7 +75,11 @@ export type Project = {
   _id: string;
   title: string;
   status: string;
-  users: User[];
+  users: {
+    userId: User;
+    role: string;
+    _id: string;
+  }[];
   boards: Board[];
   notes: Note[];
   createdAt: string;
