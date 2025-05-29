@@ -154,11 +154,11 @@ export function Editor({ noteId }: EditorProps) {
             aria-placeholder="Введите текст или '/' для комманд"
             placeholder={
               isSynced ? (
-                <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
+                <div className="text-muted-foreground absolute pointer-events-none top-20 left-10 lg:top-32 lg:left-104">
                   Введите текст или '/' для комманд
                 </div>
               ) : (
-                <div className="flex items-center text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
+                <div className="flex items-center text-muted-foreground absolute pointer-events-none top-20 left-10 lg:top-32 lg:left-104">
                   Синхронизация с сервером...
                 </div>
               )
@@ -197,10 +197,10 @@ export function Editor({ noteId }: EditorProps) {
 
 function EditorSkeleton() {
   return (
-    <div className="flex flex-col gap-3 items-center justify-center lg:py-32 lg:px-40">
-      <Skeleton className="w-full h-10 rounded-full" />
-      <Skeleton className="w-full h-68 rounded-lg" />
-      <Skeleton className="w-full h-96 rounded-lg mt-7" />
+    <div className="flex flex-col gap-3 items-center justify-center py-20 px-10 lg:py-32 lg:px-40">
+      <Skeleton className="w-full h-5 lg:h-10 rounded-full" />
+      <Skeleton className="w-full h-34 lg:h-68 rounded-lg" />
+      <Skeleton className="w-full h-48 lg:h-96 rounded-lg mt-7" />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import "./theme.css";
-import { forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $setBlocksType } from "@lexical/selection";
 import {
@@ -47,6 +47,7 @@ import {
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
 import { $createListNode } from "@lexical/list";
 import { cn } from "@/lib/utils";
+import { useMediaQuery } from "react-responsive";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 
@@ -58,8 +59,8 @@ type FloatingMenuProps = {
 export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
   function FloatingMenu(props, ref) {
     const { editor, coords } = props;
+    const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
     const shouldShow = coords !== undefined;
-
     const [state, setState] = useState<string[]>([]);
     const [special, setSpecial] = useState<string>("");
     const [alignment, setAlignment] = useState<string>("");
@@ -177,7 +178,13 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         aria-hidden={!shouldShow}
         style={{
           top: coords?.y === undefined ? 0 : coords?.y,
-          left: coords?.x === undefined ? 0 : coords?.x,
+          left:
+            coords?.x === undefined
+              ? 0
+              : isTabletOrMobile
+              ? //@ts-ignore-next-line
+                window.innerWidth / 2 - ref.current.offsetWidth / 2
+              : coords?.x,
         }}
       >
         <Select
