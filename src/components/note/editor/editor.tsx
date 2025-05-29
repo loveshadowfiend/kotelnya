@@ -168,7 +168,6 @@ export function Editor({ noteId }: EditorProps) {
         }
         ErrorBoundary={LexicalErrorBoundary}
       />
-      )
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       {/* <HistoryPlugin /> */}
       <AutoFocusPlugin />
@@ -180,7 +179,7 @@ export function Editor({ noteId }: EditorProps) {
         <DraggableBlockPlugin anchorElem={floatingAnchorElem} />
       )}
       <ComponentPickerMenuPlugin />
-      <MarkdownIoPlugin noteId={noteSnapshot.note?._id ?? ""} />
+      {/* <MarkdownIoPlugin noteId={noteSnapshot.note?._id ?? ""} /> */}
       <LexicalAutoLinkPlugin />
       <ClickableLinkPlugin />
       <CollaborationPlugin
