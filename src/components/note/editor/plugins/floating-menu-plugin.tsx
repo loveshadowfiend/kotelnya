@@ -17,6 +17,7 @@ export function FloatingMenuPlugin() {
   const [editor] = useLexicalComposerContext();
   const { isPointerDown, isPointerReleased } = usePointerInteractions();
   const [isClient, setIsClient] = useState(false);
+  const isEditable = editor.isEditable();
 
   useEffect(() => {
     setIsClient(true);
@@ -73,7 +74,7 @@ export function FloatingMenuPlugin() {
     }
   }, [isPointerReleased, $handleSelectionChange, editor]);
 
-  if (!isClient) return null;
+  if (!isClient || !isEditable) return null;
 
   return createPortal(
     <FloatingMenu ref={ref} editor={editor} coords={coords} />,

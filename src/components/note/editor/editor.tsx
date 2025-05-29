@@ -32,6 +32,9 @@ import { WebsocketProvider } from "y-websocket";
 import { userStore } from "@/stores/user-store";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Doc } from "yjs";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
+import { SyncedPlugin } from "./plugins/synced-plugin";
+import { Loader2 } from "lucide-react";
 
 function onError(error: any) {
   console.error(error);
@@ -150,9 +153,15 @@ export function Editor({ noteId }: EditorProps) {
             className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
             aria-placeholder="Введите текст или '/' для комманд"
             placeholder={
-              <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
-                Введите текст или '/' для комманд
-              </div>
+              isSynced ? (
+                <div className="text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
+                  Введите текст или '/' для комманд
+                </div>
+              ) : (
+                <div className="flex items-center text-muted-foreground absolute pointer-events-none top-12 left-10 lg:top-32 lg:left-104">
+                  Синхронизация с сервером...
+                </div>
+              )
             }
             ref={onRef}
           />
@@ -181,6 +190,7 @@ export function Editor({ noteId }: EditorProps) {
         shouldBootstrap={true}
         username={userSnapshot.user.username}
       />
+      <SyncedPlugin isSynced={isSynced} />
     </LexicalComposer>
   );
 }
