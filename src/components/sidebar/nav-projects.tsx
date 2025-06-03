@@ -18,6 +18,7 @@ import { AddProject } from "./add-project";
 import { verifyAuth } from "@/lib/auth";
 import { Project } from "@/types";
 import { useEffect } from "react";
+import React from "react";
 import { NavCurrentProject } from "./nav-current-project";
 import { Button } from "../ui/button";
 import { deleteProject, projectsStore } from "@/stores/projects-store";
@@ -32,8 +33,23 @@ export function NavProjects() {
   const userSnapshot = useSnapshot(userStore);
   const projectSnapshot = useSnapshot(projectStore);
   const projectsSnapshot = useSnapshot(projectsStore);
+  const handleDelete = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    projectId: string
+  ) => {
+    e.stopPropagation();
 
-  const handleDelete = async (projectId: string) => {
+    if (projectId === projectSnapshot.project?._id) {
+      router.push("/");
+
+      // force currentProject rerender
+      userStore.loading = true;
+      userStore.loading = false;
+
+      projectStore.project = null;
+      localStorage.removeItem("currentProject");
+    }
+
     deleteProject(projectId);
   };
 
@@ -127,7 +143,7 @@ export function NavProjects() {
                       <Button
                         className="hidden text-muted-foreground w-5 h-5 group-hover:inline-flex"
                         variant="ghost"
-                        onClick={() => handleDelete(project._id)}
+                        onClick={(e) => handleDelete(e, project._id)}
                       >
                         <Trash2 />
                       </Button>

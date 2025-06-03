@@ -15,7 +15,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -126,19 +125,22 @@ export function ChangeAvatar({
     setCropArea((prev) => {
       const updated = { ...prev, ...newCropArea };
 
-      // Ensure crop area stays within image bounds
-      const maxX = imageSize.width - updated.size;
-      const maxY = imageSize.height - updated.y;
-
-      updated.x = Math.max(0, Math.min(maxX, updated.x));
-      updated.y = Math.max(0, Math.min(maxY, updated.y));
+      // Ensure minimum size first
+      updated.size = Math.max(50, updated.size);
 
       // Ensure size doesn't exceed image dimensions
-      const maxSize = Math.min(
-        imageSize.width - updated.x,
-        imageSize.height - updated.y
+      const maxPossibleSize = Math.min(imageSize.width, imageSize.height);
+      updated.size = Math.min(updated.size, maxPossibleSize);
+
+      // Ensure position stays within bounds based on the current size
+      updated.x = Math.max(
+        0,
+        Math.min(imageSize.width - updated.size, updated.x)
       );
-      updated.size = Math.max(50, Math.min(updated.size, maxSize));
+      updated.y = Math.max(
+        0,
+        Math.min(imageSize.height - updated.size, updated.y)
+      );
 
       return updated;
     });
@@ -182,25 +184,43 @@ export function ChangeAvatar({
           break;
       }
 
-      // Ensure minimum size
-      newSize = Math.max(50, newSize);
+      // Apply constraints based on corner being dragged
+      const minSize = 50;
+      const maxSize = Math.min(imageSize.width, imageSize.height);
 
-      // Ensure the crop area stays within bounds
-      const maxSize = Math.min(
-        imageSize.width - newX,
-        imageSize.height - newY,
-        newX + newSize <= imageSize.width ? newSize : imageSize.width - newX,
-        newY + newSize <= imageSize.height ? newSize : imageSize.height - newY
-      );
-
-      newSize = Math.min(newSize, maxSize);
-
-      // Adjust position if needed
-      if (corner.includes("left")) {
-        newX = Math.max(0, Math.min(newX, imageSize.width - newSize));
-      }
-      if (corner.includes("top")) {
-        newY = Math.max(0, Math.min(newY, imageSize.height - newSize));
+      // For corners that change position (top-left, top-right, bottom-left)
+      if (corner === "top-left") {
+        // Limit size based on available space from current position
+        const maxSizeFromPosition = Math.min(
+          startCropArea.x + startCropArea.size, // Can't go past left edge
+          startCropArea.y + startCropArea.size // Can't go past top edge
+        );
+        newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
+        newX = startCropArea.x + startCropArea.size - newSize;
+        newY = startCropArea.y + startCropArea.size - newSize;
+      } else if (corner === "top-right") {
+        // Limit size based on available space
+        const maxSizeFromPosition = Math.min(
+          imageSize.width - startCropArea.x, // Can't go past right edge
+          startCropArea.y + startCropArea.size // Can't go past top edge
+        );
+        newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
+        newY = startCropArea.y + startCropArea.size - newSize;
+      } else if (corner === "bottom-left") {
+        // Limit size based on available space
+        const maxSizeFromPosition = Math.min(
+          startCropArea.x + startCropArea.size, // Can't go past left edge
+          imageSize.height - startCropArea.y // Can't go past bottom edge
+        );
+        newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
+        newX = startCropArea.x + startCropArea.size - newSize;
+      } else if (corner === "bottom-right") {
+        // Limit size based on available space from current position
+        const maxSizeFromPosition = Math.min(
+          imageSize.width - startCropArea.x, // Can't go past right edge
+          imageSize.height - startCropArea.y // Can't go past bottom edge
+        );
+        newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
       }
 
       handleCropAreaChange({ x: newX, y: newY, size: newSize });
@@ -366,7 +386,7 @@ export function ChangeAvatar({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="avatar-upload">Choose Image</Label>
+                  <Label htmlFor="avatar-upload">Выберите изображение</Label>
                   <Input
                     id="avatar-upload"
                     type="file"
@@ -376,7 +396,8 @@ export function ChangeAvatar({
                     disabled={loading}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Supported formats: JPG, PNG, GIF. Max size: 10MB.
+                    Поддерживаемый формат: JPG, PNG, GIF. Максимальный размер:
+                    5МБ.
                   </p>
                 </div>
               </div>

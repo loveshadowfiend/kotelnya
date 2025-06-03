@@ -122,3 +122,11 @@ export type UserState = {
   user: User | null;
   loading: boolean;
 };
+
+export type ProjectInvitations = {
+  projectId: string;
+  projectName: string;
+  status: "pending" | "accepted" | "rejected";
+  invitedBy: User;
+  invitedAt: string;
+};

@@ -1,4 +1,4 @@
-import { Users, Home } from "lucide-react";
+import { Users, Home, Mail, Circle, CircleAlert } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +33,16 @@ export function AppSidebar() {
                   <Link href="/">
                     <Home />
                     <span>Главная</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href="/invitations">
+                    <Mail />
+                    <div className="flex justify-between w-full items-center">
+                      <span>Приглашения</span>
+                    </div>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>

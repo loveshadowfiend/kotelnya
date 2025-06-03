@@ -83,7 +83,11 @@ export function NavCurrentProject() {
       localStorage.getItem("currentProject") ?? "null"
     );
 
-    if (currentProject && currentProject.userId === userSnapshot.user._id) {
+    if (
+      currentProject &&
+      currentProject !== "null" &&
+      currentProject.userId === userSnapshot.user._id
+    ) {
       fetchAndSetCurrentProject(currentProject.id);
     } else {
       fetchAndSetFirstUserProject();

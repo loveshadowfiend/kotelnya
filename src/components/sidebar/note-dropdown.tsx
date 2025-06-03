@@ -30,8 +30,8 @@ export function NoteDropdown({
   const router = useRouter();
   const notesSnapshot = useSnapshot(notesStore);
 
-  async function handleDeleteNote() {
-    if (params.noteId && params.noteId === noteId) {
+  async function handleDeleteNote(e: React.MouseEvent) {
+    if (params?.noteId && params?.noteId === noteId) {
       router.push("/");
     }
 
