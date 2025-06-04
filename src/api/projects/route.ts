@@ -70,3 +70,18 @@ export async function addProjectMember(projectId: string, userId: string) {
 
   return response;
 }
+
+export async function removeUserFromProject(projectId: string, userId: string) {
+  const token = await getAuthToken();
+  const response = await fetch(
+    `${API_URL}/api/projects/${projectId}/users/${userId}`,
+    {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response;
+}

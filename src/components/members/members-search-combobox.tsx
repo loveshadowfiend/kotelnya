@@ -11,7 +11,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { searchUsers } from "@/api/users/route";
-import { Project, User } from "@/types";
+import { User } from "@/types";
 import { Avatar, AvatarImage } from "../ui/avatar";
 import { AvatarFallback } from "@radix-ui/react-avatar";
 import { useEffect, useState } from "react";
@@ -20,8 +20,8 @@ import { Button } from "../ui/button";
 import { useSnapshot } from "valtio";
 import { projectStore } from "@/stores/project-store";
 import { toast } from "sonner";
-import { addProjectMember } from "@/api/projects/route";
 import { API_URL } from "@/lib/config";
+import { sendInvitation } from "@/api/invitations/route";
 
 export function MembersSearchCombobox() {
   const projectSnapshot = useSnapshot(projectStore);
@@ -29,26 +29,6 @@ export function MembersSearchCombobox() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [commandInput, setCommandInput] = useState<string>("");
   const [results, setResults] = useState<User[]>([]);
-
-  const addUserToProject = async (user: User) => {
-    if (!projectSnapshot.project) return;
-
-    setIsAdding(true);
-
-    toast.promise(addProjectMember(projectSnapshot.project._id, user._id), {
-      loading: "Добавление пользователя...",
-      success: async (response) => {
-        const data: Project = await response.json();
-
-        projectStore.project = data;
-
-        return `Пользователь ${user.username} добавлен в проект`;
-      },
-      error: "Не удалось добавить пользователя",
-    });
-
-    setIsAdding(false);
-  };
 
   useEffect(() => {
     const apiSearch = async (searchQuery: string) => {
@@ -117,9 +97,30 @@ export function MembersSearchCombobox() {
                       .map((user) => user.userId._id)
                       .includes(result._id) || isAdding
                   }
-                  onClick={() => addUserToProject(result)}
+                  onClick={() =>
+                    toast.promise(
+                      sendInvitation(
+                        projectSnapshot.project?._id ?? "",
+                        result._id
+                      ),
+                      {
+                        loading: "Приглашение пользователя...",
+                        success: async (response) => {
+                          const data = await response.json();
+                          return `${data.message}`;
+                        },
+                        error: async (response: string) => {
+                          if (response.includes("400")) {
+                            return "Приглашение этому пользователю в этот проект уже было отправлено";
+                          } else {
+                            return "Не удалось пригласить пользователя";
+                          }
+                        },
+                      }
+                    )
+                  }
                 >
-                  <Plus /> Добавить
+                  <Plus /> Пригласить
                 </Button>
               </div>
             </CommandItem>

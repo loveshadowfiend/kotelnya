@@ -34,9 +34,17 @@ const formSchema = z.object({
     .email({
       message: "Email должен быть корректным",
     }),
-  password: z.string().min(1, {
-    message: "Необходимо указать пароль",
-  }),
+  password: z
+    .string()
+    .min(1, {
+      message: "Необходимо указать пароль",
+    })
+    .min(8, {
+      message: "Пароль должен содержать минимум 8 символов",
+    })
+    .regex(/[A-Z]/, {
+      message: "Пароль должен содержать хотя бы одну заглавную букву",
+    }),
 });
 
 export function RegisterForm() {

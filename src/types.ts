@@ -90,6 +90,7 @@ export type Project = {
 export type ProjectState = {
   project: Project | null;
   loading: boolean;
+  userRole: string;
 };
 
 export type ProjectsState = {
@@ -123,10 +124,15 @@ export type UserState = {
   loading: boolean;
 };
 
-export type ProjectInvitations = {
+export type ProjectInvitation = {
   projectId: string;
   projectName: string;
   status: "pending" | "accepted" | "rejected";
-  invitedBy: User;
+  invitedBy: string;
+  _id: string;
   invitedAt: string;
+};
+
+export type InvitationsState = {
+  invitations: ProjectInvitation[] | null;
 };

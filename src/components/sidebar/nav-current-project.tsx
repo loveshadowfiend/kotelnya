@@ -94,6 +94,16 @@ export function NavCurrentProject() {
     }
   }, [userSnapshot]);
 
+  useEffect(() => {
+    if (!projectSnapshot.project || !userSnapshot.user) return;
+
+    const userRole = projectSnapshot.project.users.find(
+      (user) => user.userId._id === userSnapshot.user?._id
+    )?.role;
+
+    projectStore.userRole = userRole ?? "undefined";
+  }, [projectSnapshot, userSnapshot]);
+
   if (!projectSnapshot.project) {
     return <Skeleton className="w-60 h-12" />;
   }
