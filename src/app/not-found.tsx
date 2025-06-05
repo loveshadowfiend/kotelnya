@@ -31,7 +31,7 @@ export default function NotFound() {
         startAngle={40}
         containerRef={containerRef as React.RefObject<HTMLDivElement>}
       >
-        <div className="w-20 h-20 md:w-48 md:h-48 overflow-hidden">
+        <div className="w-20 md:w-48 overflow-hidden">
           <Image src={sadCat} width={640} height={500} alt="sad cat" />
         </div>
       </Screensaver>
