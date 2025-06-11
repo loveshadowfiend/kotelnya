@@ -30,11 +30,11 @@ export function NoteBreadcrumb({ noteId }: NoteBreadcrumbProps) {
             <Separator className="h-1 min-h-0" orientation="vertical" />
           </div>
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Главная</BreadcrumbLink>
+            <BreadcrumbLink href="/">главная</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
-            <BreadcrumbLink href="/">Заметки</BreadcrumbLink>
+            <BreadcrumbLink href="/">заметка</BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>

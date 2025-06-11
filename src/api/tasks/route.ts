@@ -13,7 +13,7 @@ export async function addTask(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title: title, columnId: columnId, dueDate: "" }),
+    body: JSON.stringify({ title: title, columnId: columnId, dueDate: null }),
   });
 
   return response;

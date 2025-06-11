@@ -23,10 +23,10 @@ export async function deleteProject(projectId: string) {
   projectsStore.loading = false;
 }
 
-export async function addProject(title: string) {
+export async function addProject(title: string, status?: string) {
   projectsStore.loading = true;
 
-  const response = await createProject(title);
+  const response = await createProject(title, status);
 
   if (response.ok) {
     const newProject = await response.json();

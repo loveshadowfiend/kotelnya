@@ -31,6 +31,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Doc } from "yjs";
 import { SyncedPlugin } from "./plugins/synced-plugin";
 import { TRANSFORMERS } from "@lexical/markdown";
+import { useRouter } from "next/navigation";
 
 function onError(error: any) {
   console.error(error);
@@ -60,10 +61,11 @@ export function Editor({ noteId }: EditorProps) {
   };
   const [isLoading, setIsLoading] = useState(true);
   const [isSynced, setIsSynced] = useState(false);
-  const noteSnapshot = useSnapshot(noteStore);
-  const userSnapshot = useSnapshot(userStore);
   const [floatingAnchorElem, setFloatingAnchorElem] =
     useState<HTMLDivElement | null>(null);
+  const router = useRouter();
+  const noteSnapshot = useSnapshot(noteStore);
+  const userSnapshot = useSnapshot(userStore);
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -87,25 +89,8 @@ export function Editor({ noteId }: EditorProps) {
       doc
     );
 
-    provider.on("status", (event) => {
-      if (event.status === "connected") {
-        console.log(`Connected to Yjs provider for note ${id}`);
-      } else if (event.status === "disconnected") {
-        console.log(`Disconnected from Yjs provider for note ${id}`);
-      }
-    });
-
     provider.on("sync", (synced: boolean) => {
-      console.log(`Yjs synced: ${synced} for note ${id}`);
       setIsSynced(synced);
-    });
-
-    provider.on("connection-error", (event) => {
-      console.log("Connection error:", event);
-    });
-
-    provider.on("connection-close", (event) => {
-      console.log("Connection closed:", event);
     });
 
     return provider;
@@ -121,6 +106,8 @@ export function Editor({ noteId }: EditorProps) {
         const noteData = await response.json();
 
         noteStore.note = noteData;
+      } else {
+        router.push("/404");
       }
 
       setIsLoading(false);
@@ -150,11 +137,25 @@ export function Editor({ noteId }: EditorProps) {
             aria-placeholder="Введите текст или '/' для комманд"
             placeholder={
               isSynced ? (
-                <div className="text-muted-foreground absolute pointer-events-none top-20 left-10 lg:top-32 lg:left-104">
+                <div
+                  className="text-muted-foreground absolute pointer-events-none top-20 lg:top-32"
+                  style={{
+                    left:
+                      (floatingAnchorElem?.getBoundingClientRect()?.left ?? 0) +
+                      160,
+                  }}
+                >
                   Введите текст или '/' для комманд
                 </div>
               ) : (
-                <div className="flex items-center text-muted-foreground absolute pointer-events-none top-20 left-10 lg:top-32 lg:left-104">
+                <div
+                  className="flex items-center text-muted-foreground absolute pointer-events-none top-20 lg:top-32"
+                  style={{
+                    left:
+                      (floatingAnchorElem?.getBoundingClientRect()?.left ?? 0) +
+                      160,
+                  }}
+                >
                   Синхронизация с сервером...
                 </div>
               )

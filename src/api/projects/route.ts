@@ -39,7 +39,7 @@ export async function getProjects(userId: string) {
   return response;
 }
 
-export async function createProject(title: string) {
+export async function createProject(title: string, status?: string) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/projects`, {
     method: "POST",
@@ -49,6 +49,7 @@ export async function createProject(title: string) {
     },
     body: JSON.stringify({
       title: title,
+      status: status,
     }),
   });
 
@@ -82,6 +83,50 @@ export async function removeUserFromProject(projectId: string, userId: string) {
       },
     }
   );
+
+  return response;
+}
+
+export async function changeUserRole(
+  projectId: string,
+  userId: string,
+  role: "owner" | "admin" | "member"
+) {
+  const token = await getAuthToken();
+  const response = await fetch(
+    `${API_URL}/api/projects/${projectId}/users/${userId}/role`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        userId: userId,
+        newRole: role,
+      }),
+    }
+  );
+
+  return response;
+}
+
+export async function updateProject(
+  projectId: string,
+  title: string,
+  status: string
+) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/projects/${projectId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      title: title,
+      status: status,
+    }),
+  });
 
   return response;
 }

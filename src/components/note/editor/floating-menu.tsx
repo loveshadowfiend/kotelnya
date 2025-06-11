@@ -45,7 +45,7 @@ import {
   $isQuoteNode,
 } from "@lexical/rich-text";
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
-import { $createListNode } from "@lexical/list";
+import { $createListNode, $isListNode } from "@lexical/list";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "react-responsive";
 
@@ -119,6 +119,15 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
       });
     };
 
+    const formatUnorderedList = () => {
+      editor.update(() => {
+        const selection = $getSelection();
+        if ($isRangeSelection(selection)) {
+          $setBlocksType(selection, () => $createListNode("bullet"));
+        }
+      });
+    };
+
     const formatOrderedList = () => {
       editor.update(() => {
         const selection = $getSelection();
@@ -154,6 +163,11 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
               setSpecial("h3");
             if ($isCodeNode(block)) setSpecial("code");
             if ($isQuoteNode(block)) setSpecial("quote");
+            if ($isListNode(block)) {
+              console.log("list", block.getListType());
+              if (block.getListType() === "bullet") setSpecial("ul");
+              if (block.getListType() === "number") setSpecial("ol");
+            }
 
             setAlignment(blockFormat);
             setState(toggles);
@@ -190,14 +204,21 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         <Select
           value={alignment === "" ? "left" : alignment}
           onValueChange={(value) => {
-            if (value === "left") {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
-            } else if (value === "center") {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
-            } else if (value === "right") {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
-            } else if (value === "justify") {
-              editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+            switch (value) {
+              case "left":
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "left");
+                break;
+              case "center":
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "center");
+                break;
+              case "right":
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "right");
+                break;
+              case "justify":
+                editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, "justify");
+                break;
+              default:
+                break;
             }
           }}
         >
@@ -262,14 +283,29 @@ export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
         <Select
           value={special}
           onValueChange={(value) => {
-            if (value === "paragraph") {
-              formatParagraph();
-            } else if (value === "h1" || value === "h2" || value === "h3") {
-              formatHeading(value);
-            } else if (value === "code") {
-              formatCode();
-            } else if (value === "quote") {
-              formatQuote();
+            switch (value) {
+              case "paragraph":
+                formatParagraph();
+                break;
+              case "h1":
+              case "h2":
+              case "h3":
+                formatHeading(value);
+                break;
+              case "code":
+                formatCode();
+                break;
+              case "quote":
+                formatQuote();
+                break;
+              case "ul":
+                formatUnorderedList();
+                break;
+              case "ol":
+                formatOrderedList();
+                break;
+              default:
+                break;
             }
           }}
         >

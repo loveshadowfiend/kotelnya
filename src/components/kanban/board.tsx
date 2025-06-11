@@ -10,6 +10,7 @@ import { Skeleton } from "../ui/skeleton";
 import { getBoard, updateBoard } from "@/api/boards/route";
 import { modifyBoardObject, unmodifyBoardObject } from "@/lib/utils";
 import { useSyncToYjsEffect } from "@/yjs/useSyncToYjsEffect";
+import { useRouter } from "next/navigation";
 
 interface KanbanBoardProps {
   boardId: string;
@@ -18,9 +19,7 @@ interface KanbanBoardProps {
 export function KanbanBoard({ boardId }: KanbanBoardProps) {
   const [isLoading, setIsLoading] = useState(false);
   const boardSnapshot = useSnapshot(boardStore);
-  const isBoardEmpty =
-    Object.keys(boardSnapshot).length === 0 &&
-    boardSnapshot.constructor === Object;
+  const router = useRouter();
 
   const onDragEnd = (result: DropResult) => {
     const { destination, source, draggableId, type } = result;
@@ -116,6 +115,8 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
         const boardData = await boardResponse.json();
 
         Object.assign(boardStore, modifyBoardObject(boardData));
+      } else {
+        router.push("/404");
       }
 
       setIsLoading(false);
@@ -126,7 +127,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
 
   useSyncToYjsEffect(boardId);
 
-  if (isBoardEmpty || boardSnapshot._id !== boardId || isLoading) {
+  if (boardSnapshot._id !== boardId || isLoading) {
     return (
       <div
         className="

@@ -8,7 +8,6 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "../ui/sidebar";
-import { getAuthToken } from "@/lib/auth";
 import { Ellipsis, Kanban, Loader2, Plus } from "lucide-react";
 import { BoardDropdown } from "./board-dropdown";
 import { useEffect } from "react";
@@ -23,6 +22,7 @@ import {
 import { AddBoard } from "./add-board";
 import { projectStore } from "@/stores/project-store";
 import { getBoards } from "@/api/boards/route";
+import { toast } from "sonner";
 
 export function NavBoards() {
   const boardsSnapshot = useSnapshot(boardsStore);
@@ -35,11 +35,15 @@ export function NavBoards() {
     async function fetchBoards() {
       boardsStore.loading = true;
 
-      const response = await getBoards(projectSnapshot.project?._id);
+      const response = await getBoards(projectSnapshot.project!._id);
 
       if (response.ok) {
         const data = await response.json();
         boardsStore.boards = data;
+      } else {
+        toast.error(
+          "Не удалось загрузить доски. Пожалуйста, попробуйте позже."
+        );
       }
 
       boardsStore.loading = false;
@@ -75,7 +79,7 @@ export function NavBoards() {
           <CollapsibleTrigger asChild>
             <SidebarMenuButton>
               <Kanban />
-              <span>Канбан-доска</span>
+              <span>канбан-доски</span>
             </SidebarMenuButton>
           </CollapsibleTrigger>
           <AddBoard>

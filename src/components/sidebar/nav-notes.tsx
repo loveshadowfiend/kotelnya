@@ -22,6 +22,7 @@ import { Skeleton } from "../ui/skeleton";
 import { AddNote } from "./add-note";
 import { projectStore } from "@/stores/project-store";
 import { NoteDropdown } from "./note-dropdown";
+import { toast } from "sonner";
 
 export function NavNotes() {
   const notesSnapshot = useSnapshot(notesStore);
@@ -33,11 +34,15 @@ export function NavNotes() {
     async function fetchNotes() {
       notesStore.loading = true;
 
-      const response = await getNotes(projectSnapshot.project?._id);
+      const response = await getNotes(projectSnapshot.project!._id);
 
       if (response.ok) {
         const data = await response.json();
         notesStore.notes = data;
+      } else {
+        toast.error(
+          "Не удалось загрузить заметки. Пожалуйста, попробуйте позже."
+        );
       }
 
       notesStore.loading = false;
@@ -72,7 +77,7 @@ export function NavNotes() {
         <CollapsibleTrigger asChild>
           <SidebarMenuButton>
             <BookHeart />
-            <span>Заметки</span>
+            <span>заметки</span>
           </SidebarMenuButton>
         </CollapsibleTrigger>
         <SidebarMenuAction>

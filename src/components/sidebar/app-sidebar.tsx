@@ -32,7 +32,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="/">
                     <Home />
-                    <span>Главная</span>
+                    <span>главная</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -41,7 +41,7 @@ export function AppSidebar() {
                   <Link href="/invitations">
                     <Mail />
                     <div className="flex justify-between w-full items-center">
-                      <span>Приглашения</span>
+                      <span>приглашения</span>
                     </div>
                   </Link>
                 </SidebarMenuButton>
@@ -58,7 +58,7 @@ export function AppSidebar() {
                 <SidebarMenuButton asChild>
                   <Link href="/members">
                     <Users />
-                    <span>Участники</span>
+                    <span>участники</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -66,7 +66,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Рабочее пространство</SidebarGroupLabel>
+          <SidebarGroupLabel>рабочее пространство</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <NavBoards />

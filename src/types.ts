@@ -58,6 +58,7 @@ export type Task = {
   assignee: string[];
   createdAt: string;
   updatedAt: string;
+  dueDate: string;
   __v: number;
 };
 

@@ -44,7 +44,7 @@ export function MembersUserDropdown({
                     userId
                   ),
                   {
-                    loading: "Выгоняем пользователя...",
+                    loading: "выгоняем пользователя...",
                     success: () => {
                       if (projectStore.project) {
                         projectStore.project = {
@@ -55,17 +55,17 @@ export function MembersUserDropdown({
                           ),
                         };
                       }
-                      return `Пользователь ${userName} успешно выгнан из проекта`;
+                      return `пользователь ${userName} успешно выгнан из проекта`;
                     },
                     error: () => {
-                      return `Ошибка при выгоне пользователя ${userName}`;
+                      return `ошибка при выгоне пользователя ${userName}`;
                     },
                   }
                 );
               }}
             >
               <LogOut />
-              <span>Выгнать</span>
+              <span>выгнать</span>
             </DropdownMenuItem>
           )}
       </DropdownMenuContent>

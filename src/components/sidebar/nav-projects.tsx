@@ -12,46 +12,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ChevronsUpDown, Loader2, Trash2 } from "lucide-react";
+import { ChevronsUpDown, Edit, Loader2, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { AddProject } from "./add-project";
 import { verifyAuth } from "@/lib/auth";
 import { Project } from "@/types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 import { NavCurrentProject } from "./nav-current-project";
 import { Button } from "../ui/button";
-import { deleteProject, projectsStore } from "@/stores/projects-store";
+import { projectsStore } from "@/stores/projects-store";
 import { useSnapshot } from "valtio";
 import { projectStore } from "@/stores/project-store";
 import { userStore } from "@/stores/user-store";
 import { useRouter } from "next/navigation";
 import { getProjects } from "@/api/projects/route";
+import { ProjectManagement } from "./project-management";
 
 export function NavProjects() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const router = useRouter();
   const userSnapshot = useSnapshot(userStore);
   const projectSnapshot = useSnapshot(projectStore);
   const projectsSnapshot = useSnapshot(projectsStore);
-  const handleDelete = async (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    projectId: string
-  ) => {
-    e.stopPropagation();
-
-    if (projectId === projectSnapshot.project?._id) {
-      router.push("/");
-
-      // force currentProject rerender
-      userStore.loading = true;
-      userStore.loading = false;
-
-      projectStore.project = null;
-      localStorage.removeItem("currentProject");
-    }
-
-    deleteProject(projectId);
-  };
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -94,7 +77,7 @@ export function NavProjects() {
             className="relative w-60 shadow-none"
             align="center"
           >
-            <DropdownMenuLabel>Проекты</DropdownMenuLabel>
+            <DropdownMenuLabel>проекты</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {projectsSnapshot.loading && (
               <div className="flex items-center justify-center overflow-hidden py-3">
@@ -107,7 +90,16 @@ export function NavProjects() {
                   <div
                     key={project._id}
                     className="relative group flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
-                    onClick={() => {
+                    onClick={(e) => {
+                      // Prevent click if the event originated from the ProjectManagement button or its children
+                      if (
+                        (e.target as HTMLElement).closest(
+                          ".project-management-btn"
+                        )
+                      ) {
+                        return;
+                      }
+                      e.stopPropagation();
                       projectStore.project = project;
 
                       localStorage.setItem(
@@ -133,21 +125,16 @@ export function NavProjects() {
                         {project.status}
                       </p>
                     </div>
-                    <div className="absolute flex right-3 z-50">
-                      {/* <Button
-                        className="text-muted-foreground w-5 h-5"
-                        variant="ghost"
-                      >
-                        <Edit />
-                      </Button> */}
-                      <Button
-                        className="hidden text-muted-foreground w-5 h-5 group-hover:inline-flex"
-                        variant="ghost"
-                        onClick={(e) => handleDelete(e, project._id)}
-                      >
-                        <Trash2 />
-                      </Button>
-                    </div>
+                    <ProjectManagement project={project}>
+                      <div className="absolute flex right-3 z-50">
+                        <Button
+                          className="h-5 w-5 text-muted-foreground z-50 hidden group-hover:flex"
+                          variant="ghost"
+                        >
+                          <Edit />
+                        </Button>
+                      </div>
+                    </ProjectManagement>
                   </div>
                 );
               })}
@@ -158,7 +145,7 @@ export function NavProjects() {
                     <AvatarFallback className="rounded-lg">+</AvatarFallback>
                   </Avatar>
                   <span className="text-sm text-muted-foreground font-medium">
-                    Добавить проект
+                    добавить проект
                   </span>
                 </div>
               </AddProject>
