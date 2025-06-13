@@ -45,14 +45,19 @@ export function AddNote({ children }: { children: React.ReactNode }) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     notesStore.loading = true;
 
-    const response = await addNote(projectSnapshot.project?._id, values.title);
+    const response = await addNote(
+      projectSnapshot.project?._id ?? "",
+      values.title
+    );
 
     if (response.ok) {
       const data = await response.json();
 
       notesStore.notes?.push(data);
       router.push(`/note/${data._id}`);
-      toast.success(`Заметка ${values.title} успешно создана`);
+      toast.success(`заметка ${values.title} успешно создана`);
+    } else {
+      toast.error("ошибка при создании заметки");
     }
 
     notesStore.loading = false;

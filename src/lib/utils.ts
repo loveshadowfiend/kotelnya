@@ -20,6 +20,7 @@ export function modifyBoardObject(board: Board) {
           description: task.description,
           createdAt: task.createdAt,
           updatedAt: task.updatedAt,
+          dueDate: task.dueDate,
           __v: task.__v,
         },
       ])

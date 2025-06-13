@@ -36,6 +36,7 @@ import {
   TextQuote,
   Type,
   Image,
+  Table,
 } from "lucide-react";
 import {
   INSERT_ORDERED_LIST_COMMAND,
@@ -44,6 +45,7 @@ import {
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $createCodeNode } from "@lexical/code";
 import { cn } from "@/lib/utils";
+import { InsertTableDialog } from "./table-plugin";
 
 // Image node creation function
 function $createImageNode(
@@ -189,7 +191,10 @@ function handleImageUpload(editor: LexicalEditor, file: File): Promise<void> {
   });
 }
 
-function getBaseOptions(editor: LexicalEditor) {
+function getBaseOptions(
+  editor: LexicalEditor,
+  setIsTableDialogOpen: React.Dispatch<React.SetStateAction<boolean>>
+) {
   const divClassName = "px-2 py-1 rounded-sm";
   const iconClassName = "w-4 h-4";
 
@@ -270,7 +275,7 @@ function getBaseOptions(editor: LexicalEditor) {
           <Code className={iconClassName} />
         </div>
       ),
-      keywords: ["код"],
+      keywords: ["код", "code"],
       onSelect: () =>
         editor.update(() => {
           const selection = $getSelection();
@@ -278,6 +283,15 @@ function getBaseOptions(editor: LexicalEditor) {
             $setBlocksType(selection, () => $createCodeNode());
           }
         }),
+    }),
+    new ComponentPickerOption("Таблица", {
+      icon: (
+        <div className={divClassName}>
+          <Table className={iconClassName} />
+        </div>
+      ),
+      keywords: ["таблица", "table"],
+      onSelect: () => setIsTableDialogOpen(true),
     }),
     new ComponentPickerOption("Изображение", {
       icon: (
@@ -319,6 +333,7 @@ function getBaseOptions(editor: LexicalEditor) {
 
 export default function ComponentPickerMenuPlugin(): JSX.Element {
   const [editor] = useLexicalComposerContext();
+  const [isTableDialogOpen, setIsTableDialogOpen] = useState<boolean>(false);
   const [queryString, setQueryString] = useState<string | null>(null);
 
   const checkForTriggerMatch = useBasicTypeaheadTriggerMatch("/", {
@@ -326,7 +341,7 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
   });
 
   const options = useMemo(() => {
-    const baseOptions = getBaseOptions(editor);
+    const baseOptions = getBaseOptions(editor, setIsTableDialogOpen);
 
     if (!queryString) {
       return baseOptions;
@@ -396,6 +411,11 @@ export default function ComponentPickerMenuPlugin(): JSX.Element {
               )
             : null
         }
+      />
+      <InsertTableDialog
+        activeEditor={editor}
+        open={isTableDialogOpen}
+        setOpen={setIsTableDialogOpen}
       />
     </>
   );

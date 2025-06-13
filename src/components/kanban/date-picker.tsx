@@ -15,6 +15,7 @@ import {
 import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { useEffect, useState } from "react";
+import { updateTask } from "@/api/tasks/route";
 
 interface DatePicker {
   taskId: string;
@@ -22,21 +23,15 @@ interface DatePicker {
 }
 
 export function DatePicker({ taskId, className }: DatePicker) {
-  const kanbanBoardSnapshot = useSnapshot(boardStore);
+  const boardSnapshot = useSnapshot(boardStore);
   const [date, setDate] = useState<Date>();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   useEffect(() => {
-    if (kanbanBoardSnapshot.tasks[taskId].dueDate) {
-      setDate(new Date(kanbanBoardSnapshot.tasks[taskId].dueDate));
+    if (boardSnapshot.tasks[taskId].dueDate) {
+      setDate(new Date(boardSnapshot.tasks[taskId].dueDate));
     }
   }, []);
-
-  useEffect(() => {
-    if (date == undefined) return;
-
-    boardStore.tasks[taskId].dueDate = date.toDateString();
-  }, [date]);
 
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
@@ -65,6 +60,10 @@ export function DatePicker({ taskId, className }: DatePicker) {
             if (selectedDate) {
               setDate(selectedDate);
               setIsPopoverOpen(false);
+              boardStore.tasks[taskId].dueDate = selectedDate.toISOString();
+              updateTask(taskId, {
+                dueDate: selectedDate.toISOString(),
+              });
             }
           }}
           locale={ru}

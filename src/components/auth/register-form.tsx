@@ -17,7 +17,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { registerUser } from "@/api/auth/route";
-import Link from "next/link";
 
 const formSchema = z.object({
   username: z
@@ -79,10 +78,7 @@ export function RegisterForm() {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-3 w-[250px]"
-      >
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 w-full">
         <FormField
           control={form.control}
           name="username"

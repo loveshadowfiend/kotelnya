@@ -70,6 +70,8 @@ export function KanbanCard({
         <div className="grid gap-3 mx-4 mb-4">
           {/* <Label htmlFor="assignee">Исполнитель</Label>
             <AssigneeSelect taskId={taskId} /> */}
+          <Label htmlFor="deadline">Дедлайн</Label>
+          <DatePicker className="w-full" taskId={taskId} />
           <Label htmlFor="description">Описание</Label>
           <Textarea
             className="resize-none mb-3 field-sizing-content"
@@ -84,16 +86,12 @@ export function KanbanCard({
               }
 
               timeoutRef.current = setTimeout(() => {
-                updateTask(
-                  taskId,
-                  boardSnapshot.tasks[taskId].title,
-                  e.target.value
-                );
+                updateTask(taskId, {
+                  description: e.target.value,
+                });
               }, 1000);
             }}
           />
-          <Label htmlFor="deadline">Дедлайн</Label>
-          <DatePicker className="w-full" taskId={taskId} />
         </div>
       </DrawerContent>
     </Drawer>

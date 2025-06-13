@@ -32,6 +32,8 @@ import { Doc } from "yjs";
 import { SyncedPlugin } from "./plugins/synced-plugin";
 import { TRANSFORMERS } from "@lexical/markdown";
 import { useRouter } from "next/navigation";
+import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
+import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
 
 function onError(error: any) {
   console.error(error);

@@ -48,18 +48,24 @@ export function KanbanRenameTaskForm({ task }: KanbanRenameTaskProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    toast.promise(updateTask(task._id, values.title, task.description), {
-      loading: "Переименование задачи...",
-      success: async () => {
-        boardStore.tasks[task._id].title = values.title;
-        form.reset();
-        kanbanComponentsStore.renamingTask = "";
-        setIsLoading(false);
+    const response = await updateTask(task._id, { title: values.title });
 
-        return `Задача "${values.title}" успешно переименована`;
-      },
-      error: "Не удалось переименовать задачу",
-    });
+    if (!response.ok) {
+      toast.error(`не удалось переименовать задачу "${task.title}"`);
+    }
+
+    // toast.promise(updateTask(task._id, { title: values.title }), {
+    //   loading: "Переименование задачи...",
+    //   success: async () => {
+    //     boardStore.tasks[task._id].title = values.title;
+    //     form.reset();
+    //     kanbanComponentsStore.renamingTask = "";
+    //     setIsLoading(false);
+
+    //     return `Задача "${values.title}" успешно переименована`;
+    //   },
+    //   error: "Не удалось переименовать задачу",
+    // });
   }
 
   useEffect(() => {

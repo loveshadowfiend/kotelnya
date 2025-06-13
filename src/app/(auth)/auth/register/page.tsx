@@ -1,14 +1,30 @@
 import { RegisterForm } from "@/components/auth/register-form";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
 
 export default function RegisterPage() {
   return (
     <main className="flex flex-col h-screen w-screen items-center justify-center space-y-3">
-      <div className="text-xl font-bold mb-8">регистрация</div>
-      <RegisterForm />
-      <Link className="text-sm underline" href="/auth/login">
-        войти
-      </Link>
+      <Card>
+        <CardHeader className="flex items-center">
+          <CardTitle>регистрация в kotelnya</CardTitle>
+          <CardDescription className="text-center">
+            зарегистрируйте ваш аккаунт, и получите <br /> доступ к платформе
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-col items-center w-100 gap-3">
+          <RegisterForm />
+          <Link className="text-sm underline" href="/auth/login">
+            войти
+          </Link>
+        </CardContent>
+      </Card>
     </main>
   );
 }

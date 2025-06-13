@@ -1,9 +1,6 @@
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "../ui/input";
@@ -36,11 +33,9 @@ export function KanbanRenameTaskDropdown({
           if (boardStore.tasks[taskId].title.trim() === "") {
             boardStore.tasks[taskId].title = initialName;
           } else {
-            updateTask(
-              taskId,
-              boardStore.tasks[taskId].title,
-              boardStore.tasks[taskId].description
-            );
+            updateTask(taskId, {
+              title: boardStore.tasks[taskId].title,
+            });
             setInitialName(boardStore.tasks[taskId].title);
           }
         }
