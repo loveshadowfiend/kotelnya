@@ -46,7 +46,9 @@ export function KanbanRenameTaskForm({ task }: KanbanRenameTaskProps) {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
+    boardStore.tasks[task._id].title = values.title;
+    form.reset();
+    kanbanComponentsStore.renamingTask = "";
 
     const response = await updateTask(task._id, { title: values.title });
 

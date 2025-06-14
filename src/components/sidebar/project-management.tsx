@@ -100,7 +100,11 @@ export function ProjectManagement({
       (user) => user.userId._id === userSnapshot.user?._id
     )[0];
 
-    if (!user || !user.role) setUserRole("member");
+    if (!user || !user.role) {
+      setUserRole("member");
+
+      return;
+    }
 
     setUserRole(user.role);
   }, [project]);

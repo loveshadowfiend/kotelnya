@@ -53,7 +53,7 @@ export async function addNote(projectId: string, title: string) {
   return response;
 }
 
-export async function updateNote(noteId: string, markdownContent: string) {
+export async function updateNote(noteId: string, data: Object) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/notes/${noteId}`, {
     method: "PUT",
@@ -61,9 +61,7 @@ export async function updateNote(noteId: string, markdownContent: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      markdownContent: markdownContent,
-    }),
+    body: JSON.stringify(data),
   });
 
   return response;

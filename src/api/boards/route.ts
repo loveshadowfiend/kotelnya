@@ -51,7 +51,7 @@ export async function addBoard(projectId: string, title: string) {
   return response;
 }
 
-export async function updateBoard(boardId: string, data: any) {
+export async function updateBoard(boardId: string, data: Object) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/boards/${boardId}`, {
     method: "PUT",

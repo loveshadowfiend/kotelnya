@@ -35,7 +35,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
         >
           <Card className="h-full py-0 pb-6" {...provided.dragHandleProps}>
             <CardHeader className="flex flex-row items-center justify-between cursor-grab pt-6">
-              <CardTitle className="text-lg cursor-pointer flex items-center gap-2">
+              <CardTitle className="text-lg cursor-pointer flex items-center gap-2 w-full">
                 {kanbanComponentsSnapshot.renamingColumn !== column._id && (
                   <Badge
                     className="text-sm rounded-full"

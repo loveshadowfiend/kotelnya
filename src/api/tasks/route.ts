@@ -40,7 +40,6 @@ export async function updateTask(
   }
 ) {
   const token = await getAuthToken();
-
   const response = await fetch(`${API_URL}/api/tasks/${taskId}`, {
     method: "PUT",
     headers: {

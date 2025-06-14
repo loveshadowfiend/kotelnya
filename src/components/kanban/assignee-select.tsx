@@ -16,13 +16,13 @@ interface AssigneeSelectProps {
 }
 
 export function AssigneeSelect({ taskId, className }: AssigneeSelectProps) {
-  const kanbanBoardSnapshot = useSnapshot(boardStore);
+  const boardSnapshot = useSnapshot(boardStore);
 
   return (
     <Select
-      value={kanbanBoardSnapshot.tasks[taskId].assignee}
+      value={boardStore.tasks[taskId].assignee[0]}
       onValueChange={(value) => {
-        boardStore.tasks[taskId].assignee = value;
+        boardStore.tasks[taskId].assignee[0] = value;
       }}
     >
       <SelectTrigger className={cn("w-full", className)}>

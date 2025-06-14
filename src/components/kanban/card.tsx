@@ -25,6 +25,8 @@ import { DatePicker } from "./date-picker";
 import { updateTask } from "@/api/tasks/route";
 import { KanbanRenameTaskDropdown } from "./rename-task-dropdown";
 import { useMediaQuery } from "react-responsive";
+import { AssigneeSelect } from "./assignee-select";
+import { Button } from "../ui/button";
 
 interface KanbanCardProps {
   taskId: string;
@@ -67,31 +69,35 @@ export function KanbanCard({
             />
           </KanbanRenameTaskDropdown>
         </DrawerHeader>
-        <div className="grid gap-3 mx-4 mb-4">
-          {/* <Label htmlFor="assignee">Исполнитель</Label>
-            <AssigneeSelect taskId={taskId} /> */}
-          <Label htmlFor="deadline">Дедлайн</Label>
-          <DatePicker className="w-full" taskId={taskId} />
-          <Label htmlFor="description">Описание</Label>
-          <Textarea
-            className="resize-none mb-3 field-sizing-content"
-            id="description"
-            placeholder="Описание задачи"
-            defaultValue={boardSnapshot.tasks[taskId].description}
-            onChange={(e) => {
-              boardStore.tasks[taskId].description = e.target.value;
+        <div className="grid gap-6 mx-4 mb-4">
+          <div className="grid gap-3">
+            <Label htmlFor="deadline">дедлайн</Label>
+            <DatePicker className="w-full" taskId={taskId} />
+          </div>
+          <div className="grid gap-3">
+            <Label className="group flex justify-between" htmlFor="description">
+              описание
+            </Label>
+            <Textarea
+              className="resize-none mb-3 field-sizing-content"
+              id="description"
+              placeholder="описание задачи"
+              defaultValue={boardSnapshot.tasks[taskId].description}
+              onChange={(e) => {
+                boardStore.tasks[taskId].description = e.target.value;
 
-              if (timeoutRef.current) {
-                clearTimeout(timeoutRef.current);
-              }
+                if (timeoutRef.current) {
+                  clearTimeout(timeoutRef.current);
+                }
 
-              timeoutRef.current = setTimeout(() => {
-                updateTask(taskId, {
-                  description: e.target.value,
-                });
-              }, 1000);
-            }}
-          />
+                timeoutRef.current = setTimeout(() => {
+                  updateTask(taskId, {
+                    description: e.target.value,
+                  });
+                }, 1000);
+              }}
+            />
+          </div>
         </div>
       </DrawerContent>
     </Drawer>

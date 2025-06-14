@@ -49,19 +49,18 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
     setIsLoading(true);
 
     toast.promise(addTask(column._id, boardSnapshot._id, values.title), {
-      loading: "Создание задачи...",
+      loading: "создание задачи...",
       success: async (response) => {
         const newTask = await response.json();
         addNewTask(newTask._id, column._id, values.title);
         form.reset();
         kanbanComponentsStore.addNewTaskActiveColumn = "";
+        setIsLoading(false);
 
-        return `Задача "${values.title}" успешно создана`;
+        return `задача "${values.title}" успешно создана`;
       },
-      error: "Не удалось создать задачу",
+      error: "не удалось создать задачу",
     });
-
-    setIsLoading(false);
   }
 
   useClickOutside(ref as React.RefObject<HTMLElement>, () => {
@@ -147,6 +146,7 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
       onClick={() => {
         kanbanComponentsStore.addNewTaskActiveColumn = column._id;
       }}
+      disabled={isLoading}
     >
       <Plus />
       Добавить задачу

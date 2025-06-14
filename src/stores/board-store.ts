@@ -15,6 +15,7 @@ export const addNewTask = (
     assignee: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    dueDate: new Date().toISOString(),
     __v: 0,
   };
 

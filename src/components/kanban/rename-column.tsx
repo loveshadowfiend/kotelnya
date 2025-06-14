@@ -15,14 +15,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useClickOutside } from "@/hooks/use-outside-click";
+import { updateColumn } from "@/api/columns/route";
 
 const formSchema = z.object({
   title: z
     .string()
     .min(1, {
-      message: "Название не может быть пустым",
+      message: "название не может быть пустым",
     })
-    .max(32, { message: "Название не может быть длиннее 16 символов" }),
+    .max(32, { message: "название не может быть длиннее 16 символов" }),
 });
 
 interface KanbanRenameColumnProps {
@@ -41,6 +42,7 @@ export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     boardStore.columns[columnId].title = values.title;
     kanbanComponentsStore.renamingColumn = "";
+    updateColumn(columnId, values.title);
   };
 
   useEffect(() => {
@@ -67,15 +69,18 @@ export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
 
   return (
     <Form {...form}>
-      <form className="flex justify-between items-center w-full gap-2">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex justify-between items-center w-full gap-2"
+      >
         <FormField
           control={form.control}
           name="title"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="w-full">
               <FormControl>
                 <Input
-                  className="rounded-full w-full font-normal h-[26px] mb-0 p-4"
+                  className="text-md rounded-full w-full font-normal h-5 m-0 px-3 py-4.25"
                   {...field}
                   type="text"
                   ref={ref}
@@ -85,15 +90,7 @@ export function KanbanRenameColumn({ columnId }: KanbanRenameColumnProps) {
             </FormItem>
           )}
         />
-        <Button
-          className="h-[26px] w-[26px]"
-          type="submit"
-          variant="ghost"
-          onClick={(e) => {
-            e.preventDefault();
-            form.handleSubmit(onSubmit)();
-          }}
-        >
+        <Button type="submit" variant="ghost">
           <Check />
         </Button>
       </form>

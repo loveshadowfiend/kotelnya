@@ -17,6 +17,22 @@ export async function createColumn(boardId: string, title: string) {
   return response;
 }
 
+export async function updateColumn(columnId: string, title: string) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/columns/${columnId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      title: title,
+    }),
+  });
+
+  return response;
+}
+
 export async function deleteColumn(columnId: string) {
   const token = await getAuthToken();
   const response = await fetch(`${API_URL}/api/columns/${columnId}`, {

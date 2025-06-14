@@ -14,6 +14,8 @@ import { notesStore, deleteNote } from "@/stores/notes-store";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useParams } from "next/navigation";
+import { useState } from "react";
+import { SidebarRenameForm } from "./rename-form";
 
 interface NoteDropdownProps {
   children: React.ReactNode;
@@ -26,6 +28,7 @@ export function NoteDropdown({
   noteId,
   noteTitle,
 }: NoteDropdownProps) {
+  const [isRenaming, setIsRenaming] = useState<boolean>(false);
   const params = useParams();
   const router = useRouter();
   const notesSnapshot = useSnapshot(notesStore);
@@ -52,14 +55,30 @@ export function NoteDropdown({
           {noteTitle}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
-          <Edit />
-          Переименовать
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeleteNote}>
-          <Trash2 />
-          <span>Удалить</span>
-        </DropdownMenuItem>
+        {!isRenaming && (
+          <>
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.preventDefault();
+                setIsRenaming(true);
+              }}
+            >
+              <Edit />
+              переименовать
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={handleDeleteNote}>
+              <Trash2 />
+              <span>удалить</span>
+            </DropdownMenuItem>
+          </>
+        )}
+        {isRenaming && (
+          <SidebarRenameForm
+            noteId={noteId}
+            title={noteTitle}
+            setIsRenaming={setIsRenaming}
+          />
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
