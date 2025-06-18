@@ -6,12 +6,16 @@ import { toast } from "sonner";
 import { acceptInvitation, rejectInvitation } from "@/api/invitations/route";
 import { projectsStore } from "@/stores/projects-store";
 import { invitationsStore } from "@/stores/invitations-store";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Check, X } from "lucide-react";
 
 interface InvitationCardProps {
   projectInvitation: ProjectInvitation;
 }
 
 export function InvitationCard({ projectInvitation }: InvitationCardProps) {
+  const isTabletOrMobile = useIsMobile();
+
   return (
     <Card className="w-full">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -30,7 +34,7 @@ export function InvitationCard({ projectInvitation }: InvitationCardProps) {
           <Button
             onClick={() => {
               toast.promise(acceptInvitation(projectInvitation._id), {
-                loading: "Принятие приглашения...",
+                loading: "принятие приглашения...",
                 success: async (response) => {
                   const data = await response.json();
                   projectsStore.projects?.push(data);
@@ -38,21 +42,21 @@ export function InvitationCard({ projectInvitation }: InvitationCardProps) {
                     (invitation) => invitation._id !== projectInvitation._id
                   );
 
-                  return "Приглашения принято";
+                  return "приглашения принято";
                 },
                 error: () => {
-                  return "Не удалось принять приглашение";
+                  return "не удалось принять приглашение";
                 },
               });
             }}
           >
-            Принять
+            {isTabletOrMobile ? <Check /> : "принять"}
           </Button>
           <Button
             variant="destructive"
             onClick={() => {
               toast.promise(rejectInvitation(projectInvitation._id), {
-                loading: "Отклонение приглашения...",
+                loading: "отклонение приглашения...",
                 success: async () => {
                   const newInvitations =
                     invitationsStore?.invitations?.filter(
@@ -60,15 +64,15 @@ export function InvitationCard({ projectInvitation }: InvitationCardProps) {
                     ) ?? [];
                   invitationsStore.invitations = newInvitations;
 
-                  return "Приглашение отклонено";
+                  return "приглашение отклонено";
                 },
                 error: () => {
-                  return "Не удалось отклонить приглашение";
+                  return "не удалось отклонить приглашение";
                 },
               });
             }}
           >
-            Отклонить
+            {isTabletOrMobile ? <X /> : "отклонить"}
           </Button>
         </div>
       </CardHeader>

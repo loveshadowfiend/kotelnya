@@ -30,7 +30,7 @@ import { getProjects } from "@/api/projects/route";
 import { ProjectManagement } from "./project-management";
 
 export function NavProjects() {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const userSnapshot = useSnapshot(userStore);
   const projectSnapshot = useSnapshot(projectStore);
@@ -91,15 +91,9 @@ export function NavProjects() {
                     key={project._id}
                     className="relative group flex items-center gap-2 p-2 hover:bg-muted cursor-pointer rounded-sm h-fit"
                     onClick={(e) => {
-                      // Prevent click if the event originated from the ProjectManagement button or its children
-                      if (
-                        (e.target as HTMLElement).closest(
-                          ".project-management-btn"
-                        )
-                      ) {
-                        return;
-                      }
                       e.stopPropagation();
+                      if (isOpen) return;
+
                       projectStore.project = project;
 
                       localStorage.setItem(
@@ -125,16 +119,21 @@ export function NavProjects() {
                         {project.status}
                       </p>
                     </div>
-                    <ProjectManagement project={project}>
-                      <div className="absolute flex right-3 z-50">
-                        <Button
-                          className="h-5 w-5 text-muted-foreground z-50 hidden group-hover:flex"
-                          variant="ghost"
-                        >
-                          <Edit />
-                        </Button>
-                      </div>
-                    </ProjectManagement>
+                    <div onClick={(e) => e.stopPropagation()}>
+                      <ProjectManagement
+                        setIsOpen={setIsOpen}
+                        project={project}
+                      >
+                        <div className="absolute flex right-3 z-50">
+                          <Button
+                            className="h-5 w-5 text-muted-foreground z-50 hidden group-hover:flex"
+                            variant="ghost"
+                          >
+                            <Edit />
+                          </Button>
+                        </div>
+                      </ProjectManagement>
+                    </div>
                   </div>
                 );
               })}

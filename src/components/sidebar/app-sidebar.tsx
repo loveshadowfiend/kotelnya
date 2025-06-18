@@ -1,3 +1,5 @@
+"use client";
+
 import { Users, Home, Mail, Circle, CircleAlert } from "lucide-react";
 import {
   Sidebar,
@@ -20,7 +22,7 @@ import { NavNotes } from "./nav-notes";
 
 export function AppSidebar() {
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon">
       <SidebarHeader className="border-b">
         <NavProjects />
       </SidebarHeader>

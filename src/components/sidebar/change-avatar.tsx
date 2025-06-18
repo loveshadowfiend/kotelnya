@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { loadUserAvatar } from "@/api/users/route";
 import { User } from "@/types";
 import { userStore } from "@/stores/user-store";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface ChangeAvatarProps {
   currentAvatar?: string;
@@ -46,6 +47,7 @@ export function ChangeAvatar({
   onOpenChange,
   onAvatarChange,
 }: ChangeAvatarProps) {
+  const isMobile = useIsMobile();
   const [loading, setLoading] = React.useState(false);
   const [selectedFile, setSelectedFile] = React.useState<File | null>(null);
   const [originalImage, setOriginalImage] = React.useState<string | null>(null);
@@ -91,10 +93,10 @@ export function ChangeAvatar({
       setOriginalImage(imageUrl);
       setShowCropper(true);
 
-      // Load image to get dimensions
+      // Load image to get dimensions - adjust for mobile
       const img = new Image();
       img.onload = () => {
-        const maxSize = 400;
+        const maxSize = isMobile ? 280 : 400;
         const aspectRatio = img.width / img.height;
         let displayWidth = maxSize;
         let displayHeight = maxSize;
@@ -125,8 +127,9 @@ export function ChangeAvatar({
     setCropArea((prev) => {
       const updated = { ...prev, ...newCropArea };
 
-      // Ensure minimum size first
-      updated.size = Math.max(50, updated.size);
+      // Ensure minimum size first - smaller on mobile
+      const minSize = isMobile ? 40 : 50;
+      updated.size = Math.max(minSize, updated.size);
 
       // Ensure size doesn't exceed image dimensions
       const maxPossibleSize = Math.min(imageSize.width, imageSize.height);
@@ -146,12 +149,26 @@ export function ChangeAvatar({
     });
   };
 
+  // Helper function to get touch/mouse coordinates
+  const getEventCoordinates = (e: React.MouseEvent | React.TouchEvent) => {
+    if ("touches" in e && e.touches.length > 0) {
+      return { clientX: e.touches[0].clientX, clientY: e.touches[0].clientY };
+    }
+    return {
+      clientX: (e as React.MouseEvent).clientX,
+      clientY: (e as React.MouseEvent).clientY,
+    };
+  };
+
   const handleCornerDrag = (corner: string, startX: number, startY: number) => {
     const startCropArea = { ...cropArea };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX;
-      const deltaY = e.clientY - startY;
+    const handleMove = (e: MouseEvent | TouchEvent) => {
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+      const deltaX = clientX - startX;
+      const deltaY = clientY - startY;
 
       let newSize = startCropArea.size;
       let newX = startCropArea.x;
@@ -159,66 +176,58 @@ export function ChangeAvatar({
 
       switch (corner) {
         case "top-left":
-          // Use the smaller delta to maintain square aspect ratio
           const deltaTopLeft = Math.min(deltaX, deltaY);
           newSize = startCropArea.size - deltaTopLeft;
           newX = startCropArea.x + deltaTopLeft;
           newY = startCropArea.y + deltaTopLeft;
           break;
         case "top-right":
-          // Use the larger delta to maintain square aspect ratio
           const deltaTopRight = Math.max(deltaX, -deltaY);
           newSize = startCropArea.size + deltaTopRight;
           newY = startCropArea.y - deltaTopRight;
           break;
         case "bottom-left":
-          // Use the larger delta to maintain square aspect ratio
           const deltaBottomLeft = Math.max(-deltaX, deltaY);
           newSize = startCropArea.size + deltaBottomLeft;
           newX = startCropArea.x - deltaBottomLeft;
           break;
         case "bottom-right":
-          // Use the smaller delta to maintain square aspect ratio
           const deltaBottomRight = Math.max(deltaX, deltaY);
           newSize = startCropArea.size + deltaBottomRight;
           break;
       }
 
       // Apply constraints based on corner being dragged
-      const minSize = 50;
+      const minSize = isMobile ? 40 : 50;
       const maxSize = Math.min(imageSize.width, imageSize.height);
 
       // For corners that change position (top-left, top-right, bottom-left)
       if (corner === "top-left") {
-        // Limit size based on available space from current position
         const maxSizeFromPosition = Math.min(
-          startCropArea.x + startCropArea.size, // Can't go past left edge
-          startCropArea.y + startCropArea.size // Can't go past top edge
+          startCropArea.x + startCropArea.size,
+          startCropArea.y + startCropArea.size
         );
         newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
         newX = startCropArea.x + startCropArea.size - newSize;
         newY = startCropArea.y + startCropArea.size - newSize;
       } else if (corner === "top-right") {
-        // Limit size based on available space
         const maxSizeFromPosition = Math.min(
-          imageSize.width - startCropArea.x, // Can't go past right edge
-          startCropArea.y + startCropArea.size // Can't go past top edge
+          imageSize.width - startCropArea.x,
+          startCropArea.y + startCropArea.size
         );
         newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
         newY = startCropArea.y + startCropArea.size - newSize;
       } else if (corner === "bottom-left") {
-        // Limit size based on available space
         const maxSizeFromPosition = Math.min(
-          startCropArea.x + startCropArea.size, // Can't go past left edge
-          imageSize.height - startCropArea.y // Can't go past bottom edge
+          startCropArea.x + startCropArea.size,
+          imageSize.height - startCropArea.y
         );
         newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
         newX = startCropArea.x + startCropArea.size - newSize;
       } else if (corner === "bottom-right") {
-        // Limit size based on available space from current position
         const maxSizeFromPosition = Math.min(
-          imageSize.width - startCropArea.x, // Can't go past right edge
-          imageSize.height - startCropArea.y // Can't go past bottom edge
+          imageSize.width - startCropArea.x,
+          imageSize.height - startCropArea.y
         );
         newSize = Math.max(minSize, Math.min(maxSizeFromPosition, newSize));
       }
@@ -226,24 +235,31 @@ export function ChangeAvatar({
       handleCropAreaChange({ x: newX, y: newY, size: newSize });
     };
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       setIsDragging(null);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mousemove", handleMove as EventListener);
+      document.removeEventListener("mouseup", handleEnd);
+      document.removeEventListener("touchmove", handleMove as EventListener);
+      document.removeEventListener("touchend", handleEnd);
     };
 
     setIsDragging(corner);
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mousemove", handleMove as EventListener);
+    document.addEventListener("mouseup", handleEnd);
+    document.addEventListener("touchmove", handleMove as EventListener);
+    document.addEventListener("touchend", handleEnd);
   };
 
   const handleCropMove = (startX: number, startY: number) => {
     const startCropX = cropArea.x;
     const startCropY = cropArea.y;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      const deltaX = e.clientX - startX;
-      const deltaY = e.clientY - startY;
+    const handleMove = (e: MouseEvent | TouchEvent) => {
+      const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
+      const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
+
+      const deltaX = clientX - startX;
+      const deltaY = clientY - startY;
 
       handleCropAreaChange({
         x: startCropX + deltaX,
@@ -251,15 +267,21 @@ export function ChangeAvatar({
       });
     };
 
-    const handleMouseUp = () => {
+    const handleEnd = () => {
       setIsDragging(null);
-      document.removeEventListener("mousemove", handleMouseMove);
-      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mousemove", handleMove as EventListener);
+      document.removeEventListener("mouseup", handleEnd);
+      document.removeEventListener("touchmove", handleMove as EventListener);
+      document.removeEventListener("touchend", handleEnd);
     };
 
     setIsDragging("move");
-    document.addEventListener("mousemove", handleMouseMove);
-    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mousemove", handleMove as EventListener);
+    document.addEventListener("mouseup", handleEnd);
+    document.addEventListener("touchmove", handleMove as EventListener, {
+      passive: false,
+    });
+    document.addEventListener("touchend", handleEnd);
   };
 
   const cropImage = () => {
@@ -321,7 +343,7 @@ export function ChangeAvatar({
     const formData = new FormData();
     formData.append("avatar", croppedImage);
     toast.promise(loadUserAvatar(userId, formData), {
-      loading: "Загрузка аватара...",
+      loading: "загрузка изображения...",
       success: async (response) => {
         const data: User = await response.json();
         userStore.user = data;
@@ -330,11 +352,11 @@ export function ChangeAvatar({
           onAvatarChange?.(croppedImageUrl);
         }
         setLoading(false);
-        return "Аватар успешно обновлен!";
+        return "изображение профиля успешно обновлено!";
       },
       error: (error) => {
         setLoading(false);
-        return `Ошибка при обновлении аватара. Пожалуйста, попробуйте еще раз. ${error}`;
+        return `ошибка при обновлении изображения профиля. пожалуйста, попробуйте еще раз. ${error}`;
       },
     });
   };
@@ -361,12 +383,20 @@ export function ChangeAvatar({
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-lg">
+        <DialogContent
+          className={`${
+            isMobile
+              ? "w-[95vw] max-w-[95vw] max-h-[90vh] overflow-y-auto"
+              : "sm:max-w-lg"
+          }`}
+        >
           <DialogHeader>
-            <DialogTitle>Обновление аватара</DialogTitle>
-            <DialogDescription>
-              Загрузите новую картинку пользователя. Поддерживаемый формат: JPG,
-              PNG, GIF. Максимальный размер: 5 МБ.
+            <DialogTitle className={isMobile ? "text-lg" : ""}>
+              обновление изображение профиля
+            </DialogTitle>
+            <DialogDescription className={isMobile ? "text-sm" : ""}>
+              загрузите новую картинку пользователя. поддерживаемый формат: JPG,
+              PNG, GIF. максимальный размер: 5 МБ.
             </DialogDescription>
           </DialogHeader>
 
@@ -374,19 +404,26 @@ export function ChangeAvatar({
             {!originalImage && (
               <div className="space-y-4">
                 <div className="flex justify-center">
-                  <Avatar className="h-24 w-24">
+                  <Avatar className={`${isMobile ? "h-20 w-20" : "h-24 w-24"}`}>
                     <AvatarImage
                       src={currentAvatar || "/placeholder.svg"}
                       alt="Current avatar"
                     />
                     <AvatarFallback>
-                      <UserIcon className="h-12 w-12" />
+                      <UserIcon
+                        className={`${isMobile ? "h-10 w-10" : "h-12 w-12"}`}
+                      />
                     </AvatarFallback>
                   </Avatar>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="avatar-upload">Выберите изображение</Label>
+                  <Label
+                    htmlFor="avatar-upload"
+                    className={isMobile ? "text-sm" : ""}
+                  >
+                    выберите изображение
+                  </Label>
                   <Input
                     id="avatar-upload"
                     type="file"
@@ -394,9 +431,14 @@ export function ChangeAvatar({
                     onChange={handleFileSelect}
                     ref={fileInputRef}
                     disabled={loading}
+                    className={isMobile ? "text-sm" : ""}
                   />
-                  <p className="text-xs text-muted-foreground">
-                    Поддерживаемый формат: JPG, PNG, GIF. Максимальный размер:
+                  <p
+                    className={`text-muted-foreground ${
+                      isMobile ? "text-xs" : "text-xs"
+                    }`}
+                  >
+                    поддерживаемый формат: JPG, PNG, GIF. максимальный размер:
                     5МБ.
                   </p>
                 </div>
@@ -406,12 +448,21 @@ export function ChangeAvatar({
             {showCropper && originalImage && (
               <div className="space-y-4">
                 <div className="text-center">
-                  <p className="text-sm font-medium mb-2">
-                    Обрежьте свое изображение
+                  <p
+                    className={`font-medium mb-2 ${
+                      isMobile ? "text-sm" : "text-sm"
+                    }`}
+                  >
+                    обрежьте свое изображение
                   </p>
-                  <p className="text-xs text-muted-foreground">
-                    Перетаскивайте квадрат для передвижения • Перетаскивайте
-                    углы для изменения размера
+                  <p
+                    className={`text-muted-foreground ${
+                      isMobile ? "text-xs" : "text-xs"
+                    }`}
+                  >
+                    {isMobile
+                      ? "касайтесь и перетаскивайте для настройки"
+                      : "перетаскивайте квадрат для передвижения • перетаскивайте углы для изменения размера"}
                   </p>
                 </div>
 
@@ -435,7 +486,7 @@ export function ChangeAvatar({
 
                     {/* Crop overlay */}
                     <div
-                      className="absolute border-2 border-blue-500 bg-blue-500/20 select-none"
+                      className="absolute border-2 border-blue-500 bg-blue-500/20 select-none touch-none"
                       style={{
                         left: cropArea.x,
                         top: cropArea.y,
@@ -445,11 +496,21 @@ export function ChangeAvatar({
                       }}
                       onMouseDown={(e) => {
                         e.preventDefault();
-                        handleCropMove(e.clientX, e.clientY);
+                        const coords = getEventCoordinates(e);
+                        handleCropMove(coords.clientX, coords.clientY);
+                      }}
+                      onTouchStart={(e) => {
+                        e.preventDefault();
+                        const coords = getEventCoordinates(e);
+                        handleCropMove(coords.clientX, coords.clientY);
                       }}
                     >
                       {/* Center move icon */}
-                      <Move className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 h-4 w-4 text-blue-600 pointer-events-none" />
+                      <Move
+                        className={`absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-blue-600 pointer-events-none ${
+                          isMobile ? "h-3 w-3" : "h-4 w-4"
+                        }`}
+                      />
 
                       {/* Corner handles */}
                       {[
@@ -463,17 +524,30 @@ export function ChangeAvatar({
                         const isBottomLeft = corner === "bottom-left";
                         const isBottomRight = corner === "bottom-right";
 
+                        const handleSize = isMobile ? "w-4 h-4" : "w-3 h-3";
+                        const handleOffset = isMobile ? -8 : -6;
+
                         return (
                           <div
                             key={corner}
-                            className="absolute w-3 h-3 bg-blue-500 border border-white rounded-sm cursor-nwse-resize hover:bg-blue-600 transition-colors"
+                            className={`absolute ${handleSize} bg-blue-500 border border-white rounded-sm hover:bg-blue-600 transition-colors touch-none`}
                             style={{
-                              top: isTopLeft || isTopRight ? -6 : undefined,
+                              top:
+                                isTopLeft || isTopRight
+                                  ? handleOffset
+                                  : undefined,
                               bottom:
-                                isBottomLeft || isBottomRight ? -6 : undefined,
-                              left: isTopLeft || isBottomLeft ? -6 : undefined,
+                                isBottomLeft || isBottomRight
+                                  ? handleOffset
+                                  : undefined,
+                              left:
+                                isTopLeft || isBottomLeft
+                                  ? handleOffset
+                                  : undefined,
                               right:
-                                isTopRight || isBottomRight ? -6 : undefined,
+                                isTopRight || isBottomRight
+                                  ? handleOffset
+                                  : undefined,
                               cursor:
                                 isTopLeft || isBottomRight
                                   ? "nwse-resize"
@@ -486,6 +560,16 @@ export function ChangeAvatar({
                               e.stopPropagation();
                               handleCornerDrag(corner, e.clientX, e.clientY);
                             }}
+                            onTouchStart={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const coords = getEventCoordinates(e);
+                              handleCornerDrag(
+                                corner,
+                                coords.clientX,
+                                coords.clientY
+                              );
+                            }}
                           />
                         );
                       })}
@@ -493,7 +577,7 @@ export function ChangeAvatar({
                   </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className={`flex gap-2 ${isMobile ? "flex-col" : ""}`}>
                   <Button
                     variant="outline"
                     onClick={() => {
@@ -501,12 +585,17 @@ export function ChangeAvatar({
                       setCroppedImage(null);
                       setOriginalImage(null);
                     }}
-                    className="flex-1"
+                    className={`${isMobile ? "w-full" : "flex-1"}`}
+                    size={isMobile ? "default" : "default"}
                   >
-                    Назад
+                    назад
                   </Button>
-                  <Button onClick={cropImage} className="flex-1">
-                    Обрезать
+                  <Button
+                    onClick={cropImage}
+                    className={`${isMobile ? "w-full" : "flex-1"}`}
+                    size={isMobile ? "default" : "default"}
+                  >
+                    обрезать
                   </Button>
                 </div>
               </div>
@@ -515,43 +604,63 @@ export function ChangeAvatar({
             {croppedImage && !showCropper && (
               <div className="space-y-4">
                 <div className="text-center">
-                  <p className="text-sm font-medium mb-4">
-                    Предварительный просмотр
+                  <p
+                    className={`font-medium mb-4 ${
+                      isMobile ? "text-sm" : "text-sm"
+                    }`}
+                  >
+                    предварительный просмотр
                   </p>
-                  <Avatar className="h-32 w-32 mx-auto">
+                  <Avatar
+                    className={`mx-auto ${
+                      isMobile ? "h-24 w-24" : "h-32 w-32"
+                    }`}
+                  >
                     <AvatarImage
                       src={croppedImageUrl || "/placeholder.svg"}
                       alt="Cropped avatar"
                     />
                     <AvatarFallback>
-                      <UserIcon className="h-16 w-16" />
+                      <UserIcon
+                        className={`${isMobile ? "h-12 w-12" : "h-16 w-16"}`}
+                      />
                     </AvatarFallback>
                   </Avatar>
                 </div>
 
-                <div className="flex gap-2">
+                <div className={`flex gap-2 ${isMobile ? "flex-col" : ""}`}>
                   <Button
                     variant="outline"
                     onClick={resetCrop}
-                    className="flex-1"
+                    className={`${isMobile ? "w-full" : "flex-1"}`}
+                    size={isMobile ? "default" : "default"}
                   >
-                    <RotateCw className="h-4 w-4 mr-2" />
-                    Повторно обрезать
+                    <RotateCw
+                      className={`mr-2 ${isMobile ? "h-4 w-4" : "h-4 w-4"}`}
+                    />
+                    повторно обрезать
                   </Button>
                   <Button
                     onClick={handleUpload}
                     disabled={loading}
-                    className="flex-1"
+                    className={`${isMobile ? "w-full" : "flex-1"}`}
+                    size={isMobile ? "default" : "default"}
                   >
                     {loading ? (
                       <>
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        Загрузка...
+                        <Loader2
+                          className={`mr-2 animate-spin ${
+                            isMobile ? "h-4 w-4" : "h-4 w-4"
+                          }`}
+                        />
+                        загрузка...
                       </>
                     ) : (
                       <>
-                        <Upload className="h-4 w-4 mr-2" />
-                        Сохранить аватар
+                        <Upload
+                          className={`mr-2 ${isMobile ? "h-4 w-4" : "h-4 w-4"}`}
+                        />
+                        сохранить аватар
                       </>
                     )}
                   </Button>
@@ -559,16 +668,6 @@ export function ChangeAvatar({
               </div>
             )}
           </div>
-
-          {/* <DialogFooter>
-            <Button
-              onClick={handleCancel}
-              disabled={loading}
-              variant="destructive"
-            >
-              Отмена
-            </Button>
-          </DialogFooter> */}
         </DialogContent>
       </Dialog>
 

@@ -47,7 +47,7 @@ import {
 import { $createCodeNode, $isCodeNode } from "@lexical/code";
 import { $createListNode, $isListNode } from "@lexical/list";
 import { cn } from "@/lib/utils";
-import { useMediaQuery } from "react-responsive";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 
@@ -59,7 +59,7 @@ type FloatingMenuProps = {
 export const FloatingMenu = forwardRef<HTMLDivElement, FloatingMenuProps>(
   function FloatingMenu(props, ref) {
     const { editor, coords } = props;
-    const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+    const isTabletOrMobile = useIsMobile();
     const shouldShow = coords !== undefined;
     const [state, setState] = useState<string[]>([]);
     const [special, setSpecial] = useState<string>("");

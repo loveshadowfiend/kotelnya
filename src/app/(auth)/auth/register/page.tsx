@@ -18,7 +18,7 @@ export default function RegisterPage() {
             зарегистрируйте ваш аккаунт, и получите <br /> доступ к платформе
           </CardDescription>
         </CardHeader>
-        <CardContent className="flex flex-col items-center w-100 gap-3">
+        <CardContent className="flex flex-col items-center w-80 gap-3 lg:w-100">
           <RegisterForm />
           <Link className="text-sm underline" href="/auth/login">
             войти

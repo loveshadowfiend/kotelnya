@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { setAuthCookie } from "@/lib/auth";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { registerUser } from "@/api/auth/route";
 
@@ -75,6 +75,10 @@ export function RegisterForm() {
 
     setIsLoading(false);
   }
+
+  useEffect(() => {
+    localStorage.clear();
+  }, []);
 
   return (
     <Form {...form}>

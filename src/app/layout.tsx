@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
+import { MobileSidebarController } from "@/components/sidebar/mobile-sidebar-controller";
 
 const inter = Inter({ subsets: ["latin"] });
 

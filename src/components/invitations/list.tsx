@@ -24,7 +24,7 @@ export function InvitationsList() {
           invitationsStore.invitations = data;
         }
       } catch {
-        toast.error("Не удалось получить список приглашений");
+        toast.error("не удалось получить список приглашений");
       }
     }
 

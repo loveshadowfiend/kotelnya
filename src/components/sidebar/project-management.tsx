@@ -9,7 +9,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -17,9 +16,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "../ui/button";
-import { useMediaQuery } from "react-responsive";
 import { Project } from "@/types";
-import { Separator } from "../ui/separator";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -28,9 +25,11 @@ import { projectStore } from "@/stores/project-store";
 import { useRouter } from "next/navigation";
 import { userStore } from "@/stores/user-store";
 import { deleteProject, projectsStore } from "@/stores/projects-store";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { updateProject } from "@/api/projects/route";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Trash2 } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -41,16 +40,18 @@ const formSchema = z.object({
 
 interface ProjectManagementProps {
   children: React.ReactNode;
+  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
   project: Project;
 }
 
 export function ProjectManagement({
   children,
+  setIsOpen,
   project,
 }: ProjectManagementProps) {
   const [userRole, setUserRole] = useState<string>("");
   const router = useRouter();
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const isTabletOrMobile = useIsMobile();
   const projectSnapshot = useSnapshot(projectStore);
   const userSnapshot = useSnapshot(userStore);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -111,10 +112,20 @@ export function ProjectManagement({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogTrigger asChild onClick={(e) => e.stopPropagation()}>
+        {children}
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{project.title}</DialogTitle>
+          <DialogTitle className="flex gap-1 items-center">
+            <span>{project.title}</span>
+            <Trash2
+              className="h-4 w-4 text-muted-foreground hover:text-accent-foreground hover:cursor-pointer"
+              onClick={() => {
+                handleDelete(project._id);
+              }}
+            />
+          </DialogTitle>
           <DialogDescription>{project.status}</DialogDescription>
         </DialogHeader>
         {userRole === "owner" && (

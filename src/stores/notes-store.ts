@@ -1,6 +1,7 @@
 import { NotesState } from "@/types";
 import { proxy } from "valtio";
-import { deleteNote as deleteNoteApi } from "@/api/notes/routes";
+import { deleteNote as deleteNoteApi, getNotes } from "@/api/notes/routes";
+import { toast } from "sonner";
 
 export const deleteNote = async (noteId: string) => {
   notesStore.loading = true;

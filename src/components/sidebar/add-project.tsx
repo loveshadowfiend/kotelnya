@@ -1,12 +1,12 @@
 "use client";
 
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { addProject } from "@/stores/projects-store";
-import { useMediaQuery } from "react-responsive";
 import { Plus } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const formSchema = z.object({
   title: z.string().min(1, { message: "введите имя проекта" }),
@@ -30,7 +30,7 @@ const formSchema = z.object({
 });
 
 export function AddProject({ children }: { children: React.ReactNode }) {
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const isTabletOrMobile = useIsMobile();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,16 +44,16 @@ export function AddProject({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <Drawer direction={isTabletOrMobile ? "bottom" : "right"}>
-      <DrawerTrigger asChild>{children}</DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>добавить проект</DrawerTitle>
-        </DrawerHeader>
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>добавить проект</DialogTitle>
+        </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col gap-3 mt-3 mx-4"
+            className="flex flex-col gap-3 mt-3"
           >
             <FormField
               control={form.control}
@@ -86,7 +86,7 @@ export function AddProject({ children }: { children: React.ReactNode }) {
             </Button>
           </form>
         </Form>
-      </DrawerContent>
-    </Drawer>
+      </DialogContent>
+    </Dialog>
   );
 }

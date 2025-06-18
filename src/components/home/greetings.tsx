@@ -3,6 +3,7 @@
 import { userStore } from "@/stores/user-store";
 import { useSnapshot } from "valtio";
 import { Skeleton } from "../ui/skeleton";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function getGreetingByTime() {
   const hour = new Date().getHours();
@@ -15,19 +16,20 @@ function getGreetingByTime() {
 export function Greetings() {
   const userSnapshot = useSnapshot(userStore);
   const greetings = getGreetingByTime();
+  const isTabletOrMobile = useIsMobile();
 
   if (userSnapshot.user === null) {
     return (
       <div className="flex mt-28 mb-8 items-center gap-3">
-        <span className="text-3xl">{greetings}, </span>
+        <span className="text-3xl">{greetings},</span>
         <Skeleton className="h-8 w-24" />
       </div>
     );
   }
 
   return (
-    <span className="text-3xl mt-28 mb-8">
-      {greetings}, {userSnapshot.user?.username}!
+    <span className="text-center text-3xl mt-28 mb-8">
+      {greetings}, {isTabletOrMobile && <br />} {userSnapshot.user?.username}!
     </span>
   );
 }

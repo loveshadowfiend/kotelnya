@@ -131,8 +131,8 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
     return (
       <div
         className="
-          absolute inline-flex gap-3 top-20 px-[var(--global-px)]
-          lg:top-24 lg:px-[var(--global-px-lg)]
+          absolute inline-flex gap-3 top-24 px-[var(--global-px)]
+          lg:px-[var(--global-px-lg)]
         "
       >
         <Skeleton
@@ -165,7 +165,7 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
             {...provided.droppableProps}
             ref={provided.innerRef}
             className="
-                inline-flex gap-3 overflow-hidden px-[var(--global-px)] pt-20
+                inline-flex gap-3 overflow-hidden px-[var(--global-px)] pt-24
                 lg:px-[var(--global-px-lg)] lg:pt-24
               "
           >

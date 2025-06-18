@@ -24,9 +24,7 @@ import { BadgeDropdown } from "./badge-dropdown";
 import { DatePicker } from "./date-picker";
 import { updateTask } from "@/api/tasks/route";
 import { KanbanRenameTaskDropdown } from "./rename-task-dropdown";
-import { useMediaQuery } from "react-responsive";
-import { AssigneeSelect } from "./assignee-select";
-import { Button } from "../ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface KanbanCardProps {
   taskId: string;
@@ -42,7 +40,7 @@ export function KanbanCard({
   setIsDialogOpen,
 }: KanbanCardProps) {
   const boardSnapshot = useSnapshot(boardStore);
-  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
+  const isTabletOrMobile = useIsMobile();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   return (

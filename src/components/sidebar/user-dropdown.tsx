@@ -25,6 +25,7 @@ export function UserDropdown({ children }: { children: React.ReactNode }) {
   async function logOutHandle() {
     await deleteAuthCookie();
 
+    localStorage.clear();
     router.push("/auth/login");
   }
 
@@ -37,7 +38,7 @@ export function UserDropdown({ children }: { children: React.ReactNode }) {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
         <DropdownMenuContent className="shadow-none w-[240px]">
-          <DropdownMenuLabel>Мой аккаунт</DropdownMenuLabel>
+          <DropdownMenuLabel>мой аккаунт</DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={(e) => {
@@ -47,11 +48,11 @@ export function UserDropdown({ children }: { children: React.ReactNode }) {
             }}
           >
             <Image />
-            <span>Поменять аватарку</span>
+            <span className="truncate">поменять изображение профиля</span>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={logOutHandle}>
             <LogOut />
-            <span>Выйти</span>
+            <span>выйти</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

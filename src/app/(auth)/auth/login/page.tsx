@@ -17,9 +17,8 @@ export default function LoginPage() {
           <CardDescription className="text-center">
             войдите в ваш аккаунт, и получите <br /> доступ к платформе
           </CardDescription>
-          {/* <div className="text-xl font-bold mb-8">вход в kotelnya</div> */}
         </CardHeader>
-        <CardContent className="flex flex-col items-center w-100 gap-3">
+        <CardContent className="flex flex-col items-center w-80 gap-3 lg:w-100">
           <LoginForm />
           <Link className="text-sm underline" href="/auth/register">
             регистрация

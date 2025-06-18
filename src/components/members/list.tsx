@@ -19,7 +19,7 @@ export function MembersList() {
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 w-full">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 w-full">
       {projectSnapshot.project?.users.map((user) => (
         <MemberCard key={user._id} user={user.userId} role={user.role} />
       ))}

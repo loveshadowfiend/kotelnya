@@ -101,7 +101,9 @@ export type ProjectsState = {
 };
 
 export type BoardState = {
-  board: BoardModified;
+  board: BoardModified | null;
+  loading: boolean;
+  error: string | null;
 };
 
 export type BoardsState = {
@@ -112,6 +114,8 @@ export type BoardsState = {
 
 export type NoteState = {
   note: Note | null;
+  loading: boolean;
+  error: string | null;
 };
 
 export type NotesState = {
@@ -123,6 +127,7 @@ export type NotesState = {
 export type UserState = {
   user: User | null;
   loading: boolean;
+  error: string | null;
 };
 
 export type ProjectInvitation = {
