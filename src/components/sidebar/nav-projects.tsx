@@ -119,7 +119,10 @@ export function NavProjects() {
                         {project.status}
                       </p>
                     </div>
-                    <div onClick={(e) => e.stopPropagation()}>
+                    <div
+                      className="flex items-center"
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <ProjectManagement
                         setIsOpen={setIsOpen}
                         project={project}

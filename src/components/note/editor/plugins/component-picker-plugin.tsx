@@ -284,50 +284,50 @@ function getBaseOptions(
           }
         }),
     }),
-    new ComponentPickerOption("Таблица", {
-      icon: (
-        <div className={divClassName}>
-          <Table className={iconClassName} />
-        </div>
-      ),
-      keywords: ["таблица", "table"],
-      onSelect: () => setIsTableDialogOpen(true),
-    }),
-    new ComponentPickerOption("Изображение", {
-      icon: (
-        <div className={divClassName}>
-          <Image className={iconClassName} />
-        </div>
-      ),
-      keywords: ["изображение", "картинка", "фото", "img"],
-      onSelect: () => {
-        // Create and trigger file input
-        const fileInput = document.createElement("input");
-        fileInput.type = "file";
-        fileInput.accept = "image/*";
-        fileInput.style.display = "none";
+    // new ComponentPickerOption("Таблица", {
+    //   icon: (
+    //     <div className={divClassName}>
+    //       <Table className={iconClassName} />
+    //     </div>
+    //   ),
+    //   keywords: ["таблица", "table"],
+    //   onSelect: () => setIsTableDialogOpen(true),
+    // }),
+    // new ComponentPickerOption("Изображение", {
+    //   icon: (
+    //     <div className={divClassName}>
+    //       <Image className={iconClassName} />
+    //     </div>
+    //   ),
+    //   keywords: ["изображение", "картинка", "фото", "img"],
+    //   onSelect: () => {
+    //     // Create and trigger file input
+    //     const fileInput = document.createElement("input");
+    //     fileInput.type = "file";
+    //     fileInput.accept = "image/*";
+    //     fileInput.style.display = "none";
 
-        fileInput.onchange = async (event) => {
-          const target = event.target as HTMLInputElement;
-          const file = target.files?.[0];
+    //     fileInput.onchange = async (event) => {
+    //       const target = event.target as HTMLInputElement;
+    //       const file = target.files?.[0];
 
-          if (file) {
-            try {
-              await handleImageUpload(editor, file);
-            } catch (error) {
-              console.error("Error uploading image:", error);
-              // You might want to show a toast notification here
-            }
-          }
+    //       if (file) {
+    //         try {
+    //           await handleImageUpload(editor, file);
+    //         } catch (error) {
+    //           console.error("Error uploading image:", error);
+    //           // You might want to show a toast notification here
+    //         }
+    //       }
 
-          // Clean up
-          document.body.removeChild(fileInput);
-        };
+    //       // Clean up
+    //       document.body.removeChild(fileInput);
+    //     };
 
-        document.body.appendChild(fileInput);
-        fileInput.click();
-      },
-    }),
+    //     document.body.appendChild(fileInput);
+    //     fileInput.click();
+    //   },
+    // }),
   ];
 }
 
