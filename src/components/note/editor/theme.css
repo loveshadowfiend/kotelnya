@@ -19,7 +19,7 @@
 }
 
 .heading-h1 {
-  font-size: 40px;
+  font-size: 36px;
   font-weight: 700;
   letter-spacing: -0.02em;
   line-height: 1.2;
@@ -71,23 +71,26 @@
   text-decoration: underline line-through;
 }
 
-.code {
-  background-color: var(--bg-background);
+.editor-code {
+  background-color: var(--color-background);
+  border: solid var(--color-border);
   font-family: Menlo, Consolas, Monaco, monospace;
   display: block;
-  padding: 8px 8px 8px 52px;
+  padding: 16px 16px 16px 16px;
   line-height: 1.53;
   font-size: 13px;
   margin: 0;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   tab-size: 2;
   /* white-space: pre; */
   overflow-x: auto;
   position: relative;
 }
 
-.code:before {
+/* Syntax highlighting tokens */
+/* 
+.editor-code:before {
   content: attr(data-gutter);
   position: absolute;
   left: 0;
@@ -96,7 +99,7 @@
   white-space: pre-wrap;
   text-align: right;
   min-width: 25px;
-}
+} */
 
 .quote {
   margin: 0;
@@ -111,4 +114,65 @@
 .editor a {
   text-decoration: underline;
   cursor: pointer;
+}
+
+.editor-tokenComment {
+  color: #708090;
+  font-style: italic;
+}
+
+.editor-tokenPunctuation {
+  color: #999;
+}
+
+.editor-tokenProperty {
+  color: #905;
+}
+
+.editor-tokenSelector {
+  color: #690;
+}
+
+.editor-tokenOperator {
+  color: #9a6e3a;
+}
+
+.editor-tokenAttr {
+  color: #07a;
+}
+
+.editor-tokenVariable {
+  color: #e90;
+}
+
+.editor-tokenFunction {
+  color: #dd4a68;
+}
+
+/* Dark theme variant */
+.editor-container.dark {
+  background-color: #2d3748;
+  color: #e2e8f0;
+}
+
+.editor-container.dark .editor-code {
+  background-color: #1a202c;
+  border-color: #4a5568;
+  color: #e2e8f0;
+}
+
+.editor-container.dark .editor-tokenComment {
+  color: #a0aec0;
+}
+
+.editor-container.dark .editor-tokenProperty {
+  color: #f687b3;
+}
+
+.editor-container.dark .editor-tokenSelector {
+  color: #9ae6b4;
+}
+
+.editor-container.dark .editor-tokenFunction {
+  color: #fbb6ce;
 }

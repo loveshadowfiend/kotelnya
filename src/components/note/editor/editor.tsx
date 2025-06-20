@@ -32,8 +32,11 @@ import { Doc } from "yjs";
 import { SyncedPlugin } from "./plugins/synced-plugin";
 import { TRANSFORMERS } from "@lexical/markdown";
 import { useRouter } from "next/navigation";
-import { TableCellNode, TableNode, TableRowNode } from "@lexical/table";
-import { TablePlugin } from "@lexical/react/LexicalTablePlugin";
+import "katex/dist/katex.min.css";
+import { MathNode } from "./nodes/math-node";
+import { MathPlugin } from "./plugins/math-plugin";
+import { MathTransformPlugin } from "./plugins/math-transform-plugin";
+import { MathKeyHandlerPlugin } from "./plugins/math-key-handler-plugin";
 
 function onError(error: any) {
   console.error(error);
@@ -59,6 +62,7 @@ export function Editor({ noteId }: EditorProps) {
       CodeNode,
       CodeHighlightNode,
       AutoLinkNode,
+      MathNode,
     ],
   };
   const [isLoading, setIsLoading] = useState(true);
@@ -168,6 +172,9 @@ export function Editor({ noteId }: EditorProps) {
         ErrorBoundary={LexicalErrorBoundary}
       />
       <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+      {/* <MathPlugin />
+      <MathTransformPlugin />
+      <MathKeyHandlerPlugin /> */}
       {/* <HistoryPlugin /> */}
       <AutoFocusPlugin />
       <FloatingMenuPlugin />

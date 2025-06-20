@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
-import { MobileSidebarController } from "@/components/sidebar/mobile-sidebar-controller";
+import { MobileProvider } from "@/components/mobile-provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +27,7 @@ export default function RootLayout({
             {children}
             <ThemeToggle />
             <Toaster expand={true} />
+            <MobileProvider />
           </SidebarProvider>
         </ThemeProvider>
       </body>

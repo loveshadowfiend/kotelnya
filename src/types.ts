@@ -75,6 +75,7 @@ export type Note = {
 export type Project = {
   _id: string;
   title: string;
+  imageUrl: string;
   status: string;
   users: {
     userId: User;

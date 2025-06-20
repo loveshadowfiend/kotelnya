@@ -130,3 +130,16 @@ export async function updateProject(
 
   return response;
 }
+
+export async function loadProjectAvatar(projectId: string, formData: FormData) {
+  const token = await getAuthToken();
+  const response = await fetch(`${API_URL}/api/projects/${projectId}/image`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  return response;
+}

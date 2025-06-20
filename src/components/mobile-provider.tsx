@@ -1,25 +1,29 @@
 "use client";
 
-import { useSnapshot } from "valtio";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { projectStore } from "@/stores/project-store";
-import { useEffect, useRef, useCallback } from "react";
+import { getBoards } from "@/api/boards/route";
+import { getNotes } from "@/api/notes/routes";
 import { createProject, getProject } from "@/api/projects/route";
-import { userStore } from "@/stores/user-store";
-import { getUserProjects } from "@/api/users/route";
+import { getUser, getUserProjects } from "@/api/users/route";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { verifyAuth } from "@/lib/auth";
-import { useRouter } from "next/navigation";
+import { boardsStore } from "@/stores/boards-store";
+import { notesStore } from "@/stores/notes-store";
+import { projectStore } from "@/stores/project-store";
+import { userStore } from "@/stores/user-store";
 import { Project } from "@/types";
-import { Skeleton } from "../ui/skeleton";
-import { API_URL } from "@/lib/config";
-import React from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useRef } from "react";
+import { toast } from "sonner";
+import { useSnapshot } from "valtio";
 
-export function NavCurrentProject() {
+export function MobileProvider() {
   const router = useRouter();
-  const projectSnapshot = useSnapshot(projectStore);
+  const isMobile = useIsMobile();
   const userSnapshot = useSnapshot(userStore);
+  const projectSnapshot = useSnapshot(projectStore);
+  const notesSnapshot = useSnapshot(notesStore);
+  const boardsSnapshot = useSnapshot(boardsStore);
 
-  // Prevent multiple simultaneous initializations
   const initializingRef = useRef(false);
   const creatingProjectRef = useRef(false);
 
@@ -193,35 +197,84 @@ export function NavCurrentProject() {
     initializeProject();
   }, [initializeProject]);
 
-  // Update user role when project or user changes
   useEffect(() => {
-    if (!projectSnapshot.project || !userSnapshot.user) return;
+    if (!isMobile) return;
 
-    const userRole = projectSnapshot.project.users?.find(
-      (user) => user.userId._id === userSnapshot.user?._id
-    )?.role;
+    async function fetchAndSetUser() {
+      userStore.loading = true;
 
-    projectStore.userRole = userRole ?? "undefined";
-  }, [projectSnapshot.project, userSnapshot.user]);
+      const payload = await verifyAuth();
 
-  if (!projectSnapshot.project) {
-    return <Skeleton className="w-60 h-12" />;
-  }
+      if (!payload) {
+        router.push("/auth/login");
 
-  return (
-    <div className="flex items-center gap-2">
-      <Avatar className="rounded-lg">
-        <AvatarImage src={`${API_URL}${projectSnapshot.project.imageUrl}`} />
-        <AvatarFallback className="rounded-lg text-sm text-muted-foreground">
-          {projectSnapshot.project.title.substring(0, 2)}
-        </AvatarFallback>
-      </Avatar>
-      <div className="flex flex-col">
-        <p className="font-medium">{projectSnapshot.project.title}</p>
-        <p className="text-muted-foreground overflow-hidden truncate">
-          {projectSnapshot.project.status}
-        </p>
-      </div>
-    </div>
-  );
+        return;
+      }
+
+      const response = await getUser((payload as { id: string }).id);
+
+      if (response.ok) {
+        const user = await response.json();
+        userStore.user = user;
+      }
+
+      userStore.loading = false;
+    }
+
+    fetchAndSetUser();
+  }, []);
+
+  useEffect(() => {
+    if (!projectSnapshot.project) return;
+
+    async function fetchBoards() {
+      boardsStore.loading = true;
+
+      const response = await getBoards(projectSnapshot.project!._id);
+
+      if (response.ok) {
+        const data = await response.json();
+        boardsStore.boards = data;
+      } else {
+        toast.error(
+          "не удалось загрузить доски. пожалуйста, попробуйте позже."
+        );
+      }
+
+      boardsStore.loading = false;
+    }
+
+    fetchBoards();
+  }, [projectSnapshot]);
+
+  useEffect(() => {
+    if (!projectSnapshot.project) return;
+
+    async function fetchNotes() {
+      notesStore.loading = true;
+
+      const response = await getNotes(projectSnapshot.project!._id);
+
+      if (response.ok) {
+        const data = await response.json();
+        notesStore.notes = data;
+      } else {
+        toast.error(
+          "не удалось загрузить заметки. Пожалуйста, попробуйте позже."
+        );
+      }
+
+      notesStore.loading = false;
+    }
+
+    fetchNotes();
+  }, [projectSnapshot]);
+
+  useEffect(() => {
+    if (!isMobile) return;
+
+    initializeProject();
+  }, [initializeProject]);
+
+  return null;
 }

@@ -28,6 +28,7 @@ import { userStore } from "@/stores/user-store";
 import { useRouter } from "next/navigation";
 import { getProjects } from "@/api/projects/route";
 import { ProjectManagement } from "./project-management";
+import { API_URL } from "@/lib/config";
 
 export function NavProjects() {
   const [isOpen, setIsOpen] = useState(false);
@@ -108,7 +109,7 @@ export function NavProjects() {
                     }}
                   >
                     <Avatar className="rounded-lg">
-                      <AvatarImage src="" />
+                      <AvatarImage src={`${API_URL}${project.imageUrl}`} />
                       <AvatarFallback className="rounded-lg text-sm text-muted-foreground">
                         {project.title.substring(0, 2)}
                       </AvatarFallback>

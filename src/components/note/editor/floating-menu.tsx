@@ -5,8 +5,10 @@ import { forwardRef, useEffect, useRef, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import { $setBlocksType } from "@lexical/selection";
 import {
+  $applyNodeReplacement,
   $createParagraphNode,
   $getSelection,
+  $insertNodes,
   $isParagraphNode,
   $isRangeSelection,
   FORMAT_ELEMENT_COMMAND,
@@ -48,6 +50,7 @@ import { $createCodeNode, $isCodeNode } from "@lexical/code";
 import { $createListNode, $isListNode } from "@lexical/list";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { $createMathNode, MathNode } from "./nodes/math-node";
 
 export type FloatingMenuCoords = { x: number; y: number } | undefined;
 

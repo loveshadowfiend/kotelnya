@@ -22,16 +22,19 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { loadUserAvatar } from "@/api/users/route";
-import { User } from "@/types";
+import { Project, User } from "@/types";
 import { userStore } from "@/stores/user-store";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { loadProjectAvatar } from "@/api/projects/route";
+import { projectStore } from "@/stores/project-store";
 
 interface ChangeAvatarProps {
   currentAvatar?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
   onAvatarChange?: (avatarUrl: string) => void;
-  userId: string;
+  userId?: string;
+  projectId?: string;
 }
 
 interface CropArea {
@@ -42,6 +45,7 @@ interface CropArea {
 
 export function ChangeAvatar({
   userId,
+  projectId,
   currentAvatar,
   open = false,
   onOpenChange,
@@ -341,24 +345,49 @@ export function ChangeAvatar({
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("avatar", croppedImage);
-    toast.promise(loadUserAvatar(userId, formData), {
-      loading: "загрузка изображения...",
-      success: async (response) => {
-        const data: User = await response.json();
-        userStore.user = data;
+    if (userId) {
+      formData.append("avatar", croppedImage);
+    } else if (projectId) {
+      formData.append("image", croppedImage);
+    }
 
-        if (croppedImageUrl) {
-          onAvatarChange?.(croppedImageUrl);
-        }
-        setLoading(false);
-        return "изображение профиля успешно обновлено!";
-      },
-      error: (error) => {
-        setLoading(false);
-        return `ошибка при обновлении изображения профиля. пожалуйста, попробуйте еще раз. ${error}`;
-      },
-    });
+    if (userId) {
+      toast.promise(loadUserAvatar(userId, formData), {
+        loading: "загрузка изображения...",
+        success: async (response) => {
+          const data: User = await response.json();
+          userStore.user = data;
+
+          if (croppedImageUrl) {
+            onAvatarChange?.(croppedImageUrl);
+          }
+          setLoading(false);
+          return "изображение профиля успешно обновлено!";
+        },
+        error: (error) => {
+          setLoading(false);
+          return `ошибка при обновлении изображения профиля. пожалуйста, попробуйте еще раз. ${error}`;
+        },
+      });
+    } else if (projectId) {
+      toast.promise(loadProjectAvatar(projectId, formData), {
+        loading: "загрузка изображения...",
+        success: async (response) => {
+          const data: Project = await response.json();
+          projectStore.project = data;
+
+          if (croppedImageUrl) {
+            onAvatarChange?.(croppedImageUrl);
+          }
+          setLoading(false);
+          return "изображение профиля успешно обновлено!";
+        },
+        error: (error) => {
+          setLoading(false);
+          return `ошибка при обновлении изображения профиля. пожалуйста, попробуйте еще раз. ${error}`;
+        },
+      });
+    }
   };
 
   const resetCrop = () => {

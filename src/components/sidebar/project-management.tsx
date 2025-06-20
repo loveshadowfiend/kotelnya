@@ -29,7 +29,10 @@ import { SetStateAction, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { updateProject } from "@/api/projects/route";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { ChangeAvatar } from "./change-avatar";
+import { API_URL } from "@/lib/config";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -50,6 +53,7 @@ export function ProjectManagement({
   project,
 }: ProjectManagementProps) {
   const [userRole, setUserRole] = useState<string>("");
+  const [avatarDialogOpen, setAvatarDialogOpen] = useState<boolean>(false);
   const router = useRouter();
   const isTabletOrMobile = useIsMobile();
   const projectSnapshot = useSnapshot(projectStore);
@@ -128,44 +132,78 @@ export function ProjectManagement({
           </DialogTitle>
           <DialogDescription>{project.status}</DialogDescription>
         </DialogHeader>
-        {userRole === "owner" && (
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="flex flex-col gap-3 mt-3"
-            >
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>название</FormLabel>
-                    <FormControl>
-                      <Input placeholder="проект" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="status"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>статус</FormLabel>
-                    <FormControl>
-                      <Input placeholder="в процессе" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button className="w-fit" type="submit">
-                обновить
-              </Button>
-            </form>
-          </Form>
-        )}
+        <div className="flex gap-4">
+          {userRole === "owner" && (
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-4 mt-3 w-full"
+              >
+                <div className="flex gap-6 items-center w-full">
+                  <div className="flex flex-col items gap-3 w-full">
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>название</FormLabel>
+                          <FormControl>
+                            <Input placeholder="проект" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="status"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>статус</FormLabel>
+                          <FormControl>
+                            <Input placeholder="в процессе" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {/* <Button className="w-fit" type="submit">
+                    обновить
+                  </Button> */}
+                  </div>
+                  <div>
+                    <Avatar
+                      className="relative h-30 w-30 hover:cursor-pointer hover:opacity-80 transition-opacity group"
+                      onClick={() => {
+                        setAvatarDialogOpen(true);
+                      }}
+                    >
+                      <AvatarImage
+                        src={`${API_URL}${projectSnapshot.project?.imageUrl}`}
+                      />
+                      <AvatarFallback className="text-2xl text-muted-foreground">
+                        {project.title.substring(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <ChangeAvatar
+                      projectId={project._id}
+                      open={avatarDialogOpen}
+                      onOpenChange={setAvatarDialogOpen}
+                      currentAvatar={
+                        projectSnapshot.project?.imageUrl === ""
+                          ? ""
+                          : `${API_URL}${projectSnapshot.project?.imageUrl}`
+                      }
+                    />
+                  </div>
+                </div>
+                <Button className="w-fit" type="submit">
+                  обновить
+                </Button>
+              </form>
+            </Form>
+          )}
+        </div>
       </DialogContent>
     </Dialog>
   );
