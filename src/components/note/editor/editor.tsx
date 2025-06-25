@@ -37,6 +37,7 @@ import { MathNode } from "./nodes/math-node";
 import { MathPlugin } from "./plugins/math-plugin";
 import { MathTransformPlugin } from "./plugins/math-transform-plugin";
 import { MathKeyHandlerPlugin } from "./plugins/math-key-handler-plugin";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function onError(error: any) {
   console.error(error);
@@ -72,6 +73,7 @@ export function Editor({ noteId }: EditorProps) {
   const router = useRouter();
   const noteSnapshot = useSnapshot(noteStore);
   const userSnapshot = useSnapshot(userStore);
+  const isMobile = useIsMobile();
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -151,7 +153,7 @@ export function Editor({ noteId }: EditorProps) {
                       160,
                   }}
                 >
-                  Введите текст или '/' для комманд
+                  введите текст или '/' для комманд
                 </div>
               ) : (
                 <div
@@ -159,10 +161,10 @@ export function Editor({ noteId }: EditorProps) {
                   style={{
                     left:
                       (floatingAnchorElem?.getBoundingClientRect()?.left ?? 0) +
-                      160,
+                      (isMobile ? 40 : 160),
                   }}
                 >
-                  Синхронизация с сервером...
+                  синхронизация с сервером...
                 </div>
               )
             }
