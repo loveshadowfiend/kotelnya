@@ -8,6 +8,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "../ui/hover-card";
+import {
   Drawer,
   DrawerClose,
   DrawerContent,
@@ -33,6 +38,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { Components } from "react-markdown";
 import { cn } from "@/lib/utils";
+import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 
 interface KanbanCardProps {
   taskId: string;
@@ -48,6 +54,7 @@ export function KanbanCard({
   setIsDialogOpen,
 }: KanbanCardProps) {
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const descriptionRef = useRef<HTMLDivElement | null>(null);
   const boardSnapshot = useSnapshot(boardStore);
   const isTabletOrMobile = useIsMobile();
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -79,6 +86,11 @@ export function KanbanCard({
         <code className={cn("w-full", className)}>{children}</code>
       );
     },
+    p: ({ children, ...props }) => (
+      <p className="text-pretty" {...props}>
+        {children}
+      </p>
+    ),
   };
 
   return (
@@ -87,15 +99,15 @@ export function KanbanCard({
       onOpenChange={setIsDialogOpen}
       direction={isTabletOrMobile ? "bottom" : "right"}
     >
-      <DrawerContent>
+      <DrawerContent className="max-w-[33vw] pb-10 overflow-y-auto">
         <DrawerHeader>
           <KanbanRenameTaskDropdown
             taskId={taskId}
             taskTitle={boardSnapshot.tasks[taskId].title}
           >
-            <DialogTitle className="w-full text-left flex items-center gap-3 field-sizing-content hover:cursor-pointer">
+            <DrawerTitle className="w-full text-left flex items-center gap-3 field-sizing-content hover:cursor-pointer">
               {boardSnapshot.tasks[taskId].title}{" "}
-            </DialogTitle>
+            </DrawerTitle>
             <BadgeDropdown
               className="my-3"
               currentColumndId={columnId}
@@ -110,9 +122,28 @@ export function KanbanCard({
             <Label htmlFor="deadline">дедлайн</Label>
             <DatePicker className="w-full" taskId={taskId} />
           </div>
-          <div className="grid gap-3">
+          <div className="grid gap-3" ref={descriptionRef}>
             <Label className="group flex justify-between" htmlFor="description">
-              <span>описание</span>
+              <span className="flex items-center gap-1">
+                описание{" "}
+                <HoverCard>
+                  <HoverCardTrigger className="text-muted-foreground hover:text-accent-foreground transition-colors">
+                    <QuestionMarkCircledIcon />
+                  </HoverCardTrigger>
+                  <HoverCardContent className="text-sm">
+                    описание использует синтаксис{" "}
+                    <a
+                      target="_blank"
+                      className="underline"
+                      href={
+                        "https://skillbox.ru/media/code/yazyk-razmetki-markdown-shpargalka-po-sintaksisu-s-primerami/"
+                      }
+                    >
+                      markdown
+                    </a>
+                  </HoverCardContent>
+                </HoverCard>
+              </span>
               {!isEditingDescription && (
                 <span
                   className="text-muted-foreground font-normal hover:underline hover:text-foreground hover:cursor-pointer z-1000"
@@ -132,7 +163,12 @@ export function KanbanCard({
             </Label>
             {boardSnapshot.tasks[taskId].description &&
               !isEditingDescription && (
-                <div className="text-sm">
+                <div
+                  className="text-sm text-pretty h-full w-80 overflow-y-auto"
+                  style={{
+                    width: descriptionRef.current?.clientWidth || "100%",
+                  }}
+                >
                   <ReactMarkdown
                     children={boardSnapshot.tasks[taskId].description}
                     remarkPlugins={[remarkGfm]}

@@ -53,7 +53,7 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
 
       boardsStore.boards?.push(data);
       router.push(`/board/${data._id}`);
-      toast.success(`Доска ${values.title} успешно создана`);
+      toast.success(`доска ${values.title} успешно создана`);
     }
 
     boardsStore.loading = false;
@@ -80,7 +80,7 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
                 <FormItem>
                   <FormLabel>название</FormLabel>
                   <FormControl>
-                    <Input placeholder="Доска" {...field} />
+                    <Input placeholder="доска" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

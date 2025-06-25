@@ -48,7 +48,7 @@ export function DatePicker({ taskId, className }: DatePicker) {
           {date ? (
             format(date, "PPP", { locale: ru })
           ) : (
-            <span>Дата дедлайна</span>
+            <span>дата дедлайна</span>
           )}
         </Button>
       </PopoverTrigger>
