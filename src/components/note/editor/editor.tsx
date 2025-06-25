@@ -153,7 +153,7 @@ export function Editor({ noteId }: EditorProps) {
                       160,
                   }}
                 >
-                  введите текст или '/' для комманд
+                  введите текст или '/' для команд
                 </div>
               ) : (
                 <div
