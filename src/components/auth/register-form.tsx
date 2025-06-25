@@ -22,27 +22,38 @@ const formSchema = z.object({
   username: z
     .string()
     .min(1, {
-      message: "Необходимо указать имя пользователя",
+      message: "необходимо указать имя пользователя",
     })
-    .min(3, { message: "Имя пользователя должно содержать минимум 3 символа" }),
+    .min(3, { message: "имя пользователя должно содержать минимум 3 символа" }),
   email: z
     .string()
     .min(1, {
-      message: "Необходимо указать email",
+      message: "необходимо указать email",
     })
     .email({
-      message: "Email должен быть корректным",
+      message: "email должен быть корректным",
     }),
   password: z
     .string()
     .min(1, {
-      message: "Необходимо указать пароль",
+      message: "необходимо указать пароль",
     })
     .min(8, {
-      message: "Пароль должен содержать минимум 8 символов",
+      message: "пароль должен содержать минимум 8 символов",
     })
     .regex(/[A-Z]/, {
-      message: "Пароль должен содержать хотя бы одну заглавную букву",
+      message: "пароль должен содержать хотя бы одну заглавную букву",
+    }),
+  passwordConfirm: z
+    .string()
+    .min(1, {
+      message: "необходимо указать пароль",
+    })
+    .min(8, {
+      message: "пароль должен содержать минимум 8 символов",
+    })
+    .regex(/[A-Z]/, {
+      message: "пароль должен содержать хотя бы одну заглавную букву",
     }),
 });
 
@@ -57,11 +68,19 @@ export function RegisterForm() {
       username: "",
       email: "",
       password: "",
+      passwordConfirm: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+
+    if (values.password !== values.passwordConfirm) {
+      setErrorMessage("пароли не совпадают");
+      setIsLoading(false);
+
+      return;
+    }
 
     const userResponse = await registerUser(JSON.stringify(values));
     const userData = await userResponse.json();
@@ -70,7 +89,7 @@ export function RegisterForm() {
       await setAuthCookie(userData.token);
       router.push("/");
     } else {
-      setErrorMessage(userData.message ?? "Ошибка регистрации");
+      setErrorMessage(userData.message.toLowerCase() ?? "Ошибка регистрации");
     }
 
     setIsLoading(false);
@@ -115,11 +134,29 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="passwordConfirm"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  placeholder="подтверждение пароля"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button className="w-full" type="submit" disabled={isLoading}>
           {!isLoading && <span>зарегистрироваться</span>}
           {isLoading && <Loader2 className="animate-spin" />}
         </Button>
-        {errorMessage && <FormMessage>{errorMessage}</FormMessage>}
+        {errorMessage && (
+          <FormMessage className="text-center">{errorMessage}</FormMessage>
+        )}
       </form>
     </Form>
   );
