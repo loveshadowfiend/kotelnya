@@ -78,7 +78,7 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Название</FormLabel>
+                  <FormLabel>название</FormLabel>
                   <FormControl>
                     <Input placeholder="Доска" {...field} />
                   </FormControl>
