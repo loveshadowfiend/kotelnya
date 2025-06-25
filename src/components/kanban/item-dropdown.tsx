@@ -29,13 +29,13 @@ export function ItemDropdown({
 }: NoteDropdownProps) {
   async function handleDeleteTask() {
     toast.promise(deleteTaskApi(taskId), {
-      loading: "Удаление задачи...",
+      loading: "удаление задачи...",
       success: () => {
         deleteTaskStore(columnId, taskId);
 
-        return `Задача "${taskTitle}" успешно удалена`;
+        return `задача "${taskTitle}" успешно удалена`;
       },
-      error: "Не удалось удалить задачу",
+      error: "не удалось удалить задачу",
     });
   }
 
@@ -54,7 +54,7 @@ export function ItemDropdown({
           }}
         >
           <Edit />
-          Переименовать
+          переименовать
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={(e) => {
@@ -63,7 +63,7 @@ export function ItemDropdown({
           }}
         >
           <Trash2 />
-          <span>Удалить</span>
+          <span>удалить</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

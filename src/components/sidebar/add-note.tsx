@@ -70,7 +70,7 @@ export function AddNote({ children }: { children: React.ReactNode }) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Добавить заметку</DialogTitle>
+          <DialogTitle>добавить заметку</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -82,16 +82,16 @@ export function AddNote({ children }: { children: React.ReactNode }) {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Название</FormLabel>
+                  <FormLabel>название</FormLabel>
                   <FormControl>
-                    <Input placeholder="Заметка" {...field} />
+                    <Input placeholder="заметка" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit">
-              <Plus /> Добавить
+              <Plus /> добавить
             </Button>
           </form>
         </Form>

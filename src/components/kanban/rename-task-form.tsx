@@ -129,7 +129,7 @@ export function KanbanRenameTaskForm({ task }: KanbanRenameTaskProps) {
         />
         <div className="flex gap-1">
           <Button type="submit" disabled={isLoading}>
-            <span>Сохранить</span>
+            <span>сохранить</span>
           </Button>
           <Button
             variant="destructive"

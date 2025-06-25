@@ -15,8 +15,8 @@ import { Input } from "@/components/ui/input";
 import { setAuthCookie } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2 } from "lucide-react";
-import { loginUser } from "@/api/auth/route";
+import { Check, CheckCircle2, Loader2 } from "lucide-react";
+import { forgotPassword, loginUser } from "@/api/auth/route";
 
 const formSchema = z.object({
   email: z
@@ -27,38 +27,35 @@ const formSchema = z.object({
     .email({
       message: "email должен быть корректным",
     }),
-  password: z.string().min(1, {
-    message: "необходимо указать пароль",
-  }),
 });
 
-export function LoginForm() {
+export function ForgotPasswordForm() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
-      password: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
 
-    const response = await loginUser(JSON.stringify(values));
-
-    const data = await response.json();
+    const response = await forgotPassword(values.email);
 
     if (response.ok) {
-      await setAuthCookie(data.token);
-
-      router.push("/");
-
-      return;
+      setError(null);
+      setSuccess(
+        "письмо с инструкциями по восстановлению пароля отправлено на ваш email"
+      );
+      form.reset();
     } else {
-      setError(data.message.toLowerCase() ?? "ошибка при входе");
+      setError(
+        "ошибка при отправке письма... пожалуйста, проверьте введенный email и попробуйте еще раз"
+      );
     }
 
     setIsLoading(false);
@@ -79,23 +76,16 @@ export function LoginForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="пароль" type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <Button className="w-full" type="submit" disabled={isLoading}>
-          {!isLoading && <span>войти</span>}
+          {!isLoading && <span>восстановить пароль</span>}
           {isLoading && <Loader2 className="animate-spin" />}
         </Button>
         {error && <FormMessage className="text-center">{error}</FormMessage>}
+        {success && (
+          <FormMessage className="text-center text-accent-foreground">
+            {success}
+          </FormMessage>
+        )}
       </form>
     </Form>
   );

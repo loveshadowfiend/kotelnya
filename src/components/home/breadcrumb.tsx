@@ -22,7 +22,7 @@ export function HomeBreadcrumb() {
           </div>
           <BreadcrumbItem>
             <BreadcrumbPage className="flex items-center">
-              Главная
+              главная
             </BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>

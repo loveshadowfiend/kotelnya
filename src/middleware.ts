@@ -7,13 +7,19 @@ const protectedRoutes = ["/"];
 export async function middleware(request: NextRequest) {
   const token = request.cookies.get("auth-token")?.value;
   const { pathname } = request.nextUrl;
+  const isAuthPage =
+    pathname.startsWith("/auth/login") ||
+    pathname.startsWith("/auth/register") ||
+    pathname.startsWith("/auth/forgot-password") ||
+    pathname.startsWith("/auth/reset-password");
 
-  const isProtectedRoute = protectedRoutes.some(
-    (route) =>
-      pathname.startsWith(route) &&
-      pathname !== "/auth/login" &&
-      pathname !== "/auth/register"
-  );
+  if (token && isAuthPage) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  const isProtectedRoute = protectedRoutes.some((route) => {
+    return pathname.startsWith(route) && !isAuthPage;
+  });
 
   if (!isProtectedRoute) {
     return NextResponse.next();

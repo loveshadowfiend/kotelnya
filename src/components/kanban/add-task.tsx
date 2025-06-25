@@ -122,7 +122,7 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
           />
           <div className="flex gap-1">
             <Button type="submit" disabled={isLoading}>
-              <span>Сохранить</span>
+              <span>сохранить</span>
             </Button>
             <Button
               variant="destructive"
@@ -149,7 +149,7 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
       disabled={isLoading}
     >
       <Plus />
-      Добавить задачу
+      добавить задачу
     </Button>
   );
 }

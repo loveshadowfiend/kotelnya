@@ -44,16 +44,16 @@ export function KanbanAddColumn() {
     setIsLoading(true);
 
     toast.promise(createColumn(boardSnapshot._id, values.title), {
-      loading: "Создание задачи...",
+      loading: "создание списка...",
       success: async (response) => {
         const newColumn = await response.json();
         addNewColumn(newColumn._id, values.title);
         form.reset();
         kanbanComponentsStore.isAddingCategory = false;
 
-        return `Список "${values.title}" успешно создан`;
+        return `список "${values.title}" успешно создан`;
       },
-      error: "Не удалось создать список",
+      error: "не удалось создать список",
     });
 
     setIsLoading(false);
@@ -103,7 +103,7 @@ export function KanbanAddColumn() {
                     rounded-xl resize-none w-[80vw] ring-inset px-6 py-6 field-sizing-content font-semibold text-sm mr-[20px]
                     lg:w-[20vw]
                     "
-                    placeholder="Название списка"
+                    placeholder="название списка"
                     {...field}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" && !e.shiftKey) {
@@ -123,7 +123,7 @@ export function KanbanAddColumn() {
           />
           <div className="flex gap-1">
             <Button type="submit" disabled={isLoading}>
-              Добавить
+              добавить
             </Button>
             <Button
               variant="destructive"
@@ -150,7 +150,7 @@ export function KanbanAddColumn() {
       }}
     >
       <Plus />
-      <span>Добавить список</span>
+      <span>добавить список</span>
     </Button>
   );
 }

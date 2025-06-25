@@ -86,7 +86,7 @@ export function NavProjects() {
               </div>
             )}
             {!projectsSnapshot.loading &&
-              projectsStore.projects?.map((project: Project) => {
+              projectsSnapshot.projects?.map((project) => {
                 return (
                   <div
                     key={project._id}
@@ -95,6 +95,7 @@ export function NavProjects() {
                       e.stopPropagation();
                       if (isOpen) return;
 
+                      // @ts-ignore
                       projectStore.project = project;
 
                       localStorage.setItem(
@@ -130,7 +131,7 @@ export function NavProjects() {
                       >
                         <div className="absolute flex right-3 z-50">
                           <Button
-                            className="h-5 w-5 text-muted-foreground z-50 hidden group-hover:flex"
+                            className="h-5 w-5 text-muted-foreground z-50 lg:hidden group-hover:flex"
                             variant="ghost"
                           >
                             <Edit />

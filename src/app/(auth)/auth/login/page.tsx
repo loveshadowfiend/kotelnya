@@ -20,9 +20,14 @@ export default function LoginPage() {
         </CardHeader>
         <CardContent className="flex flex-col items-center w-80 gap-3 lg:w-100">
           <LoginForm />
-          <Link className="text-sm underline" href="/auth/register">
-            регистрация
-          </Link>
+          <div className="flex gap-2 items-center">
+            <Link className="text-sm underline" href="/auth/register">
+              регистрация
+            </Link>
+            <Link className="text-sm underline" href="/auth/forgot-password">
+              забыли пароль?
+            </Link>
+          </div>
         </CardContent>
       </Card>
     </main>

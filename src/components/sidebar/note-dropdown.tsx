@@ -41,9 +41,9 @@ export function NoteDropdown({
     await deleteNote(noteId);
 
     if (notesStore.error) {
-      toast.error(`Возникла ошибка: ${notesStore.error}`);
+      toast.error(`возникла ошибка: ${notesStore.error}`);
     } else {
-      toast.success(`Заметка "${noteTitle}" успешно удалена`);
+      toast.success(`заметка "${noteTitle}" успешно удалена`);
     }
   }
 

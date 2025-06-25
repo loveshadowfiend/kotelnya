@@ -22,7 +22,7 @@ import { NavNotes } from "./nav-notes";
 
 export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar>
       <SidebarHeader className="border-b">
         <NavProjects />
       </SidebarHeader>

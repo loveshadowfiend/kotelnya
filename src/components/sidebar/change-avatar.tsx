@@ -27,6 +27,7 @@ import { userStore } from "@/stores/user-store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { loadProjectAvatar } from "@/api/projects/route";
 import { projectStore } from "@/stores/project-store";
+import { projectsStore } from "@/stores/projects-store";
 
 interface ChangeAvatarProps {
   currentAvatar?: string;
@@ -373,18 +374,27 @@ export function ChangeAvatar({
       toast.promise(loadProjectAvatar(projectId, formData), {
         loading: "загрузка изображения...",
         success: async (response) => {
-          const data: Project = await response.json();
-          projectStore.project = data;
+          const updatedProject: Project = await response.json();
+          projectsStore.projects = projectsStore.projects
+            ? projectsStore.projects.map((project) =>
+                project._id === updatedProject._id ? updatedProject : project
+              )
+            : null;
+
+          if (projectStore.project?._id === projectId) {
+            projectStore.project = updatedProject;
+          }
 
           if (croppedImageUrl) {
             onAvatarChange?.(croppedImageUrl);
           }
           setLoading(false);
-          return "изображение профиля успешно обновлено!";
+          onOpenChange?.(false);
+          return "изображение проекта успешно обновлено!";
         },
         error: (error) => {
           setLoading(false);
-          return `ошибка при обновлении изображения профиля. пожалуйста, попробуйте еще раз. ${error}`;
+          return `ошибка при обновлении изображения проекта. пожалуйста, попробуйте еще раз. ${error}`;
         },
       });
     }
@@ -421,11 +431,11 @@ export function ChangeAvatar({
         >
           <DialogHeader>
             <DialogTitle className={isMobile ? "text-lg" : ""}>
-              обновление изображение профиля
+              обновление изображение {userId ? "профиля" : "проекта"}
             </DialogTitle>
             <DialogDescription className={isMobile ? "text-sm" : ""}>
-              загрузите новую картинку пользователя. поддерживаемый формат: JPG,
-              PNG, GIF. максимальный размер: 5 МБ.
+              загрузите новую картинку {userId ? "профиля" : "проекта"}.
+              поддерживаемый формат: JPG, PNG, GIF. максимальный размер: 5 МБ.
             </DialogDescription>
           </DialogHeader>
 
@@ -689,7 +699,7 @@ export function ChangeAvatar({
                         <Upload
                           className={`mr-2 ${isMobile ? "h-4 w-4" : "h-4 w-4"}`}
                         />
-                        сохранить аватар
+                        сохранить изображение
                       </>
                     )}
                   </Button>

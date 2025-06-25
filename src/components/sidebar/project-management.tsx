@@ -7,6 +7,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Form,
   FormControl,
   FormField,
@@ -57,6 +68,7 @@ export function ProjectManagement({
   const router = useRouter();
   const isTabletOrMobile = useIsMobile();
   const projectSnapshot = useSnapshot(projectStore);
+  const projectsSnapshot = useSnapshot(projectsStore);
   const userSnapshot = useSnapshot(userStore);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -84,18 +96,18 @@ export function ProjectManagement({
     toast.promise(updateProject(project._id, values.title, values.status), {
       loading: "обновление проекта...",
       success: async (response) => {
-        const updatedProject = await response.json();
-        const projectId = project._id;
-        const oldProject = projectsStore.projects?.find(
-          (project) => project._id === projectId
-        );
+        const updatedProject: Project = await response.json();
 
-        Object.assign(oldProject ?? {}, updatedProject);
+        projectsStore.projects = projectsStore.projects
+          ? projectsStore.projects.map((project) =>
+              project._id === updatedProject._id ? updatedProject : project
+            )
+          : null;
 
         return "проект успешно обновлен";
       },
-      error: () => {
-        return "произошла ошибка при обновлении проекта";
+      error: (error) => {
+        return `произошла ошибка при обновлении проекта ${error}`;
       },
     });
   };
@@ -112,7 +124,9 @@ export function ProjectManagement({
     }
 
     setUserRole(user.role);
-  }, [project]);
+
+    console.log("project", project);
+  }, []);
 
   return (
     <Dialog>
@@ -123,14 +137,36 @@ export function ProjectManagement({
         <DialogHeader>
           <DialogTitle className="flex gap-1 items-center">
             <span>{project.title}</span>
-            <Trash2
-              className="h-4 w-4 text-muted-foreground hover:text-accent-foreground hover:cursor-pointer"
-              onClick={() => {
-                handleDelete(project._id);
-              }}
-            />
+            <AlertDialog>
+              <AlertDialogTrigger>
+                <Trash2 className="h-4 w-4 text-muted-foreground hover:text-accent-foreground hover:cursor-pointer" />
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>вы уверены?</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    вы уверены, что хотите удалить проект{" "}
+                    <span className="font-semibold">{project.title}</span>? это
+                    действие нельзя будет отменить.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>отмена</AlertDialogCancel>
+                  <AlertDialogAction
+                    className="bg-destructive"
+                    onClick={() => {
+                      handleDelete(project._id);
+                    }}
+                  >
+                    удалить
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </DialogTitle>
-          <DialogDescription>{project.status}</DialogDescription>
+          <DialogDescription className="text-left">
+            {project.status}
+          </DialogDescription>
         </DialogHeader>
         <div className="flex gap-4">
           {userRole === "owner" && (
@@ -167,21 +203,16 @@ export function ProjectManagement({
                         </FormItem>
                       )}
                     />
-                    {/* <Button className="w-fit" type="submit">
-                    обновить
-                  </Button> */}
                   </div>
-                  <div>
+                  <div className="relative group">
                     <Avatar
-                      className="relative h-30 w-30 hover:cursor-pointer hover:opacity-80 transition-opacity group"
+                      className="h-24 w-24 hover:cursor-pointer hover:opacity-70 transition-opacity group lg:h-32 lg:w-32"
                       onClick={() => {
                         setAvatarDialogOpen(true);
                       }}
                     >
-                      <AvatarImage
-                        src={`${API_URL}${projectSnapshot.project?.imageUrl}`}
-                      />
-                      <AvatarFallback className="text-2xl text-muted-foreground">
+                      <AvatarImage src={`${API_URL}${project.imageUrl}`} />
+                      <AvatarFallback className="text-2xl text-muted-foreground hover:bg-muted-foreground transition-colors">
                         {project.title.substring(0, 2)}
                       </AvatarFallback>
                     </Avatar>
@@ -190,11 +221,14 @@ export function ProjectManagement({
                       open={avatarDialogOpen}
                       onOpenChange={setAvatarDialogOpen}
                       currentAvatar={
-                        projectSnapshot.project?.imageUrl === ""
+                        project.imageUrl === ""
                           ? ""
                           : `${API_URL}${projectSnapshot.project?.imageUrl}`
                       }
                     />
+                    <Edit className="h-4 w-4 hidden pointer-events-none top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 absolute group-hover:flex">
+                      изменить
+                    </Edit>
                   </div>
                 </div>
                 <Button className="w-fit" type="submit">

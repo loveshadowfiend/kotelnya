@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Trash2 } from "lucide-react";
+import { Edit2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 interface ColumnDropdownProps {
@@ -28,13 +28,13 @@ export function ColumnDropdown({
 
   async function handleDeleteColumn() {
     toast.promise(deleteColumnApi(columnId), {
-      loading: "Удаление списка...",
+      loading: "удаление списка...",
       success: () => {
         deleteColumnStore(columnId);
 
-        return `Список "${columnTitle}" успешно удален`;
+        return `список "${columnTitle}" успешно удален`;
       },
-      error: "Не удалось удалить список",
+      error: "не удалось удалить список",
     });
   }
 
@@ -46,7 +46,13 @@ export function ColumnDropdown({
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleDeleteColumn}>
           <Trash2 />
-          Удалить
+          удалить
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => (kanbanComponentsStore.renamingColumn = columnId)}
+        >
+          <Edit2 />
+          переименовать
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

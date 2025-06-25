@@ -16,38 +16,40 @@ import { setAuthCookie } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { loginUser } from "@/api/auth/route";
+import { resetPassword } from "@/api/auth/route";
+import { toast } from "sonner";
 
 const formSchema = z.object({
-  email: z
-    .string()
-    .min(1, {
-      message: "необходимо указать email",
-    })
-    .email({
-      message: "email должен быть корректным",
-    }),
   password: z.string().min(1, {
     message: "необходимо указать пароль",
   }),
+  passwordConfirmation: z.string().min(1, {
+    message: "необходимо подтвердить пароль",
+  }),
 });
 
-export function LoginForm() {
+export function ResetPasswordForm({ token }: { token: string }) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      email: "",
       password: "",
+      passwordConfirmation: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    if (values.password !== values.passwordConfirmation) {
+      setError("пароли не совпадают");
+
+      return;
+    }
+
     setIsLoading(true);
 
-    const response = await loginUser(JSON.stringify(values));
+    const response = await resetPassword(token, values.password);
 
     const data = await response.json();
 
@@ -56,9 +58,11 @@ export function LoginForm() {
 
       router.push("/");
 
+      toast.success("пароль успешно изменен");
+
       return;
     } else {
-      setError(data.message.toLowerCase() ?? "ошибка при входе");
+      setError(data.message ?? "ошибка при изменении пароля");
     }
 
     setIsLoading(false);
@@ -67,18 +71,6 @@ export function LoginForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3 w-full">
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormControl>
-                <Input placeholder="email" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
         <FormField
           control={form.control}
           name="password"
@@ -91,8 +83,24 @@ export function LoginForm() {
             </FormItem>
           )}
         />
+        <FormField
+          control={form.control}
+          name="passwordConfirmation"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <Input
+                  placeholder="подтверждение пароля"
+                  type="password"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <Button className="w-full" type="submit" disabled={isLoading}>
-          {!isLoading && <span>войти</span>}
+          {!isLoading && <span>изменить пароль</span>}
           {isLoading && <Loader2 className="animate-spin" />}
         </Button>
         {error && <FormMessage className="text-center">{error}</FormMessage>}

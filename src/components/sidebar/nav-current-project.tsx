@@ -116,7 +116,7 @@ export function NavCurrentProject() {
         } else {
           // Only create project if no projects exist
           const newProject = await createAndSetCurrentProject(
-            `Проект ${userSnapshot.user?.username}`
+            `проект ${userSnapshot.user?.username}`
           );
           return newProject;
         }

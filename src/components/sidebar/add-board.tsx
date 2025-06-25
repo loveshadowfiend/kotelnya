@@ -66,7 +66,7 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Добавить доску</DialogTitle>
+          <DialogTitle>добавить доску</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
@@ -87,7 +87,7 @@ export function AddBoard({ children }: { children: React.ReactNode }) {
               )}
             />
             <Button type="submit">
-              <Plus /> Добавить
+              <Plus /> добавить
             </Button>
           </form>
         </Form>
