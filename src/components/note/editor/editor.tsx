@@ -141,8 +141,8 @@ export function Editor({ noteId }: EditorProps) {
       <RichTextPlugin
         contentEditable={
           <ContentEditable
-            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative"
-            aria-placeholder="Введите текст или '/' для комманд"
+            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative editor-container"
+            aria-placeholder="введите текст или '/' для комманд"
             placeholder={
               isSynced ? (
                 <div

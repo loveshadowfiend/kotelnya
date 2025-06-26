@@ -161,18 +161,18 @@
   color: #e2e8f0;
 }
 
-.editor-container.dark .editor-tokenComment {
-  color: #a0aec0;
+.editor-container > h1:first-child {
+  margin-top: 0;
 }
 
-.editor-container.dark .editor-tokenProperty {
-  color: #f687b3;
+.editor-container > h2:first-child {
+  margin-top: 0;
 }
 
-.editor-container.dark .editor-tokenSelector {
-  color: #9ae6b4;
+.editor-container > h3:first-child {
+  margin-top: 0;
 }
 
-.editor-container.dark .editor-tokenFunction {
-  color: #fbb6ce;
+.editor-container > p:first-child {
+  margin-top: 0;
 }
