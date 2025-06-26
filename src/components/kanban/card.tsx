@@ -99,7 +99,7 @@ export function KanbanCard({
       onOpenChange={setIsDialogOpen}
       direction={isTabletOrMobile ? "bottom" : "right"}
     >
-      <DrawerContent className="max-w-[33vw] pb-10 overflow-y-auto">
+      <DrawerContent className="max-w-[25vw] pb-10 overflow-y-auto">
         <DrawerHeader>
           <KanbanRenameTaskDropdown
             taskId={taskId}
