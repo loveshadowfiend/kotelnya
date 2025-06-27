@@ -72,8 +72,11 @@ export function BoardDropdown({
               <Edit />
               переименовать
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDeleteBoard}>
-              <Trash2 />
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={handleDeleteBoard}
+            >
+              <Trash2 className="text-destructive" />
               <span>удалить</span>
             </DropdownMenuItem>
           </>

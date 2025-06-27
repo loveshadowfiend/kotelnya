@@ -79,7 +79,7 @@ export default function DraggableBlockPlugin({
       menuComponent={
         <div
           className={cn(
-            "opacity-0 cursor-grab absolute top-0 left-0 will-change-transform flex z-50"
+            "opacity-0 cursor-grab absolute top-0 left-0 will-change-transform flex z-10"
           )}
           style={{
             // magic number to position the draggable block menu

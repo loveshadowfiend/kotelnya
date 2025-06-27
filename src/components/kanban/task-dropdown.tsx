@@ -21,7 +21,7 @@ interface NoteDropdownProps {
   taskTitle: string;
 }
 
-export function ItemDropdown({
+export function TaskDropdown({
   children,
   columnId,
   taskId,
@@ -57,12 +57,13 @@ export function ItemDropdown({
           переименовать
         </DropdownMenuItem>
         <DropdownMenuItem
+          className="text-destructive"
           onClick={(e) => {
             e.stopPropagation();
             handleDeleteTask();
           }}
         >
-          <Trash2 />
+          <Trash2 className="text-destructive" />
           <span>удалить</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

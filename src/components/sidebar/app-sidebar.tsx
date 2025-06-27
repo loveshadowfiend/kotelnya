@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, Home, Mail, Circle, CircleAlert } from "lucide-react";
+import { Users, Home, Mail } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -48,14 +48,6 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {/* <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <Link href="#">
-                    <Settings />
-                    <span>Настройки</span>
-                  </Link>
-                </SidebarMenuButton>
-              </SidebarMenuItem> */}
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link href="/members">

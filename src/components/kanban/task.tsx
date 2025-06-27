@@ -12,7 +12,7 @@ import { useState } from "react";
 import { KanbanCard } from "./card";
 import { Column, Task } from "@/types";
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
-import { ItemDropdown } from "./item-dropdown";
+import { TaskDropdown } from "./task-dropdown";
 import { Button } from "../ui/button";
 import { Ellipsis } from "lucide-react";
 import { KanbanRenameTaskForm } from "./rename-task-form";
@@ -51,7 +51,7 @@ export function KanbanTask({ task, column, index }: KanbanItemProps) {
                 <CardHeader>
                   <CardTitle className="flex justify-between items-center text-sm font-normal">
                     <span>{task.title}</span>
-                    <ItemDropdown
+                    <TaskDropdown
                       columnId={column._id}
                       taskId={task._id}
                       taskTitle={task.title}
@@ -62,7 +62,7 @@ export function KanbanTask({ task, column, index }: KanbanItemProps) {
                       >
                         <Ellipsis />
                       </Button>
-                    </ItemDropdown>
+                    </TaskDropdown>
                   </CardTitle>
                   {Array.isArray(task.assignee) && task.assignee.length > 0 && (
                     <CardDescription className="flex items-center gap-2 mt-2">

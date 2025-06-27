@@ -66,8 +66,11 @@ export function NoteDropdown({
               <Edit />
               переименовать
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleDeleteNote}>
-              <Trash2 />
+            <DropdownMenuItem
+              className="text-destructive"
+              onClick={handleDeleteNote}
+            >
+              <Trash2 className="text-destructive" />
               <span>удалить</span>
             </DropdownMenuItem>
           </>

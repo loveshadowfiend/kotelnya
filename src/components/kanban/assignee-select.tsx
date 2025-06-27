@@ -9,9 +9,6 @@ import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
 import { cn } from "@/lib/utils";
 import { updateTask } from "@/api/tasks/route";
-import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
-import { Avatar } from "../ui/avatar";
-import { API_URL } from "@/lib/config";
 
 interface AssigneeSelectProps {
   taskId: string;

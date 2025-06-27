@@ -104,6 +104,10 @@ export function ProjectManagement({
             )
           : null;
 
+        if (projectSnapshot.project?._id === updatedProject._id) {
+          projectStore.project = updatedProject;
+        }
+
         return "проект успешно обновлен";
       },
       error: (error) => {

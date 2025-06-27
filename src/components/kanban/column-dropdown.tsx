@@ -1,3 +1,5 @@
+"use client";
+
 import { deleteColumn as deleteColumnApi } from "@/api/columns/route";
 import { deleteColumn as deleteColumnStore } from "@/stores/board-store";
 import { kanbanComponentsStore } from "@/stores/kanban-components-store";
@@ -10,8 +12,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Edit, Edit2, Trash2 } from "lucide-react";
+import { Edit, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface ColumnDropdownProps {
   children: React.ReactNode;
@@ -50,10 +63,37 @@ export function ColumnDropdown({
           <Edit />
           переименовать
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleDeleteColumn}>
-          <Trash2 />
-          удалить
-        </DropdownMenuItem>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <DropdownMenuItem
+              className="text-destructive"
+              onSelect={(e) => e.preventDefault()}
+            >
+              <Trash2 className="text-destructive" />
+              удалить
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                вы действительно хотите удалить список?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                это действие нельзя будет отменить, и все задачи в этом списке
+                будут удалены
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>отменить</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive"
+                onClick={handleDeleteColumn}
+              >
+                продолжить
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </DropdownMenuContent>
     </DropdownMenu>
   );
