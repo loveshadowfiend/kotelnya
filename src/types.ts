@@ -25,6 +25,7 @@ export type Board = {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  projectUsers: ProjectUser[];
 };
 
 export type BoardModified = {
@@ -40,6 +41,9 @@ export type BoardModified = {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  projectUsers: {
+    [key: string]: ProjectUser;
+  };
 };
 
 export type Column = {
@@ -55,7 +59,7 @@ export type Task = {
   _id: string;
   title: string;
   description: string;
-  assignee: string[];
+  assignee: ProjectUser[];
   createdAt: string;
   updatedAt: string;
   dueDate: string;
@@ -142,4 +146,12 @@ export type ProjectInvitation = {
 
 export type InvitationsState = {
   invitations: ProjectInvitation[] | null;
+};
+
+export type ProjectUser = {
+  _id: string;
+  username: string;
+  email: string;
+  avatarUrl: string;
+  role: string;
 };

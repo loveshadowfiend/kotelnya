@@ -7,8 +7,11 @@ import {
 } from "@/components/ui/select";
 import { boardStore } from "@/stores/board-store";
 import { useSnapshot } from "valtio";
-import { mockUsers } from "@/constants";
 import { cn } from "@/lib/utils";
+import { updateTask } from "@/api/tasks/route";
+import { AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar } from "../ui/avatar";
+import { API_URL } from "@/lib/config";
 
 interface AssigneeSelectProps {
   taskId: string;
@@ -20,18 +23,40 @@ export function AssigneeSelect({ taskId, className }: AssigneeSelectProps) {
 
   return (
     <Select
-      value={boardStore.tasks[taskId].assignee[0]}
+      value={
+        boardStore.tasks[taskId].assignee[0]
+          ? boardStore.tasks[taskId].assignee[0]._id
+          : "none"
+      }
       onValueChange={(value) => {
-        boardStore.tasks[taskId].assignee[0] = value;
+        if (value === "none") {
+          boardStore.tasks[taskId].assignee = [];
+
+          updateTask(taskId, {
+            assignee: [],
+          });
+
+          return;
+        }
+
+        boardStore.tasks[taskId].assignee[0] = {
+          ...boardStore.projectUsers[value],
+        };
+
+        updateTask(taskId, {
+          assignee: [boardStore.projectUsers[value]],
+        });
       }}
     >
       <SelectTrigger className={cn("w-full", className)}>
         <SelectValue placeholder="" />
       </SelectTrigger>
       <SelectContent>
-        {Object.values(mockUsers).map((user) => (
-          <SelectItem key={user.id} value={user.name}>
-            {user.name}
+        <SelectItem value="none">не выбрано</SelectItem>
+        {Object.values(boardStore.projectUsers).map((user) => (
+          <SelectItem className="flex gap-3" key={user._id} value={user._id}>
+            <span>{user.username}</span>
+            <span className="text-muted-foreground truncate">{user.email}</span>
           </SelectItem>
         ))}
       </SelectContent>

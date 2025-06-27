@@ -1,7 +1,7 @@
 "use client";
 
 import { Draggable, Droppable } from "@hello-pangea/dnd";
-import { KanbanItem } from "@/components/kanban/item";
+import { KanbanTask } from "@/components/kanban/task";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { KanbanAddTask } from "./add-task";
 import { Column, Task } from "@/types";
@@ -69,7 +69,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
                   className={`transition-colors gap-3 px-3`}
                 >
                   {tasks.map((task, index) => (
-                    <KanbanItem
+                    <KanbanTask
                       key={task._id}
                       task={task}
                       column={column}

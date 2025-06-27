@@ -39,6 +39,7 @@ import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
 import type { Components } from "react-markdown";
 import { cn } from "@/lib/utils";
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
+import { AssigneeSelect } from "./assignee-select";
 
 interface KanbanCardProps {
   taskId: string;
@@ -118,6 +119,10 @@ export function KanbanCard({
           </KanbanRenameTaskDropdown>
         </DrawerHeader>
         <div className="grid gap-6 mx-4 mb-4">
+          <div className="grid gap-3">
+            <Label htmlFor="assignee">исполнитель</Label>
+            <AssigneeSelect className="w-full" taskId={taskId} />
+          </div>
           <div className="grid gap-3">
             <Label htmlFor="deadline">дедлайн</Label>
             <DatePicker className="w-full" taskId={taskId} />

@@ -38,6 +38,18 @@ export function modifyBoardObject(board: Board) {
         },
       ])
     ),
+    projectUsers: Object.fromEntries(
+      board.projectUsers.map((user) => [
+        user._id,
+        {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          avatarUrl: user.avatarUrl,
+          role: user.role,
+        },
+      ])
+    ),
   };
 
   return newBoard;
@@ -54,6 +66,10 @@ export function unmodifyBoardObject(board: BoardModified) {
     columns: Object.values(board.columns).map((column) => ({
       ...column,
       _id: column._id,
+    })),
+    projectUsers: Object.values(board.projectUsers).map((user) => ({
+      ...user,
+      _id: user._id,
     })),
   };
 

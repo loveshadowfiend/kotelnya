@@ -19,6 +19,7 @@ import { useClickOutside } from "@/hooks/use-outside-click";
 import { useEffect, useRef, useState } from "react";
 import { addTask } from "@/api/tasks/route";
 import { toast } from "sonner";
+import { userStore } from "@/stores/user-store";
 
 const formSchema = z.object({
   title: z
@@ -36,6 +37,7 @@ interface KanbanNewTaskProps {
 export function KanbanAddTask({ column }: KanbanNewTaskProps) {
   const [isLoading, setIsLoading] = useState(false);
   const kanbanComponentsSnapshop = useSnapshot(kanbanComponentsStore);
+  const userSnapshot = useSnapshot(userStore);
   const boardSnapshot = useSnapshot(boardStore);
   const ref = useRef<HTMLFormElement>(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -47,6 +49,8 @@ export function KanbanAddTask({ column }: KanbanNewTaskProps) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
+
+    if (userSnapshot.user === null) return;
 
     toast.promise(addTask(column._id, boardSnapshot._id, values.title), {
       loading: "создание задачи...",

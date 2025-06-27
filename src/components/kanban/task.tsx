@@ -18,6 +18,7 @@ import { Ellipsis } from "lucide-react";
 import { KanbanRenameTaskForm } from "./rename-task-form";
 import { useSnapshot } from "valtio";
 import { kanbanComponentsStore } from "@/stores/kanban-components-store";
+import { API_URL } from "@/lib/config";
 
 interface KanbanItemProps {
   task: Task;
@@ -25,7 +26,7 @@ interface KanbanItemProps {
   index: number;
 }
 
-export function KanbanItem({ task, column, index }: KanbanItemProps) {
+export function KanbanTask({ task, column, index }: KanbanItemProps) {
   const kanbanComponentsSnapshot = useSnapshot(kanbanComponentsStore);
   const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
 
@@ -63,13 +64,27 @@ export function KanbanItem({ task, column, index }: KanbanItemProps) {
                       </Button>
                     </ItemDropdown>
                   </CardTitle>
-                  {task.assignee.length > 0 && (
+                  {Array.isArray(task.assignee) && task.assignee.length > 0 && (
                     <CardDescription className="flex items-center gap-2 mt-2">
-                      <Avatar className="w-6 h-6 flex items-center">
-                        <AvatarImage />
-                        <AvatarFallback className="text-xs">NN</AvatarFallback>
-                      </Avatar>
-                      <span>{task.assignee}</span>
+                      {task.assignee.map((assignee) => (
+                        <div
+                          key={assignee._id}
+                          className="flex items-center gap-2"
+                        >
+                          <Avatar className="w-6 h-6 flex items-center">
+                            <AvatarImage
+                              src={`${API_URL}${assignee.avatarUrl}`}
+                              alt={assignee.username}
+                            />
+                            <AvatarFallback className="text-xs">
+                              {assignee.username
+                                ? assignee.username.slice(0, 2)
+                                : ""}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span>{assignee.username}</span>
+                        </div>
+                      ))}
                     </CardDescription>
                   )}
                 </CardHeader>

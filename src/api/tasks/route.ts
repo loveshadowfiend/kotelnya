@@ -1,5 +1,6 @@
 import { getAuthToken } from "@/lib/auth";
 import { API_URL } from "@/lib/config";
+import { ProjectUser } from "@/types";
 
 export async function addTask(
   columnId: string,
@@ -13,7 +14,11 @@ export async function addTask(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ title: title, columnId: columnId, dueDate: null }),
+    body: JSON.stringify({
+      title: title,
+      columnId: columnId,
+      dueDate: null,
+    }),
   });
 
   return response;
@@ -37,6 +42,7 @@ export async function updateTask(
     title?: string;
     description?: string;
     dueDate?: string;
+    assignee?: ProjectUser[];
   }
 ) {
   const token = await getAuthToken();
