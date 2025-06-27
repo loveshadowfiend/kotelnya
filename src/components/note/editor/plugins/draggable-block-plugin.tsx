@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { GripVertical, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useMediaQuery } from "react-responsive";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const DRAGGABLE_BLOCK_MENU_CLASSNAME = "draggable-block-menu";
 
@@ -39,9 +40,7 @@ export default function DraggableBlockPlugin({
   );
   const menuRef = useRef<HTMLDivElement>(null);
   const targetLineRef = useRef<HTMLDivElement>(null);
-  const isDesktop = useMediaQuery({
-    query: "(min-width: 768px)",
-  });
+  const isMobile = useIsMobile();
 
   function insertBlock(e: React.MouseEvent) {
     if (!draggableElement || !editor) {
@@ -67,7 +66,7 @@ export default function DraggableBlockPlugin({
     });
   }
 
-  if (!isDesktop) {
+  if (isMobile) {
     return <></>;
   }
 
@@ -79,7 +78,7 @@ export default function DraggableBlockPlugin({
       menuComponent={
         <div
           className={cn(
-            "opacity-0 cursor-grab absolute top-0 left-0 will-change-transform flex z-10"
+            "opacity-0 cursor-grab absolute top-0 left-0 will-change-transform flex z-10 md:hidden"
           )}
           style={{
             // magic number to position the draggable block menu

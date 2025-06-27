@@ -30,6 +30,7 @@ export function KanbanColumn({ column, tasks, index }: KanbanColumnProps) {
           ref={provided.innerRef}
           className="
           h-fit w-[var(--kanban-column-w)]
+          md:w-[40vw]
           lg:w-[var(--kanban-column-w-lg)]
           "
         >

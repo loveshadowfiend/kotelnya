@@ -38,6 +38,7 @@ import { MathPlugin } from "./plugins/math-plugin";
 import { MathTransformPlugin } from "./plugins/math-transform-plugin";
 import { MathKeyHandlerPlugin } from "./plugins/math-key-handler-plugin";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useMediaQuery } from "react-responsive";
 
 function onError(error: any) {
   console.error(error);
@@ -73,7 +74,7 @@ export function Editor({ noteId }: EditorProps) {
   const router = useRouter();
   const noteSnapshot = useSnapshot(noteStore);
   const userSnapshot = useSnapshot(userStore);
-  const isMobile = useIsMobile();
+  const isTabletOrMobile = useMediaQuery({ query: "(max-width: 1224px)" });
   const onRef = (_floatingAnchorElem: HTMLDivElement) => {
     if (_floatingAnchorElem !== null) {
       setFloatingAnchorElem(_floatingAnchorElem);
@@ -161,7 +162,7 @@ export function Editor({ noteId }: EditorProps) {
                   style={{
                     left:
                       (floatingAnchorElem?.getBoundingClientRect()?.left ?? 0) +
-                      (isMobile ? 40 : 160),
+                      (isTabletOrMobile ? 40 : 160),
                   }}
                 >
                   синхронизация с сервером...

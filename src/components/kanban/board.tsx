@@ -138,18 +138,21 @@ export function KanbanBoard({ boardId }: KanbanBoardProps) {
         <Skeleton
           className="
             w-[var(--kanban-column-w)] h-[40vh] p-6
+            md:w-[40vw]
             lg:w-[var(--kanban-column-w-lg)] lg:h-[39vh]
           "
         />
         <Skeleton
           className="
             w-[var(--kanban-column-w)] h-[40vh] p-6
+            md:w-[40vw]
             lg:w-[var(--kanban-column-w-lg)] lg:h-[27vh]
           "
         />
         <Skeleton
           className="
             w-[var(--kanban-column-w)] h-[40vh] p-6
+            md:w-[40vw]
             lg:w-[var(--kanban-column-w-lg)] lg:h-[55vh]
           "
         />
