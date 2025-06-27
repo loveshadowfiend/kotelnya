@@ -143,7 +143,7 @@ export function KanbanAddColumn() {
 
   return (
     <Button
-      className="bg-muted/60 w-[80vw] h-10 lg:w-[20vw]"
+      className="bg-muted/60 w-[80vw] h-10 md:w-[40vw] lg:w-[20vw]"
       variant={"ghost"}
       onClick={() => {
         kanbanComponentsStore.isAddingCategory = true;

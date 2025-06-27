@@ -142,7 +142,7 @@ export function Editor({ noteId }: EditorProps) {
       <RichTextPlugin
         contentEditable={
           <ContentEditable
-            className="focus:outline-none pt-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative editor-container"
+            className="focus:outline-none py-20 px-10 mx-auto max-w-full min-h-screen lg:py-32 lg:px-40 relative editor-container"
             aria-placeholder="введите текст или '/' для комманд"
             placeholder={
               isSynced ? (
@@ -151,7 +151,7 @@ export function Editor({ noteId }: EditorProps) {
                   style={{
                     left:
                       (floatingAnchorElem?.getBoundingClientRect()?.left ?? 0) +
-                      160,
+                      (isTabletOrMobile ? 40 : 160),
                   }}
                 >
                   введите текст или '/' для команд
